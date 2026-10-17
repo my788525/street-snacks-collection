@@ -22,6 +22,8 @@ function initService(){
   G.gasOut=false; G.batchNo=0; G.combo=0; G.tastings=0; startLimits(); initPrebook();
   if(!G.day)G.day=freshDayRec();
   G.godUsed=false; G.godT=0; G.hypeT=0; G.onlineT=18; G.online=null; G.preheatT=6; G.preheatV=S.preheat||(S.day<=BAL.newbieDays?50:0); G.helperT=8; G.frames=0; G.fpsT=0;
+  // 进营业屏自动开 BGM（若未静音且未被手动关），🎶 按钮变暂停/恢复开关
+  if(typeof SFX!=='undefined'&&!SFX.muted&&S.bgmOn!==false){ SFX.init(); SFX.resume(); SFX.bgmOn=true; }
   renderFire(); renderQueue(); renderServe(); renderFillTray(); renderDayChip();
   // 操作按钮（替代原 4 个火力按钮；吆喝/拜锅神从锅区浮动按钮挪来这里，避免被状态条挡住）
   $$('#fireRow .opBtn').forEach(b=>{

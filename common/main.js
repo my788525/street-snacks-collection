@@ -27,7 +27,7 @@ function bindSoundButtons(){
     };
   });
 }
-/* BGM 开关（🎵）：程序化轻快 loop，FEVER 时自动加料 */
+/* BGM 开关（🎵）：进营业屏自动开，🎶 按钮变「关/开」切换；程序化轻快 loop，FEVER 时自动加料 */
 function initBgmBtn(){
   const ids=['#btnBgm','#btnBgmS','#btnBgmE'];
   ids.forEach(sel=>{
@@ -35,8 +35,9 @@ function initBgmBtn(){
     b.onclick=()=>{
       SFX.init(); SFX.resume();
       if(SFX.muted){ toast('先开音效再开 BGM 哦','bad'); return; }
-      SFX.bgm();
-      ids.forEach(s=>{ const x=$(s); if(x)x.textContent=SFX.bgmOn?'🎵':'🎶'; });
+      SFX.bgm();   // 开→关 / 关→开 切换
+      const on=SFX.bgmOn;
+      ids.forEach(s=>{ const x=$(s); if(x){ x.textContent=on?'🎵':'🎶'; x.title=on?'BGM 开关（点一下关）':'BGM 开关（点一下开）'; } });
       SFX.click();
     };
   });
