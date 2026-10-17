@@ -109,6 +109,24 @@ run('newGame', () => sandbox.newGame('测试员', '测试小摊'));
 run('startDay(true)', () => sandbox.startDay(true));
 run('renderPrep', () => sandbox.renderPrep());
 
+run('库存0点+不变NaN（buyOne 对 undefined/null 兜底）', () => {
+  const S = X.S;
+  // 场景1：S.egg 不存在（旧存档未初始化的基础食材）→ 渲染不出现 NaN
+  S.money = 100; S.egg = undefined;
+  sandbox.renderPrep();
+  const html = elements['#prepBody'].innerHTML;
+  if (html.includes('NaN')) throw new Error('渲染出现 NaN');
+  if (!/id="qty_egg">0</.test(html)) throw new Error('库存 0 应正常显示');
+  // 场景2：buyOne 从 undefined 起步买 1 份 → 1，不是 NaN
+  sandbox.buyOne('egg');
+  if (S.egg !== 1) throw new Error('undefined 起步买后应为 1，实为 ' + S.egg);
+  // 场景3：旧存档里已被污染成 null（NaN 序列化结果）也能恢复
+  S.egg = null; S.money = 100;
+  sandbox.buyOne('egg');
+  if (S.egg !== 1) throw new Error('null 起步买后应为 1，实为 ' + S.egg);
+  S.egg = 1;
+});
+
 run('共享选址池合并 + 城管门口降低城管风险', () => {
   const spots = X.GAME.spots;
   ['resident','expo','chengguan','office','park'].forEach(k=>{ if(!spots[k])throw new Error('缺共享选址 '+k); });

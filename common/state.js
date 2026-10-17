@@ -26,11 +26,14 @@ const G={
 /* ---------- 存档 ---------- */
 const SAVE_KEY='dhg_save_v1';
 function newGame(name,shop,legacy,diff){
+  /* 基础食材库存动态初始化（修复：写死 flour/egg/gas 导致其它小吃的基础食材 undefined→买一次变 NaN） */
+  const base0={};
+  (GAME.baseItems||[]).forEach((b,i)=>{ base0[b.id]= b.sq!==undefined?b.sq:(b.id==='gas'?3:(i===0?6:8)); });
   S={
     ver:1, shopName:shop, playerName:name, diff:diff||'std',
     day:1, money:(DIFFS[diff||'std']||DIFFS.std).money+(legacy?BAL.legacyMoney:0), rep:60, xp:0, lv:1,
     premises:0, license:false,
-    inv:{}, flour:6, egg:10, gas:3, batter:0, batterBatches:[], batterQ:1, ferm:'std',
+    inv:{}, ...base0, batter:0, batterBatches:[], batterQ:1, ferm:'std',
     known:{}, signatures:[], darks:[], banned:[], legacyHint: legacy&&legacy.hint?legacy.hint:null,
     buffs:[], adTier:0, budget:0, base:2.5,
     mile:[], ach:[], seenFill:[], seenCust:{}, limits:{}, tasting:false, codexTab:'馅料',
@@ -50,7 +53,18 @@ function newGame(name,shop,legacy,diff){
 }
 function freshDayRec(){ return {sold:0,rev:0,cost:0,waste:0,qSum:0,qN:0,left:0,tips:0,prep:0,fines:0,gas:0,sigSales:0,darkSales:0,wages:0,friendBrings:0}; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
-function load(){ try{ const d=localStorage.getItem(SAVE_KEY); if(!d)return null; const o=JSON.parse(d); if(o&&o.ver===1)return o; }catch(e){} return null; }
+function load(){
+  try{
+    const d=localStorage.getItem(SAVE_KEY); if(!d)return null;
+    const o=JSON.parse(d); if(o&&o.ver===1){
+      /* 修复历史存档：基础食材缺失（undefined→买一次 NaN）或被污染（NaN 序列化成 null）一律洗成有效数字 */
+      (GAME.baseItems||[]).forEach(b=>{ if(typeof o[b.id]!=='number'||!isFinite(o[b.id])) o[b.id]=0; });
+      if(typeof o.batter!=='number'||!isFinite(o.batter)) o.batter=0;
+      return o;
+    }
+  }catch(e){}
+  return null;
+}
 function hasSave(){ return !!load(); }
 
 /* ---------- 日期辅助（真实日历，用于签到 / 节日） ---------- */

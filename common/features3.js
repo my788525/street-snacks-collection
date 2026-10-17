@@ -54,7 +54,7 @@ function extraPrepCards3(){
     ${S.health?'<div class="mktRow"><div class="mktIcon">🩺</div><div class="mktName"><div class="n">健康证</div><div class="p">抽检时底气十足</div></div><span class="pill leaf">已办</span></div>'
       :`<div class="mktRow"><div class="mktIcon">🩺</div><div class="mktName"><div class="n">办健康证 · ¥50</div><div class="p">食品抽检必备，不然罚款 100–300</div></div><div class="stepper"><button data-health="1" ${S.money>=50?'':'disabled'}>办</button></div></div>`}
   </div>`;
-  const invVal=[...GAME.fillings,...GAME.baseItems].reduce((a,it)=>a+(it.base?S[it.id]:(S.inv[it.id]||0))*priceOf(it),0);
+  const invVal=[...GAME.fillings,...GAME.baseItems].reduce((a,it)=>a+((it.base?(S[it.id]||0):(S.inv[it.id]||0)))*priceOf(it),0);
   const premVal=[0,300,2000,6000,20000][S.premises]||0;
   h+=`<div class="h2" style="margin:14px 0 8px">🏠 家当盘点</div><div class="card">
     <div class="billRow"><span>💵 现金</span><b>${money(S.money)}</b></div>

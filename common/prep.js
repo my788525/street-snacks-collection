@@ -36,7 +36,7 @@ function renderPrep(){
   h+=`</div><div class="tiny mut" style="margin-top:6px">当前${V('batter')}库存：<b>${S.batter}</b> 份${S.batterBatches&&S.batterBatches.length?`（${S.batterBatches.length} 批）`:''}（1 份 = 1 ${V('unit')}）。可重复选${V('fermWay')}方式<b>分批和面</b>，但出摊后约 <b>${Math.round(batterSpoilSec())}</b> 秒没卖完的批次会<b>发酸倒掉</b>——带多了浪费，带少了不够卖，自己拿捏。</div>`;
   // 市场
   h+=`<div class="h2" style="margin:14px 0 4px">🧺 菜市场进货</div><div class="card">`;
-  const rows=[...GAME.baseItems.map(b=>({...b,qty:S[b.id]===undefined?0:S[b.id],isBase:true})),
+  const rows=[...GAME.baseItems.map(b=>({...b,qty:S[b.id]||0,isBase:true})),
               ...unlockedFillings().map(f=>({...f,qty:S.inv[f.id]||0}))];
   rows.forEach(it=>{
     const p=priceOf(it), old=it.c;
@@ -99,15 +99,30 @@ function renderPrep(){
   h+=extraPrepCards();
   h+=extraPrepCards3();
   // 库存总览
-  const stock=GAME.baseItems.map(b=>b.n+' '+S[b.id]).join(' · ')+' · '+V('batter')+' '+S.batter;
+  const stock=GAME.baseItems.map(b=>b.n+' '+(S[b.id]||0)).join(' · ')+' · '+V('batter')+' '+(S.batter||0);
   h+=`<div class="deskNote" style="margin:12px 0">📋 库存：${stock}<br>今日天气 ${W.ic}${W.n} · 明日预告 ${GAME.weathers.find(w=>w.id===S.tomorrow).ic}${GAME.weathers.find(w=>w.id===S.tomorrow).n}</div>`;
   $('#prepBody').innerHTML=h;
   if(typeof staggerIn==='function')staggerIn($('#prepBody'));
   bindPrep();
 }
+/* 市场购买 1 份（含「库存 0 点 + 变 NaN」修复：未知/空值一律按 0 起步） */
+function buyOne(id){
+  const it=[...GAME.baseItems,...GAME.fillings].find(x=>x.id===id);
+  if(!it)return;
+  const p=priceOf(it);
+  if(S.money<p){SFX.fail();toast('钱不够，先去挣','bad');return}
+  S.money-=p; G.day.prep+=p;
+  if(it.base){ S[id]=(S[id]||0)+1; }
+  else S.inv[id]=(S.inv[id]||0)+1;
+  if(it.cold)S.spoil[id]=2;
+  SFX.coin();
+  const q=$('#qty_'+id); if(q)q.textContent=it.base?S[id]:S.inv[id];
+  $('#prepSpent')&&($('#prepSpent').textContent=fmt(G.day.prep));
+  hudUpdate(); save();
+}
 function fermMake(f){
   const need=fermFlourNeed(f);
-  if(S.flour<need){toast('面粉不够，先去菜市场买🌾','bad');SFX.fail();return false}
+  if((S.flour||0)<need){toast('面粉不够，先去菜市场买🌾','bad');SFX.fail();return false}
   if(f.cost&&S.money<f.cost){toast('连'+V('yeast')+'都买不起了…','bad');return false}
   S.flour-=need; S.ferm=f.id;
   const prev=(S.batter||0);
@@ -122,19 +137,7 @@ function bindPrep(){
     const f=GAME.ferms.find(x=>x.id===el.dataset.f);
     if(fermMake(f)){ renderPrep(); hudUpdate(); save(); }
   });
-  $$('#prepBody [data-buy]').forEach(b=>b.onclick=()=>{
-    const id=b.dataset.buy, it=[...GAME.baseItems,...GAME.fillings].find(x=>x.id===id);
-    const p=priceOf(it);
-    if(S.money<p){SFX.fail();toast('钱不够，先去挣','bad');return}
-    S.money-=p; G.day.prep+=p;
-    if(it.base){ S[id]++; }
-    else S.inv[id]=(S.inv[id]||0)+1;
-    if(it.cold)S.spoil[id]=2;
-    SFX.coin();
-    const q=$('#qty_'+id); if(q)q.textContent=it.base?S[id]:S.inv[id];
-    $('#prepSpent')&&($('#prepSpent').textContent=fmt(G.day.prep));
-    hudUpdate(); save();
-  });
+  $$('#prepBody [data-buy]').forEach(b=>b.onclick=()=>{ buyOne(b.dataset.buy); });
   const vm=()=>{$('#pVal').textContent=fmt(S.base)};
   $('#pMinus').onclick=()=>{SFX.click();S.base=Math.max(1,S.base-.5);vm();renderPrep();save()};
   $('#pPlus').onclick=()=>{SFX.click();S.base=Math.min(8,S.base+.5);vm();renderPrep();save()};
