@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FBF6EC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700;900&display=swap" rel="stylesheet">
+<title>街头小吃模拟经营合集 · 蛋烘糕/肠粉/肉夹馍/煎饼果子…</title>
+<style>
+:root{
+  --paper:#FBF6EC; --card:#FFFDF7; --ink:#3D2C1E; --ink2:#756554;
+  --yolk:#F5B942; --caramel:#C97B2D; --leaf:#6B9E5A; --rouge:#D95D5D; --sky:#7FB0D6;
+  --font-display:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --font-body:"PingFang SC","HarmonyOS Sans SC","MiSans","Microsoft YaHei",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--paper);
+  background-image:radial-gradient(rgba(61,44,30,.05) 1px, transparent 1px);
+  background-size:22px 22px; color:var(--ink);
+  font-family:var(--font-body); font-size:15px; line-height:1.5;
+  -webkit-text-size-adjust:100%; -webkit-font-smoothing:antialiased;
+}
+#app{max-width:680px;margin:0 auto;padding:20px 16px calc(28px + env(safe-area-inset-bottom))}
+.hero{text-align:center;margin-bottom:18px}
+.heroArt{font-size:52px;line-height:1;filter:drop-shadow(3px 3px 0 rgba(61,44,30,.18));animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+.heroTitle{font-family:var(--font-display);font-size:30px;font-weight:900;letter-spacing:2px;margin-top:6px}
+.heroTitle em{font-style:normal;color:var(--caramel)}
+.heroSub{font-size:13px;color:var(--ink2);margin-top:4px}
+.banner{background:var(--ink);color:#FFF3D6;border-radius:12px;padding:8px 14px;font-size:13px;margin:14px 0;text-align:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(min-width:560px){.grid{grid-template-columns:1fr 1fr 1fr}}
+.game{
+  display:block;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:14px 12px;
+  text-decoration:none;color:var(--ink);box-shadow:4px 4px 0 rgba(61,44,30,.14);
+  transition:transform .1s, box-shadow .1s;position:relative;overflow:hidden;
+}
+.game:active{transform:translate(3px,3px);box-shadow:1px 1px 0 rgba(61,44,30,.14)}
+.gameEmoji{font-size:34px;line-height:1}
+.gameName{font-family:var(--font-display);font-size:18px;font-weight:900;margin-top:6px}
+.gameCity{font-size:12px;color:var(--ink2)}
+.gameSlogan{font-size:12px;color:var(--caramel);margin-top:4px;min-height:32px}
+.gameTag{
+  position:absolute;top:8px;right:8px;font-size:10px;background:var(--yolk);border:1.5px solid var(--ink);
+  border-radius:99px;padding:1px 8px;font-weight:700;
+}
+.foot{margin-top:20px;text-align:center;font-size:12px;color:var(--ink2)}
+.foot .deskNote{display:inline-block;background:#FFF9E6;border:1.5px dashed var(--caramel);border-radius:12px;padding:8px 14px;text-align:left}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hero">
+    <div class="heroArt">🏮</div>
+    <div class="heroTitle">街头小吃<em>模拟经营</em>合集</div>
+    <div class="heroSub">同一个灵魂，十种烟火 · 火候是门玄学，经营是门艺术</div>
+  </div>
+  <div class="banner">📰 蓉城快讯：本合集所有小摊均已加入「临期经济联盟」，做好放台上，客人自己拿</div>
+  <div class="grid" id="grid"></div>
+  <div class="foot">
+    <div class="deskNote">🎮 每个游戏独立存档、独立难度门禁（佛系→标准→硬核→疯狂）。<br>💡 建议从「巷口蛋烘糕」开始：教程最全，机制最典型。</div>
+  </div>
+</div>
+<script>
+var GAMES=[
+ {id:'danhongao',name:'巷口蛋烘糕',emoji:'🫓',city:'成都',slogan:'火候是门玄学',tag:'招牌推荐'},
+ {id:'changfen',name:'广东肠粉',emoji:'🥢',city:'广州',slogan:'一屉米浆的乾坤'},
+ {id:'roujiamo',name:'西安肉夹馍',emoji:'🥙',city:'西安',slogan:'老汤腊汁，馍酥肉香'},
+ {id:'jianbing',name:'天津煎饼果子',emoji:'🥞',city:'天津',slogan:'绿豆面糊，薄脆为魂'},
+ {id:'choudoufu',name:'长沙臭豆腐',emoji:'🍢',city:'长沙',slogan:'闻着臭，吃着香'},
+ {id:'luosifen',name:'广西螺蛳粉',emoji:'🍜',city:'柳州',slogan:'酸笋臭臭，螺汤鲜鲜'},
+ {id:'xiaomian',name:'重庆小面',emoji:'🌶️',city:'重庆',slogan:'一碗小面，麻辣江山'},
+ {id:'reganmian',name:'武汉热干面',emoji:'🍝',city:'武汉',slogan:'芝麻酱香，掸面有劲'},
+ {id:'kaolengmian',name:'东北烤冷面',emoji:'🍳',city:'哈尔滨',slogan:'铁板上的深夜浪漫'},
+ {id:'qingbuliang',name:'海南清补凉',emoji:'🥥',city:'海口',slogan:'椰风海韵，一碗清凉'},
+ {id:'zhaji',name:'街头炸鸡',emoji:'🍗',city:'全国',slogan:'油锅里的黄金自由'},
+ {id:'lvrouhuoshao',name:'河北驴肉火烧',emoji:'🥖',city:'保定',slogan:'天上龙肉，地下驴肉'},
+];
+var grid=document.getElementById('grid');
+GAMES.forEach(function(g){
+  var a=document.createElement('a');
+  a.className='game'; a.href='games/'+g.id+'/index.html';
+  a.innerHTML=(g.tag?'<span class="gameTag">'+g.tag+'</span>':'')+
+    '<div class="gameEmoji">'+g.emoji+'</div>'+
+    '<div class="gameName">'+g.name+'</div>'+
+    '<div class="gameCity">'+g.city+'街头</div>'+
+    '<div class="gameSlogan">'+g.slogan+'</div>';
+  grid.appendChild(a);
+});
+</script>
+</body>
+</html>

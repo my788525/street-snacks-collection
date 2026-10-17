@@ -1,0 +1,17 @@
+# 依赖 / 构建产物
+node_modules/
+dist/
+*.log
+
+# 编辑器 / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 临时脚本
+_*.py
+tmp/
+
+# WorkBuddy 项目数据（不入库）
+.workbuddy/
