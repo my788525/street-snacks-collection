@@ -312,5 +312,63 @@ run('节日限定馅料按日期隐藏/显示', () => {
   if (inList !== sandbox.festOn(fz.fest)) throw new Error('unlockedFillings 与 festOn 应一致');
 });
 
+/* ---------- 第 2 阶段：顾客好感度 + 社会工程学顾客 AI ---------- */
+run('好感度增减与边界', () => {
+  const S = sandbox.S;
+  S.affinity = { student: 50 };
+  sandbox.affBump('student', 10); if (S.affinity.student !== 60) throw new Error('应 +10');
+  sandbox.affBump('student', 100); if (S.affinity.student !== 100) throw new Error('应封顶 100');
+  sandbox.affBump('student', -100); if (S.affinity.student !== 0) throw new Error('应封底 0');
+  if ((S.stats.affMax || 0) < 100) throw new Error('affMax 应记录峰值');
+});
+run('口碑热度 buzz 增减与边界', () => {
+  const S = sandbox.S; S.buzz = 50;
+  sandbox.buzzBump(20); if (S.buzz !== 70) throw new Error('buzz +20');
+  sandbox.buzzBump(100); if (S.buzz !== 100) throw new Error('buzz 封顶 100');
+  sandbox.buzzBump(-200); if (S.buzz !== 0) throw new Error('buzz 封底 0');
+});
+run('社会影响力：博主声量最高', () => {
+  if (sandbox.affInfluence(X.CUSTOMERS.find(c => c.special === 'blogger')) !== 4) throw new Error('blogger inf=4');
+  if (!(sandbox.affInfluence(X.CUSTOMERS.find(c => c.id === 'student')) < sandbox.affInfluence(X.CUSTOMERS.find(c => c.special === 'blogger')))) throw new Error('博主应高于学生');
+});
+run('顾客好感度：满意服务提升好感', () => {
+  const S = sandbox.S;
+  G().bulk = null; G().prebook = null; G().online = null; G().queue.length = 0; G().serve.length = 0;
+  S.affinity = { student: 50 }; S.buzz = 60; S.inv.sugar = 5;
+  G().queue.push({ type: X.CUSTOMERS.find(c => c.id === 'student'), order: { fills: ['sugar'], done: 'std' }, pat: 60, wait: 0, max: 60, el: sandbox.document.createElement('div'), barEl: null, said: false });
+  G().serve[0] = { fills: ['sugar'], q: .95, foldHeat: 300, foldOff: 0 };
+  sandbox.serveFromTray(0);
+  if ((S.affinity.student || 0) <= 50) throw new Error('满意应提升好感');
+});
+run('高影响力顾客满意 → 触发安利链', () => {
+  const S = sandbox.S;
+  G().bulk = null; G().prebook = null; G().online = null; G().referNext = null; G().queue.length = 0; G().serve.length = 0;
+  S.affinity = { student: 50 }; S.buzz = 60; S.inv.sugar = 5;
+  const blogger = { type: X.CUSTOMERS.find(c => c.special === 'blogger'), order: { fills: ['sugar'], done: 'std' }, pat: 150, wait: 0, max: 150, el: sandbox.document.createElement('div'), barEl: null, said: false, vip: true, wantsFresh: false };
+  G().queue.push(blogger);
+  G().serve[0] = { fills: ['sugar'], q: .95, foldHeat: 300, foldOff: 0 };
+  sandbox.serveFromTray(0);
+  if (G().referNext === null) throw new Error('博主满意应触发下一位安利新客');
+});
+run('社会工程学：被安利来的新客标记', () => {
+  const S = sandbox.S;
+  G().bulk = null; G().prebook = null; G().online = null; G().referNext = { inf: 3 };
+  let consumed = false;
+  for (let i = 0; i < 30; i++) { sandbox.tryArrive(); if (G().referNext === null) { consumed = true; break; } }
+  if (!consumed) throw new Error('referNext 应被消费');
+});
+run('口碑热度影响到达率（高 buzz 更聚客）', () => {
+  const S = sandbox.S;
+  S.adTier = 0; S.buffs = []; S.renameCd = 0; S.signatures = []; G().hypeT = 0;
+  S.buzz = 20; const slow = sandbox.arrivalInterval();
+  S.buzz = 95; const fast = sandbox.arrivalInterval();
+  if (!(fast < slow)) throw new Error('高 buzz 应缩短到达间隔');
+});
+run('图鉴顾客页含好感度渲染', () => {
+  const S = sandbox.S;
+  S.codexTab = '顾客'; S.seenCust = { student: 3 }; S.affinity = { student: 80 };
+  sandbox.renderCodex();
+});
+
 console.log('\n结果: ' + pass + ' 通过, ' + fail + ' 失败');
 process.exit(fail ? 1 : 0);

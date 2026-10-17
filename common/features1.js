@@ -107,6 +107,9 @@ const ACHIEVEMENTS=[
  {id:'a16',n:'试吃勇士赞助商',d:'发起 3 次试吃价',chk:()=>(S.stats.tastings||0)>=3},
  {id:'a17',n:'雨神关照',d:'暴雨天出摊还赚了',chk:()=>S.weather==='storm'&&G.day&&G.day.net>0},
  {id:'a18',n:'手感爆棚',d:'触发一次 FEVER 连击爆发',chk:()=>(S.stats.feverCount||0)>=1},
+ {id:'a19',n:'街坊熟人',d:'某类顾客好感度达到 90',chk:()=>Object.values(S.affinity||{}).some(v=>v>=90)},
+ {id:'a20',n:'街口红人',d:'口碑热度达到 95',chk:()=>S.buzz!=null&&S.buzz>=95},
+ {id:'a21',n:'安利大师',d:'靠老客安利拉来 5 位新客',chk:()=>(S.stats.referrals||0)>=5},
 ];
 function checkAch(){
   ACHIEVEMENTS.forEach(a=>{
@@ -148,10 +151,10 @@ function renderCodex(){
       h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="grow"><div class="mktName"><div class="n">'+esc(names)+'</div><div class="p">售出 '+info.sales+' 个'+(S.banned.includes(k)?' · 已下架':'')+'</div></div></div><span class="pill '+cls+'">'+label+'</span></div></div>';
     });
   }else if(S.codexTab==='顾客'){
-    h+='<div class="tiny mut" style="margin-bottom:8px">接待过的顾客类型。</div>';
+    h+='<div class="tiny mut" style="margin-bottom:8px">接待过的顾客类型与好感度（满格 = 老主顾）。</div>';
     GAME.customers.forEach(c=>{
-      const n=S.seenCust[c.id]||0;
-      h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="mktIcon">'+c.ic+'</div><div class="grow"><div class="mktName"><div class="n">'+c.n+'</div><div class="p">'+(n?'接待 '+n+' 次':'还没见过')+'</div></div></div></div></div>';
+      const n=S.seenCust[c.id]||0, a=aff(c.id), filled=Math.round(a/25), hearts='❤️'.repeat(filled)+'🤍'.repeat(4-filled);
+      h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="mktIcon">'+c.ic+'</div><div class="grow"><div class="mktName"><div class="n">'+c.n+'</div><div class="p">'+(n?('接待 '+n+' 次 · 好感 '+Math.round(a)+(a>=LOYAL_AT?' · 老主顾':'')):'还没见过')+'</div></div></div>'+(n?'<div style="font-size:15px;letter-spacing:2px">'+hearts+'</div>':'')+'</div></div>';
     });
   }else{
     h+='<div class="tiny mut" style="margin-bottom:8px">已解锁 '+S.ach.length+' / '+ACHIEVEMENTS.length+'</div>';

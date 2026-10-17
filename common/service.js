@@ -55,6 +55,8 @@ function renderDayChip(){
   if(G.bulk)t+=' · 🏢团购 '+G.bulk.left+'/'+G.bulk.need;
   if(G.online)t+=' · 🛵外卖';
   if(G.combo>=2)t+=' · 🔥连击x'+G.combo;
+  if(S.buzz>=75)t+=' · 🔥人气旺';
+  else if((S.buzz==null?60:S.buzz)<=30)t+=' · ❄冷清';
   if(G.gasOut)t+=' · ⚠断气';
   chip.textContent=t;
 }
@@ -88,6 +90,7 @@ function arrivalInterval(){
   if(S.buffs.some(b=>b.flow))rate*=1.3;
   if(S.renameCd>0)rate*=.82;
   if(S.buffs.some(b=>b.id==='rival'))rate*=.75;
+  rate*=(0.85+(S.buzz==null?60:S.buzz)/300);   // 口碑热度：人多越聚人（社会认同）
   return Math.max(1.6,60/Math.max(1.5,rate));
 }
 function makeOrder(type){
@@ -118,20 +121,30 @@ function tryArrive(){
     if(chance(.3)){ lostCustomer('队伍太长，看看就走'); }
     return;
   }
-  let type=pick(GAME.customers.filter(c=>c.special!=='blogger'&&c.special!=='regular'));
-  if(chance(.22))type=GAME.customers.find(c=>c.id==='regular');
-  if(chance(.08))type=GAME.customers.find(c=>c.id==='blogger');
+  let type, referred=false;
+  if(G.referNext && chance(.5)){              // 社会工程学：被安利来的新客
+    const pool=GAME.customers.filter(c=>c.special!=='blogger'&&c.special!=='regular');
+    if(pool.length){ type=pick(pool); referred=true; G.referNext=null; }
+  }
+  if(!type){
+    const pool=GAME.customers.filter(c=>c.special!=='blogger'&&c.special!=='regular');
+    const w=pool.map(c=>1+aff(c.id)/100);     // 好感越高的客群越常来（回头客）
+    type=wPick(pool,w);
+    if(chance(.22))type=GAME.customers.find(c=>c.id==='regular');
+    if(chance(.08))type=GAME.customers.find(c=>c.id==='blogger');
+  }
   const psych=psychPrice();
   const order=makeOrder(type);
   const price=cakePrice(order.fills);
   if(price>psych*1.5&&chance(.55)){ lostCustomer('“'+money(price)+'？抢劫哦！”'); return; }
   if(price>psych*1.3&&chance(.22)){ lostCustomer('“啧，吃不起吃不起。”'); return; }
   const c={
-    type, order:order,
-    pat:(skillPat(type.pat*(S.day<=BAL.newbieDays?BAL.newbiePat:1))*(S.helper>=2?1.1:1)*(1+(S.fxToday.pat||0)/100)*(S.premises>=3?1.3:1)*(S.fxToday.hunger?.9:1)),
+    type, order:order, referred,
+    pat:(skillPat(type.pat*(S.day<=BAL.newbieDays?BAL.newbiePat:1))*(S.helper>=2?1.1:1)*(1+(S.fxToday.pat||0)/100)*(S.premises>=3?1.3:1)*(S.fxToday.hunger?.9:1)*(0.9+(S.buzz==null?60:S.buzz)/500)),
     wait:0, el:null, barEl:null, said:false,
   };
   if(type.special==='regular'&&S.mood&&S.mood.fav)c.order={fills:[...S.mood.fav],done:'std'};
+  if(referred)S.affinity[type.id]=Math.max(aff(type.id),60);
   c.max=c.pat;
   c.umb=(S.weather==='rain'||S.weather==='storm')&&chance(.5);
   c.short=!!(c.order&&c.order.fills.some(id=>(S.inv[id]||0)<=0));
@@ -142,7 +155,7 @@ function tryArrive(){
   }
 }
 function lostCustomer(line){
-  S.stats.left++; G.day.left++;
+  S.stats.left++; G.day.left++; buzzBump(-1.5);
   toast(line,'bad');
 }
 /* 缺货告知：现实中店主的处理——告知换一个 / 承认没有让他走 / 嘴硬端替代品 */
@@ -187,6 +200,8 @@ function renderQueue(){
     if(c.umb)icons='☂️'+icons;
     if(c.short)icons='🈲'+icons;
     if(c.wantsFresh)icons='🆕'+icons;
+    if(c.referred)icons='📣'+icons;
+    else if(aff(c.type.id)>=LOYAL_AT)icons='❤️'+icons;
     const orderHtml=c.order?c.order.fills.map(f=>{
       const miss=(S.inv[f]||0)<=0;
       return '<span style="'+(miss?'color:var(--rouge-d);text-decoration:line-through':'')+'">'+F(f).n+'</span>';
@@ -386,6 +401,7 @@ function staleRefused(c){
   let chance=.02+.15*p*p;
   if(c.type.id==='uncle')chance*=.5;    // 大爷大妈最爱打折
   if(c.type.id==='tourist')chance*=1.3; // 游客讲究一点
+  if(aff(c.type.id)>=LOYAL_AT)chance*=.4; // 老主顾不挑临期
   return rnd()<chance;
 }
 function findTaker(s){
@@ -544,15 +560,26 @@ function serveCustomer(c,cake){
   const deal=tastingDeal(comboKey(cake.fills),price0);
   const price=deal.price;
   const psych=psychPrice();
-  const priceScore=clamp(1-(price-psych)/psych*1.4,0,1);
+  const priceScore=clamp(1-(price-psych)/psych*1.4*(1.1-(S.buzz==null?60:S.buzz)/300),0,1);
   const sat=clamp(q*.45+speed*.3+priceScore*.25+(GAME.premises[S.premises].sat+5)/100,0,1);
+  // —— 顾客好感度 + 社会工程学 ——
+  const _aid=c.type.id, _inf=affInfluence(c.type);
+  // 老主顾“给面子”：好感够高时兜底满意度，偶发失误也网开一面
+  if(aff(_aid)>=LOYAL_AT) sat=Math.max(sat,0.55);
+  // 好感度增减：满意 +、不满 −
+  if(sat>0.8) affBump(_aid,(sat-.6)*8);
+  else if(sat<0.55) affBump(_aid,-(0.6-sat)*10);
+  // 口碑热度：满意度加权社会影响力，好则爆红、差则避雷
+  buzzBump((sat-0.5)*4*_inf*0.5);
+  // 安利链：高影响力顾客满意 → 下一位可能是被安利来的新客
+  if(sat>0.8 && _inf>=2) G.referNext={inf:_inf};
   // 记账
   const perfect=q>=.9&&dist<d.tol/2;
   S.money+=price; S.stats.sold++; S.stats.earn+=price;
   G.day.sold++; G.day.rev+=price; G.day.qSum+=q; G.day.qN++;
   if(perfect){ S.stats.perfect++; G.day.tips+=1; }
   let tip=0;
-  if(perfect&&chance(tipChance())){ tip=Math.round(ri(1,2)*feverMult()); S.money+=tip; G.day.tips+=tip; SFX.coin(); }
+  if(perfect&&chance(tipChance()*(1+aff(_aid)/300))){ tip=Math.round(ri(1,2)*feverMult()*(1+aff(_aid)/200)); S.money+=tip; G.day.tips+=tip; SFX.coin(); }
   S.rep=clamp(S.rep+(sat-BAL.repTarget)*BAL.repK*deal.repMul*diffOf().rep*(c.type.special==='blogger'?3:1),0,100);
   addXp(Math.round(6+q*14+(perfect?6:0)));
   comboBump(perfect);
@@ -595,6 +622,11 @@ function serveCustomer(c,cake){
   }
   // 熟客记忆
   if(c.type.special==='regular'&&sat>.8){ S.mood={fav:[...cake.fills]}; S.rep=clamp(S.rep+.5,0,100); }
+  // 安利来的新客：满意则继续帮你安利，不满意则口口相传反噬
+  if(c.referred){
+    if(sat>0.8){ S.stats.referrals=(S.stats.referrals||0)+1; buzzBump(6); toast('📣 朋友推荐来的客人满意而归，又帮你安利了一圈！','gold'); }
+    else if(sat<0.5){ buzzBump(-3); toast('📣 安利来的客人没吃好，街坊都知道了…','bad'); }
+  }
   // 大爷砍价
   if(c.type.id==='uncle'&&chance(.3))bargainModal(price);
   // 移除顾客
@@ -762,11 +794,11 @@ function bloggerVerdict(sat){
     S.stats.bloggerWin=(S.stats.bloggerWin||0)+1;
     S.buffs.push({id:'hot',name:'探店爆红',ic:'🔥',days:3,flow:true});
     S.rep=clamp(S.rep+10,0,100); addXp(80);
-    S.chainBulk=true;
+    S.chainBulk=true; buzzBump(12);
     SFX.fanfare(); toast('🔥 博主满意！发了视频，爆红 3 天，客流大涨','gold');
   }else{
     S.rep=clamp(S.rep-10,0,100); addXp(20);
-    S.buffs.push({id:'avoid',name:'避雷视频',ic:'📹',days:3});
+    S.buffs.push({id:'avoid',name:'避雷视频',ic:'📹',days:3}); buzzBump(-10);
     SFX.fail(); toast('📹 博主不满意，发了避雷视频…“家人们，真的避雷”（客流受影响 3 天）','bad');
   }
 }

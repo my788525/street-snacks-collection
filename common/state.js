@@ -20,7 +20,7 @@ const G={
   news:[], newsIdx:0, newsTimer:null, picked:-1, pickMode:null,
   lostDays:0, crisisDays:0, bloggerDone:0, mood:{}, catFed:false, shakeT:0,
   combo:0, tastings:0, limitLeft:{},
-  fever:false, feverLeft:0,
+  fever:false, feverLeft:0, referNext:null,
 };
 
 /* ---------- 存档 ---------- */
@@ -40,8 +40,8 @@ function newGame(name,shop,legacy,diff){
     chainBulk:false, chainFair:false, health:false, prebook:null, inspectWarned:false,
     weather:'cloudy', tomorrow:'cloudy', wind:'plain',
     priceMul:{}, renameCd:0, rentMul:1,
-    streak:0, lastLogin:null,
-    stats:{sold:0, earn:0, best:0, perfect:0, left:0, dark:0, fine:0, days:0, bloggerWin:0, bulkWin:0, catFed:0, maxCombo:0, monthWin:0, tastings:0, feverCount:0, maxFeverCombo:0},
+    streak:0, lastLogin:null, affinity:{}, buzz:60,
+    stats:{sold:0, earn:0, best:0, perfect:0, left:0, dark:0, fine:0, days:0, bloggerWin:0, bulkWin:0, catFed:0, maxCombo:0, monthWin:0, tastings:0, feverCount:0, maxFeverCombo:0, referrals:0, affMax:0},
     ach:[], seenNews:[], pendingNews:[], seed:(Math.random()*1e9)|0, deaths: (legacy?legacy.deaths||0:0),
   };
   GAME.fillings.filter(f=>!f.lv||f.lv<=1).forEach(f=>S.inv[f.id]=4);

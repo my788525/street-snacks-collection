@@ -27,6 +27,7 @@ function renderSettle(){
     <div class="billRow"><span>🗑️ 烤糊 / 浪费</span><b>${d.waste} 个</b></div>
     <div class="billRow"><span>⭐ 平均质量分</span><b>${Math.round(avgQ*100)}</b></div>
     <div class="billRow"><span>📣 当前口碑</span><b>${Math.round(S.rep)}</b></div>
+    <div class="billRow"><span>🔥 口碑热度</span><b>${Math.round(S.buzz==null?60:S.buzz)}</b></div>
   </div>`;
   const quips=[];
   if(d.left>=4)quips.push('走了 '+d.left+' 位客人，他们曾在寒风中排过队');

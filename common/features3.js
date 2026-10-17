@@ -62,6 +62,7 @@ function extraPrepCards3(){
     <div class="divider"></div>
     <div class="billRow"><span>总家当</span><b class="repUp">${money(S.money+invVal+premVal)}</b></div>
     <div class="tiny mut" style="margin-top:6px">累计经营 ${S.day} 天 · 卖出 ${S.stats.sold} 个 · 累计营收 ${money(S.stats.earn)} · 上缴城管 ${money(S.stats.fine)}</div>
+  <div class="tiny mut">🔥 口碑热度 ${Math.round(S.buzz==null?60:S.buzz)} · 📅 连续签到 ${S.streak||0} 天${S.stats.referrals?(' · 📣 安利拉新 '+S.stats.referrals):''}</div>
   </div>`;
   if(S.premises>=1){
     h+=`<div class="h2" style="margin:14px 0 8px">🧑‍🍳 雇人</div><div class="card">`;
@@ -381,6 +382,33 @@ function loadVConsoleIfDebug(){
   s.src='https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.15.1/vconsole.min.js';
   s.onload=()=>{ try{ new VConsole(); }catch(e){} };
   document.head.appendChild(s);
+}
+
+/* ---------- 顾客好感度 + 社会工程学顾客 AI（第 2 阶段） ---------- */
+const LOYAL_AT=75;                 // 好感度达到视为“老主顾”
+function aff(id){
+  if(!S.affinity)S.affinity={};
+  if(S.affinity[id]==null)S.affinity[id]=50;
+  return S.affinity[id];
+}
+function affInfluence(type){
+  if(type.special==='blogger')return 4;       // 探店博主：一票顶四票
+  if(type.special==='regular')return 2.2;     // 熟客：街坊传播节点
+  if(type.id==='uncle')return 1.7;            // 大爷大妈：菜场情报站
+  if(type.id==='tourist')return 1.4;          // 游客：爱发小红书
+  if(type.id==='worker')return 1.2;           // 上班族：午休口碑
+  return 1;                                   // 学生等：基础声量
+}
+function affBump(id,d){
+  const v=clamp(aff(id)+d,0,100);
+  S.affinity[id]=v;
+  S.stats.affMax=Math.max(S.stats.affMax||0,v);
+}
+function buzzBump(d){ S.buzz=S.buzz==null?60:S.buzz; S.buzz=clamp(S.buzz+d,0,100); }
+function wPick(list,weights){
+  let t=0; for(const w of weights)t+=w; let r=rnd()*t;
+  for(let i=0;i<list.length;i++){ r-=weights[i]; if(r<=0)return list[i]; }
+  return list[list.length-1];
 }
 
 /* ---------- 夹生纠纷 ---------- */
