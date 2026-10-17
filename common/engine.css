@@ -295,5 +295,10 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
 @keyframes billIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
 @keyframes comboBeat{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
 @keyframes newsFlash{0%,100%{background:var(--rouge)}50%{background:#E87A4F}}
+/* 收款金额弹出：放大入场 → 弧线上升淡出（比 jump 更爽） */
+@keyframes moneyPop{0%{transform:translateY(0) scale(.6);opacity:0}18%{transform:translateY(-4px) scale(1.18);opacity:1}45%{transform:translateY(-14px) scale(1)}100%{transform:translateY(-48px) scale(.92);opacity:0}}
+/* 连击里程碑横幅：中央金色大字砸下 */
+#comboMilestone{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);z-index:98;pointer-events:none;font-size:34px;font-weight:900;color:#fff;background:linear-gradient(180deg,#F5B942,#E87A4F);border:3px solid var(--ink);border-radius:18px;padding:10px 26px;box-shadow:0 8px 0 rgba(61,44,30,.3),0 0 0 6px rgba(245,185,66,.35);animation:comboMile 1.3s cubic-bezier(.2,.8,.3,1) forwards;white-space:nowrap}
+@keyframes comboMile{0%{transform:translate(-50%,-140%) scale(.5) rotate(-8deg);opacity:0}16%{transform:translate(-50%,-50%) scale(1.15) rotate(2deg);opacity:1}32%{transform:translate(-50%,-50%) scale(1) rotate(0)}80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-120%) scale(.85);opacity:0}}
 .billRow{animation:billIn .3s ease-out both}
 #newsTag.flash{animation:newsFlash .5s 2}

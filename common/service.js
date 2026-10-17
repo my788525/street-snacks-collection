@@ -744,14 +744,16 @@ function serveCustomer(c,cake){
   const face=c.el?c.el.querySelector('.custFace'):null;
   if(sat>.8){
     SFX.ding(); if(perfect){hitstop();SFX.fanfare();vibrate(25);}
-    coinFly(c.el);
+    coinFly(c.el); moneyPop(c.el,price+tip,tip);
     floatEmoji(c.el,perfect?'😍':'🙂');
     if(face)face.querySelector('.mouth').style.borderColor='var(--leaf-d)';
     jump(c.el,perfect?'完美 +'+money(price+tip):'+'+money(price+tip),perfect?'var(--caramel)':'var(--leaf-d)');
     if(c.type.happy.length&&chance(.6))toast(pick(c.type.happy),'good');
   }else if(sat>.55){
-    SFX.coin(); coinFly(c.el);
+    SFX.coin(); coinFly(c.el); moneyPop(c.el,price+tip,0); vibrate(18);
     jump(c.el,'+'+money(price+tip),'var(--ink2)');
+    /* 爽感：付费顾客离场前带一次 💸 飘字（收钱仪式感） */
+    setTimeout(()=>floatEmoji(c.el,'💸'),560);
   }else{
     SFX.fail(); if(face)face.classList.add('angry');
     floatEmoji(c.el,'💢');
@@ -787,6 +789,8 @@ function serveCustomer(c,cake){
   if(idx>=0){
     if(c.el){ c.el.classList.add('leaving'); setTimeout(()=>c.el.remove(),380); }
     G.queue.splice(idx,1);
+    /* 爽感：后排顾客整体「让位」滑位（CSS 过渡），让队列有「流动感」 */
+    setTimeout(()=>{ G.queue.forEach(q=>{ if(q.el){ q.el.style.transition='transform .3s cubic-bezier(.3,.8,.3,1)'; q.el.style.transform='translateX(-40px)'; setTimeout(()=>{ q.el.style.transition=''; q.el.style.transform=''; },120); } }); },300);
   }
   setTimeout(renderQueue,120);
   return {q,sat,price,tip};

@@ -6,6 +6,7 @@ const FEVER_AT=8, FEVER_SERVES=10;
 function comboBump(perfect){
   if(perfect){
     G.combo=(G.combo||0)+1;
+    SFX.comboTick(G.combo);                       // 每连击升调音（爽感递增）
     if(G.combo>(S.stats.maxCombo||0))S.stats.maxCombo=G.combo;
     if(!G.fever && G.combo>=FEVER_AT){ startFever(); }
     if(G.fever){
@@ -13,7 +14,7 @@ function comboBump(perfect){
       S.money=(S.money||0)+ri(2,5);                 // 爆发期每单额外金币
       if(G.feverLeft<=0) endFever();
     }
-    if(G.combo%5===0){ toast('🔥 连击 x'+G.combo+'！小费概率提升','gold'); SFX.coin(); if(typeof comboPop==='function')comboPop(); addXp(G.combo*2); checkAch(); }
+    if(G.combo%5===0){ toast('🔥 连击 x'+G.combo+'！小费概率提升','gold'); if(typeof comboMilestone==='function')comboMilestone(G.combo); else SFX.coin(); if(typeof comboPop==='function')comboPop(); addXp(G.combo*2); checkAch(); }
   }else{
     G.combo=0;
     if(G.fever) endFever();

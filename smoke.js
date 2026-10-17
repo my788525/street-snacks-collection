@@ -109,6 +109,18 @@ run('newGame', () => sandbox.newGame('测试员', '测试小摊'));
 run('startDay(true)', () => sandbox.startDay(true));
 run('renderPrep', () => sandbox.renderPrep());
 
+run('moneyPop + comboMilestone 反馈函数存在且不崩', () => {
+  if (typeof sandbox.moneyPop !== 'function') throw new Error('moneyPop 未定义');
+  if (typeof sandbox.comboMilestone !== 'function') throw new Error('comboMilestone 未定义');
+  const sfx = vm.runInContext('SFX', sandbox);
+  if (typeof sfx.comboTick !== 'function') throw new Error('SFX.comboTick 未定义');
+  sandbox.moneyPop(el(), 12.5, 2);        // 正常调用不崩
+  sandbox.comboMilestone(10);             // 正常调用不崩
+  const appEl = elements['#app'];
+  const mile = appEl && appEl.children ? appEl.children.some(ch => ch.id === 'comboMilestone') : false;
+  if (!mile && !elements['#comboMilestone']) throw new Error('comboMilestone 未创建横幅元素');
+});
+
 run('库存0点+不变NaN（buyOne 对 undefined/null 兜底）', () => {
   const S = X.S;
   // 场景1：S.egg 不存在（旧存档未初始化的基础食材）→ 渲染不出现 NaN

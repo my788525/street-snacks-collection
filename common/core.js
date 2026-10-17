@@ -120,6 +120,13 @@ const SFX={
   click(){this.tone(660,.06,'square',.14)},
   knobTick(){this.tone(1400,.03,'square',.1);this.noise(.05,.12,2600,3)},
   coin(){this.tone(880,.09,'square',.2);setTimeout(()=>this.tone(1320,.14,'square',.2),70)},
+  /* 连击音：随 combo 升调（每连击 +6 半音级，5 连 ≈ 小三度上扬，爽感递增） */
+  comboTick(combo,n){
+    if(!this.ctx||this.muted)return;
+    const base=523*Math.pow(1.0595,Math.min(combo,n||10));
+    this.tone(base,.1,'triangle',.18);
+    setTimeout(()=>this.tone(base*1.5,.14,'triangle',.14),60);
+  },
   ding(){this.tone(1046,.35,'sine',.3);setTimeout(()=>this.tone(1568,.4,'sine',.2),90)},
   pop(){this.tone(300,.1,'sine',.25,260)},
   fail(){this.tone(220,.4,'sawtooth',.25,-140);this.noise(.25,.18,500,1)},

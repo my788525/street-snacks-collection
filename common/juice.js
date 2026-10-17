@@ -42,6 +42,31 @@ function comboPop(){
   chip.style.transition='transform .12s'; chip.style.transform='scale(1.15)';
   setTimeout(()=>{chip.style.transform=''},140);
 }
+/* 收款金额弹出（金色描边，比 jump 更「爽」：更大字号 + 描边 + 弧线上升） */
+function moneyPop(el,amount,tip){
+  if(!el)return;
+  const app=$('#app'); if(!app)return;
+  const a=app.getBoundingClientRect(), r=el.getBoundingClientRect();
+  const d=document.createElement('div');
+  d.textContent=(tip>0?'+':'+')+money(amount)+((tip>0)?' 💰':'');
+  d.style.cssText='position:absolute;left:'+(r.left-a.left+r.width/2-26)+'px;top:'+(r.top-a.top-6)+'px;'+
+    'font-size:'+(tip>0?20:16)+'px;font-weight:800;color:#F5B942;z-index:97;pointer-events:none;'+
+    '-webkit-text-stroke:1px rgba(93,58,10,.85);text-shadow:0 2px 0 rgba(93,58,10,.4);'+
+    'animation:moneyPop .85s cubic-bezier(.2,.7,.3,1) forwards';
+  app.appendChild(d); setTimeout(()=>d.remove(),900);
+}
+/* 连击里程碑：金色大字横幅 + 金币雨 + 3 连振（combo≥5 触发，每 5 档一次） */
+function comboMilestone(n){
+  const app=$('#app'); if(!app)return;
+  const b=document.createElement('div'); b.id='comboMilestone';
+  b.textContent='🔥 连击 ×'+n+'！';
+  app.appendChild(b);
+  setTimeout(()=>b.remove(),1300);
+  if(n>=50){ coinRain(18); SFX.fanfare(); }
+  else if(SFX&&typeof SFX.comboTick==='function')SFX.comboTick(n);
+  else if(typeof SFX!=='undefined'&&SFX.coin)SFX.coin();
+  vibrate([30,30,30]);
+}
 /* 金币雨（FEVER 爆发） */
 function coinRain(n){
   const app=$('#app'); if(!app)return;
