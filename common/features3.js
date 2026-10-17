@@ -41,8 +41,9 @@ function extraPrepCards3(){
   h+=`<div class="h2" style="margin:14px 0 8px">📍 今日选址</div><div class="prepGrid">`;
   Object.keys(GAME.spots).forEach(k=>{
     const s=GAME.spots[k];
+    const cgTag = s.cg ? (s.cg<0 ? ` · <b style="color:var(--leaf-d)">城管风险↓</b>` : ` · <b style="color:var(--rouge-d)">城管风险↑</b>`) : '';
     h+=`<div class="opt ${S.spot===k?'sel':''}" data-spot="${k}"><div class="t">${s.ic} ${s.n}</div><div class="d">${s.d}</div>
-    <div class="tiny" style="margin-top:4px;color:var(--caramel)">客流 ×${s.flow} · 心理价 ×${s.psych}</div></div>`;
+    <div class="tiny" style="margin-top:4px;color:var(--caramel)">客流 ×${s.flow} · 心理价 ×${s.psych}${cgTag}</div></div>`;
   });
   h+=`</div>
   <div class="row" style="margin-top:8px"><div class="grow"><div class="t">🔥 生火预热</div><div class="tiny mut">出摊前预热铁锅：开摊头几秒升温 +${S.preheat||0}°</div></div>

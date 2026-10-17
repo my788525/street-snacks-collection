@@ -696,7 +696,7 @@ function serveCustomer(c,cake){
     else if(sat<0.5){ buzzBump(-3); toast('📣 安利来的客人没吃好，街坊都知道了…','bad'); }
   }
   // 朋友介绍来的新客：吃美了，说下次还带朋友（传播链续命已在上面 bringFriend 处理）
-  if(c.broughtBy && sat>0.8){ toast('🤝 '+c.type.n+'（'+fromName+' 介绍来的）吃美了，说下次还带朋友','good'); }
+  if(c.broughtBy && sat>0.8){ toast('🤝 '+c.type.n+'（'+(c.fromName||'朋友')+' 介绍来的）吃美了，说下次还带朋友','good'); }
   // 大爷砍价
   if(c.type.id==='uncle'&&chance(.3))bargainModal(price);
   // 移除顾客
@@ -783,8 +783,9 @@ function cgWeight(){
   if(S.day<=1)return 0;
   let w= S.day<=3?.3 : (S.day<=6?.6:1);
   w*= S.premises===0?1.2:(S.premises===1?1:0);
+  w+= (GAME.spots[S.spot]||{}).cg||0;          // 选址直接影响城管风险（城管门口为负）
   w*= 1+(S.fxToday.cg||0);
-  return w*(diffOf().cg||1);
+  return Math.max(0,w)*(diffOf().cg||1);
 }
 function triggerEvent(){
   G.eventCd=ri(20,34);

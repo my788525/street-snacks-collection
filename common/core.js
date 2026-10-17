@@ -3,6 +3,17 @@
 "use strict";
 /* ---------- 游戏配置接入（profile 驱动） ---------- */
 const GAME=window.GAME_PROFILE||{};
+/* ---------- 共享选址池：所有小吃通用，启动时与 profile.spots 合并 ---------- */
+/* 字段：flow 客流倍率 · psych 心理价位倍率 · cg 城管风险增减（负值=更安全） */
+const COMMON_SPOTS={
+  resident:{n:'居民楼下',ic:'🏢',flow:1.08,psych:1.0,cg:0,d:'街坊邻居，回头客多，讲究实惠'},
+  expo:{n:'展会门口',ic:'🎪',flow:1.25,psych:1.12,cg:0.1,d:'人流爆炸、客单价高，但一眼假货，一次性客流'},
+  chengguan:{n:'城管门口',ic:'🚨',flow:1.05,psych:1.05,cg:-0.5,d:'胆大包天：就在眼皮底下摆，被查概率大降；心惊肉跳但刺激'},
+  office:{n:'写字楼楼下',ic:'🏬',flow:1.15,psych:1.1,cg:0,d:'白领午休冲下来，客单价高、耐心紧'},
+  park:{n:'公园门口',ic:'🌳',flow:1.0,psych:1.04,cg:0,d:'散步遛娃的人流，慢悠悠'},
+};
+GAME.spots=Object.assign({},COMMON_SPOTS,GAME.spots||{});
+
 /* ---------- 本地化词表：默认蛋烘糕，profile.vocab 按小吃覆盖 ---------- */
 const V=(function(){
   const DEF={

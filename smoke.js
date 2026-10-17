@@ -100,7 +100,7 @@ vm.createContext(sandbox);
 for (const f of ['games/danhongao/profile.js', ...ENGINE.map(m => 'common/' + m + '.js')]) {
   vm.runInContext(fs.readFileSync(path.join(BASE, f), 'utf8'), sandbox, { filename: path.basename(f) });
 }
-vm.runInContext('globalThis.__x={get G(){return G},get S(){return S},get CUSTOMERS(){return GAME.customers},get BAL(){return BAL},get FILLINGS(){return GAME.fillings},get PREMISES(){return GAME.premises},get FESTIVALS(){return GAME.festivals},get FEVER_AT(){return FEVER_AT},get FEVER_SERVES(){return FEVER_SERVES}};', sandbox);
+vm.runInContext('globalThis.__x={get G(){return G},get S(){return S},get GAME(){return GAME},get CUSTOMERS(){return GAME.customers},get BAL(){return BAL},get FILLINGS(){return GAME.fillings},get PREMISES(){return GAME.premises},get FESTIVALS(){return GAME.festivals},get FEVER_AT(){return FEVER_AT},get FEVER_SERVES(){return FEVER_SERVES}};', sandbox);
 const X = sandbox.__x;
 const G = () => X.G;
 
@@ -108,6 +108,18 @@ run('boot', () => sandbox.boot());
 run('newGame', () => sandbox.newGame('测试员', '测试小摊'));
 run('startDay(true)', () => sandbox.startDay(true));
 run('renderPrep', () => sandbox.renderPrep());
+
+run('共享选址池合并 + 城管门口降低城管风险', () => {
+  const spots = X.GAME.spots;
+  ['resident','expo','chengguan','office','park'].forEach(k=>{ if(!spots[k])throw new Error('缺共享选址 '+k); });
+  if(Object.keys(spots).length < 5)throw new Error('选址数应≥5，实为 '+Object.keys(spots).length);
+  const S = X.S, bak = {day:S.day, premises:S.premises, spot:S.spot, fxToday:S.fxToday, diff:S.diff};
+  S.day = 8; S.premises = 0; S.fxToday = S.fxToday||{}; S.fxToday.cg = 0; S.diff = 'std';
+  S.spot='metro'; const wMetro = sandbox.cgWeight();
+  S.spot='chengguan'; const wCg = sandbox.cgWeight();
+  Object.assign(S, bak);
+  if(!(wCg < wMetro))throw new Error('城管门口应比地铁口安全：'+wCg+' vs '+wMetro);
+});
 run('buy flour', () => { sandbox.S.money = 100; sandbox.priceOf({ id: 'flour', c: .8 }); sandbox.S.batter += 4; });
 run('ferment slow', () => { sandbox.S.batter = 0; sandbox.S.ferm = 'slow'; sandbox.S.batter = 6; sandbox.S.batterQ = 1.1; });
 run('psychPrice/cakePrice', () => { if (sandbox.psychPrice() <= 0) throw new Error('psych<=0'); if (sandbox.cakePrice(['sugar']) <= 0) throw new Error('cake<=0'); });
