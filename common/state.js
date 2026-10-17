@@ -20,7 +20,7 @@ const G={
   news:[], newsIdx:0, newsTimer:null, picked:-1, pickMode:null,
   lostDays:0, crisisDays:0, bloggerDone:0, mood:{}, catFed:false, shakeT:0,
   combo:0, tastings:0, limitLeft:{},
-  fever:false, feverLeft:0, referNext:null,
+  fever:false, feverLeft:0, referNext:null, bringFriend:null,
 };
 
 /* ---------- 存档 ---------- */
@@ -40,15 +40,15 @@ function newGame(name,shop,legacy,diff){
     chainBulk:false, chainFair:false, health:false, prebook:null, inspectWarned:false,
     weather:'cloudy', tomorrow:'cloudy', wind:'plain',
     priceMul:{}, renameCd:0, rentMul:1,
-    streak:0, lastLogin:null, affinity:{}, buzz:60,
-    stats:{sold:0, earn:0, best:0, perfect:0, left:0, dark:0, fine:0, days:0, bloggerWin:0, bulkWin:0, catFed:0, maxCombo:0, monthWin:0, tastings:0, feverCount:0, maxFeverCombo:0, referrals:0, affMax:0},
+    streak:0, lastLogin:null, affinity:{}, buzz:60, custMem:{},
+    stats:{sold:0, earn:0, best:0, perfect:0, left:0, dark:0, fine:0, days:0, bloggerWin:0, bulkWin:0, catFed:0, maxCombo:0, monthWin:0, tastings:0, feverCount:0, maxFeverCombo:0, referrals:0, affMax:0, loyalCount:0, friendBrings:0},
     ach:[], seenNews:[], pendingNews:[], seed:(Math.random()*1e9)|0, deaths: (legacy?legacy.deaths||0:0),
   };
   GAME.fillings.filter(f=>!f.lv||f.lv<=1).forEach(f=>S.inv[f.id]=4);
   RNG=mulberry32(S.seed);
   if(typeof checkSignIn==='function')checkSignIn();
 }
-function freshDayRec(){ return {sold:0,rev:0,cost:0,waste:0,qSum:0,qN:0,left:0,tips:0,prep:0,fines:0,gas:0,sigSales:0,darkSales:0,wages:0}; }
+function freshDayRec(){ return {sold:0,rev:0,cost:0,waste:0,qSum:0,qN:0,left:0,tips:0,prep:0,fines:0,gas:0,sigSales:0,darkSales:0,wages:0,friendBrings:0}; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
 function load(){ try{ const d=localStorage.getItem(SAVE_KEY); if(!d)return null; const o=JSON.parse(d); if(o&&o.ver===1)return o; }catch(e){} return null; }
 function hasSave(){ return !!load(); }

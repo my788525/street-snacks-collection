@@ -411,6 +411,32 @@ function wPick(list,weights){
   return list[list.length-1];
 }
 
+/* ---------- 顾客记忆传播链（第 3 阶段） ---------- */
+const LOYAL_VISITS=5;                 // 被服务满这么多次 + 好感够高，才成“老主顾”
+const CUST_SURNAMES=['王','李','张','刘','陈','杨','赵','周','吴','徐','孙','马'];
+const CUST_TITLES=['叔','姨','哥','姐','师傅','婶'];
+function custMem(id){
+  if(!S.custMem)S.custMem={};
+  if(!S.custMem[id])S.custMem[id]={fav:null,visits:0,loyal:false,lastSat:0,nick:null};
+  return S.custMem[id];
+}
+function isLoyal(id){ return !!(S.custMem&&S.custMem[id]&&S.custMem[id].loyal); }
+/* 服务完一位顾客后调用：累计 visit、记住老规矩、达阈值升级老主顾 */
+function rememberCustomer(id,fills,sat){
+  const m=custMem(id);
+  m.visits=(m.visits||0)+1;
+  m.lastSat=sat;
+  if(fills&&fills.length)m.fav=[...fills];     // 记住他们常点的，作为“老规矩”
+  if(!m.loyal && aff(id)>=LOYAL_AT && m.visits>=LOYAL_VISITS){
+    m.loyal=true;
+    if(!m.nick)m.nick=pick(CUST_SURNAMES)+pick(CUST_TITLES);
+    S.stats.loyalCount=(S.stats.loyalCount||0)+1;
+    return 'newLoyal';
+  }
+  return null;
+}
+
+
 /* ---------- 夹生纠纷 ---------- */
 function rawDispute(price){
   modal(`<div class="h2">😾 “里面是生的！”</div>

@@ -33,6 +33,8 @@ function initService(){
   wakeLockOn();
   setTimeout(chainTick,3000);
   if(S.day<=1)setTimeout(()=>toast('🚔 城管队今日团建，街道一片祥和','good'),2600);
+  const loyalN=(S.custMem?Object.values(S.custMem).filter(m=>m.loyal).length:0);
+  if(loyalN>0&&S.day>1)setTimeout(()=>toast('🏠 '+loyalN+' 位老主顾今天又来捧场了——街坊生意，得靠回头客','good'),2400);
   if(!$('#btnCloseShop')){
     const b=document.createElement('button'); b.id='btnCloseShop'; b.className='btn ghost tiny';
     b.textContent='收摊'; b.style.cssText='position:absolute;top:6px;right:10px;z-index:5;min-height:32px;padding:2px 10px';
@@ -121,8 +123,13 @@ function tryArrive(){
     if(chance(.3)){ lostCustomer('队伍太长，看看就走'); }
     return;
   }
-  let type, referred=false;
-  if(G.referNext && chance(.5)){              // 社会工程学：被安利来的新客
+  let type, referred=false, broughtBy=null, fromName=null;
+  if(G.bringFriend && chance(.5)){              // 顾客记忆传播链：朋友/熟人介绍来的新客
+    const pool=GAME.customers.filter(c=>c.special!=='blogger'&&c.special!=='regular');
+    if(pool.length){ type=pick(pool); broughtBy=G.bringFriend.from; fromName=G.bringFriend.fromName; G.bringFriend=null;
+      G.day.friendBrings=(G.day.friendBrings||0)+1; S.stats.friendBrings=(S.stats.friendBrings||0)+1; }
+  }
+  if(!type && G.referNext && chance(.5)){       // 社会工程学：被安利来的新客
     const pool=GAME.customers.filter(c=>c.special!=='blogger'&&c.special!=='regular');
     if(pool.length){ type=pick(pool); referred=true; G.referNext=null; }
   }
@@ -139,12 +146,13 @@ function tryArrive(){
   if(price>psych*1.5&&chance(.55)){ lostCustomer('“'+money(price)+'？抢劫哦！”'); return; }
   if(price>psych*1.3&&chance(.22)){ lostCustomer('“啧，吃不起吃不起。”'); return; }
   const c={
-    type, order:order, referred,
+    type, order:order, referred, broughtBy, fromName,
     pat:(skillPat(type.pat*(S.day<=BAL.newbieDays?BAL.newbiePat:1))*(S.helper>=2?1.1:1)*(1+(S.fxToday.pat||0)/100)*(S.premises>=3?1.3:1)*(S.fxToday.hunger?.9:1)*(0.9+(S.buzz==null?60:S.buzz)/500)),
     wait:0, el:null, barEl:null, said:false,
   };
   if(type.special==='regular'&&S.mood&&S.mood.fav)c.order={fills:[...S.mood.fav],done:'std'};
-  if(referred)S.affinity[type.id]=Math.max(aff(type.id),60);
+  else { const m=custMem(type.id); if(m.loyal&&m.fav&&m.fav.length){ c.order={fills:[...m.fav],done:'std'}; c.usual=true; } }  // 老主顾点老规矩
+  if(referred||broughtBy)S.affinity[type.id]=Math.max(aff(type.id),60);
   c.max=c.pat;
   c.umb=(S.weather==='rain'||S.weather==='storm')&&chance(.5);
   c.short=!!(c.order&&c.order.fills.some(id=>(S.inv[id]||0)<=0));
@@ -200,7 +208,8 @@ function renderQueue(){
     if(c.umb)icons='☂️'+icons;
     if(c.short)icons='🈲'+icons;
     if(c.wantsFresh)icons='🆕'+icons;
-    if(c.referred)icons='📣'+icons;
+    if(c.broughtBy)icons='🤝'+icons;
+    else if(c.referred)icons='📣'+icons;
     else if(aff(c.type.id)>=LOYAL_AT)icons='❤️'+icons;
     const orderHtml=c.order?c.order.fills.map(f=>{
       const miss=(S.inv[f]||0)<=0;
@@ -561,7 +570,8 @@ function serveCustomer(c,cake){
   const price=deal.price;
   const psych=psychPrice();
   const priceScore=clamp(1-(price-psych)/psych*1.4*(1.1-(S.buzz==null?60:S.buzz)/300),0,1);
-  const sat=clamp(q*.45+speed*.3+priceScore*.25+(GAME.premises[S.premises].sat+5)/100,0,1);
+  const sat0=clamp(q*.45+speed*.3+priceScore*.25+(GAME.premises[S.premises].sat+5)/100,0,1);
+  let sat=sat0;
   // —— 顾客好感度 + 社会工程学 ——
   const _aid=c.type.id, _inf=affInfluence(c.type);
   // 老主顾“给面子”：好感够高时兜底满意度，偶发失误也网开一面
@@ -620,13 +630,25 @@ function serveCustomer(c,cake){
     if(cooled&&chance(.4))toast('“'+V('piece')+'都凉了，将就吃。”','bad');
     if(cake.foldOff>=.6&&chance(.5))toast('“形状有点随缘，味道倒还行。”','bad');
   }
-  // 熟客记忆
+  // 顾客记忆传播链：记住这位客人（累计 visit、记老规矩、达阈值升级老主顾）
+  const _mem=rememberCustomer(_aid,cake.fills,sat);
+  if(_mem==='newLoyal'){ toast('🤝 '+(custMem(_aid).nick||c.type.n)+' 成了你的老主顾！以后常来','gold'); SFX.ding(); }
+  // 老主顾的“老规矩”：记住了还做对了，额外好感 + 暖心反馈
+  if(c.usual && sat>0.8){
+    affBump(_aid,4);
+    if(sat>0.9)toast('😊 '+(custMem(_aid).nick||c.type.n)+'：还是老样子，你记性真好','good');
+  }
+  // 熟客记忆（regular 专用，向后兼容）
   if(c.type.special==='regular'&&sat>.8){ S.mood={fav:[...cake.fills]}; S.rep=clamp(S.rep+.5,0,100); }
+  // 传播链：满意的忠实 / 高影响力顾客，会带朋友来（下一位可能是他介绍的）
+  if(sat>0.8 && (isLoyal(_aid) || _inf>=2)) G.bringFriend={from:_aid, fromName:c.type.n};
   // 安利来的新客：满意则继续帮你安利，不满意则口口相传反噬
   if(c.referred){
     if(sat>0.8){ S.stats.referrals=(S.stats.referrals||0)+1; buzzBump(6); toast('📣 朋友推荐来的客人满意而归，又帮你安利了一圈！','gold'); }
     else if(sat<0.5){ buzzBump(-3); toast('📣 安利来的客人没吃好，街坊都知道了…','bad'); }
   }
+  // 朋友介绍来的新客：吃美了，说下次还带朋友（传播链续命已在上面 bringFriend 处理）
+  if(c.broughtBy && sat>0.8){ toast('🤝 '+c.type.n+'（'+fromName+' 介绍来的）吃美了，说下次还带朋友','good'); }
   // 大爷砍价
   if(c.type.id==='uncle'&&chance(.3))bargainModal(price);
   // 移除顾客

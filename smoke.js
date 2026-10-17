@@ -370,5 +370,60 @@ run('图鉴顾客页含好感度渲染', () => {
   sandbox.renderCodex();
 });
 
+/* ---------- 第 3 阶段：顾客记忆传播链 ---------- */
+run('顾客记忆：累计 visits 与升级老主顾', () => {
+  const S = sandbox.S;
+  S.custMem = {}; S.affinity = { worker: 90 }; S.stats.loyalCount = 0;
+  let becameLoyal = false;
+  for (let i = 0; i < 5; i++) { if (sandbox.rememberCustomer('worker', ['sugar'], 0.9) === 'newLoyal') becameLoyal = true; }
+  if (!S.custMem.worker || S.custMem.worker.visits !== 5) throw new Error('visits 应累计到 5');
+  if (!becameLoyal) throw new Error('好感90 + 5次应升级老主顾');
+  if (!sandbox.isLoyal('worker')) throw new Error('isLoyal 应为真');
+  if ((S.stats.loyalCount || 0) < 1) throw new Error('loyalCount 应 +1');
+  if (!S.custMem.worker.fav || S.custMem.worker.fav[0] !== 'sugar') throw new Error('应记住老规矩 sugar');
+});
+run('顾客记忆：老主顾“老规矩”额外好感', () => {
+  const S = sandbox.S;
+  G().bulk = null; G().prebook = null; G().online = null; G().queue.length = 0; G().serve.length = 0;
+  S.affinity = { worker: 80 }; S.buzz = 60; S.inv.sugar = 5; S.inv.cream = 5;
+  S.custMem = { worker: { fav: ['sugar', 'cream'], visits: 6, loyal: true, lastSat: 0, nick: '王叔' } };
+  const c = { type: X.CUSTOMERS.find(x => x.id === 'worker'), order: { fills: ['sugar', 'cream'], done: 'std' }, pat: 60, wait: 0, max: 60, el: sandbox.document.createElement('div'), barEl: null, said: false, usual: true };
+  G().queue.push(c);
+  G().serve[0] = { fills: ['sugar', 'cream'], q: .95, foldHeat: 300, foldOff: 0 };
+  sandbox.serveFromTray(0);
+  if ((S.affinity.worker || 0) <= 80) throw new Error('老规矩做对应额外加好感');
+  if ((S.custMem.worker.visits || 0) < 7) throw new Error('visits 应 +1');
+});
+run('顾客记忆传播链：忠实顾客满意 → 带朋友', () => {
+  const S = sandbox.S;
+  G().bulk = null; G().prebook = null; G().online = null; G().bringFriend = null; G().queue.length = 0; G().serve.length = 0;
+  S.affinity = { worker: 80 }; S.buzz = 60; S.inv.sugar = 5;
+  S.custMem = { worker: { fav: ['sugar'], visits: 6, loyal: true, lastSat: 0, nick: '王叔' } };
+  const c = { type: X.CUSTOMERS.find(x => x.id === 'worker'), order: { fills: ['sugar'], done: 'std' }, pat: 60, wait: 0, max: 60, el: sandbox.document.createElement('div'), barEl: null, said: false, usual: true };
+  G().queue.push(c);
+  G().serve[0] = { fills: ['sugar'], q: .95, foldHeat: 300, foldOff: 0 };
+  sandbox.serveFromTray(0);
+  if (!G().bringFriend) throw new Error('忠实顾客满意应触发带朋友');
+  if (G().bringFriend.from !== 'worker') throw new Error('应记录介绍人');
+});
+run('顾客记忆传播链：朋友新客标记与计数', () => {
+  const S = sandbox.S;
+  S.rep = 90; G().bulk = null; G().referNext = null; G().bringFriend = { from: 'worker', fromName: '王叔' };
+  S.stats.friendBrings = 0; G().day.friendBrings = 0; G().queue.length = 0;
+  let spawned = false;
+  for (let i = 0; i < 40; i++) { sandbox.tryArrive(); if (G().bringFriend === null) { spawned = true; break; } }
+  if (!spawned) throw new Error('bringFriend 应被消费并生成朋友新客');
+  if (!G().queue.some(c => c.broughtBy)) throw new Error('朋友新客应带 broughtBy 标记');
+  if ((S.stats.friendBrings || 0) < 1) throw new Error('friendBrings 应 +1');
+});
+run('成就 a22/a23 解锁条件', () => {
+  const S = sandbox.S;
+  S.ach = S.ach.filter(a => a !== 'a22' && a !== 'a23');
+  S.stats.loyalCount = 3; sandbox.checkAch();
+  if (!S.ach.includes('a22')) throw new Error('loyalCount>=3 应解锁 a22');
+  S.stats.friendBrings = 8; sandbox.checkAch();
+  if (!S.ach.includes('a23')) throw new Error('friendBrings>=8 应解锁 a23');
+});
+
 console.log('\n结果: ' + pass + ' 通过, ' + fail + ' 失败');
 process.exit(fail ? 1 : 0);

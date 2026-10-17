@@ -110,6 +110,8 @@ const ACHIEVEMENTS=[
  {id:'a19',n:'街坊熟人',d:'某类顾客好感度达到 90',chk:()=>Object.values(S.affinity||{}).some(v=>v>=90)},
  {id:'a20',n:'街口红人',d:'口碑热度达到 95',chk:()=>S.buzz!=null&&S.buzz>=95},
  {id:'a21',n:'安利大师',d:'靠老客安利拉来 5 位新客',chk:()=>(S.stats.referrals||0)>=5},
+ {id:'a22',n:'街坊一家人',d:'攒下 3 位老主顾',chk:()=>(S.stats.loyalCount||0)>=3},
+ {id:'a23',n:'人传人',d:'靠顾客带朋友拉来 8 位新客',chk:()=>(S.stats.friendBrings||0)>=8},
 ];
 function checkAch(){
   ACHIEVEMENTS.forEach(a=>{
@@ -151,11 +153,17 @@ function renderCodex(){
       h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="grow"><div class="mktName"><div class="n">'+esc(names)+'</div><div class="p">售出 '+info.sales+' 个'+(S.banned.includes(k)?' · 已下架':'')+'</div></div></div><span class="pill '+cls+'">'+label+'</span></div></div>';
     });
   }else if(S.codexTab==='顾客'){
-    h+='<div class="tiny mut" style="margin-bottom:8px">接待过的顾客类型与好感度（满格 = 老主顾）。</div>';
+    h+='<div class="tiny mut" style="margin-bottom:8px">接待过的顾客类型、好感度与记忆（满格 = 老主顾；🤝 表示他会带朋友来）。</div>';
     GAME.customers.forEach(c=>{
       const n=S.seenCust[c.id]||0, a=aff(c.id), filled=Math.round(a/25), hearts='❤️'.repeat(filled)+'🤍'.repeat(4-filled);
-      h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="mktIcon">'+c.ic+'</div><div class="grow"><div class="mktName"><div class="n">'+c.n+'</div><div class="p">'+(n?('接待 '+n+' 次 · 好感 '+Math.round(a)+(a>=LOYAL_AT?' · 老主顾':'')):'还没见过')+'</div></div></div>'+(n?'<div style="font-size:15px;letter-spacing:2px">'+hearts+'</div>':'')+'</div></div>';
+      const m=(S.custMem&&S.custMem[c.id])||{};
+      let extra='';
+      if(m.loyal)extra+=' · 🤝会带朋友';
+      if(m.fav&&m.fav.length)extra+=' · 老规矩：'+m.fav.map(id=>F(id).n).join('+');
+      const v=m.visits||n;
+      h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="mktIcon">'+c.ic+'</div><div class="grow"><div class="mktName"><div class="n">'+c.n+(m.nick?' <span class="pill leaf">'+m.nick+'</span>':'')+'</div><div class="p">'+(n?('累计 '+v+' 次 · 好感 '+Math.round(a)+(a>=LOYAL_AT?' · 老主顾':'')+extra):'还没见过')+'</div></div></div>'+(n?'<div style="font-size:15px;letter-spacing:2px">'+hearts+'</div>':'')+'</div></div>';
     });
+    if((S.stats.friendBrings||0)>0)h+='<div class="deskNote" style="margin-top:6px">🤝 累计靠老客带朋友拉来新客 '+S.stats.friendBrings+' 位——口碑是传出来的。</div>';
   }else{
     h+='<div class="tiny mut" style="margin-bottom:8px">已解锁 '+S.ach.length+' / '+ACHIEVEMENTS.length+'</div>';
     ACHIEVEMENTS.forEach(a=>{
