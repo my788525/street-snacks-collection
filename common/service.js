@@ -1260,9 +1260,22 @@ window.addEventListener('error',function(){
       });
       return best;
     };
-    k.addEventListener('pointerdown',e=>{ dragging=true; try{k.setPointerCapture(e.pointerId)}catch(err){} });
-    k.addEventListener('pointermove',e=>{ if(!dragging)return; const f=snap(angleFrom(e)); if(f!==G.fire)setFire(f); });
-    k.addEventListener('pointerup',()=>{dragging=false});
+    let sx=0,sy=0,moved=false;
+    k.addEventListener('pointerdown',e=>{ dragging=true; moved=false; sx=e.clientX; sy=e.clientY; try{k.setPointerCapture(e.pointerId)}catch(err){} });
+    k.addEventListener('pointermove',e=>{
+      if(!dragging)return;
+      if(Math.abs(e.clientX-sx)>4||Math.abs(e.clientY-sy)>4)moved=true;
+      const f=snap(angleFrom(e)); if(f!==G.fire)setFire(f);
+    });
+    // 点击（按下未拖动）= 循环切到下一档，PC 上点一下即可切火力
+    k.addEventListener('pointerup',e=>{
+      if(dragging&&!moved){
+        let nf=(G.fire+1)%4;
+        if(G.gasOut){ while(nf>1)nf=(nf+1)%4; } // 断气时只能循环 关火/文火
+        setFire(nf);
+      }
+      dragging=false;
+    });
     k.addEventListener('pointercancel',()=>{dragging=false});
   };
   if(document.readyState!=='loading')bind(); else document.addEventListener('DOMContentLoaded',bind);

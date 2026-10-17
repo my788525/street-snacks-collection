@@ -257,8 +257,19 @@ run('操作按钮替换火力按钮：一键倒糊 / 清糊锅', () => {
   if (G().wells.some(w => w.st === 'burn')) throw new Error('清糊锅后不应剩 burn');
   if (G().day.waste !== waste0 + 2) throw new Error('清糊锅应计损耗 +2');
 });
-run('锅位排列对齐且不溢出窗口', () => {
-  // 直接复算布局公式：顶行 4 锅、底行 3 锅，全部圆心+半径须落在画布内
+run('火力循环切档（PC 点击兼容）', () => {
+  const S = sandbox.S;
+  S.gas = 5; G().gasOut = false; G().fire = 0;
+  let nf = (G().fire + 1) % 4; sandbox.setFire(nf);
+  if (G().fire !== 1) throw new Error('点击应切到文火');
+  G().fire = 3; nf = (G().fire + 1) % 4;
+  if (nf !== 0) throw new Error('武火点击应回到关火');
+  G().gasOut = true; G().fire = 1; nf = (G().fire + 1) % 4; while (nf > 1) nf = (nf + 1) % 4;
+  sandbox.setFire(nf);
+  if (G().fire !== 0) throw new Error('断气时循环应止于关火');
+  G().gasOut = false; G().fire = 2; S.gas = 30;
+});
+run('锅位排列对齐且不溢出窗口', () => {  // 直接复算布局公式：顶行 4 锅、底行 3 锅，全部圆心+半径须落在画布内
   const W = 500, H = 190, R = Math.min(W / 9.2, H * .25);
   const pos = [];
   for (let c = 0; c < 4; c++) pos.push({ x: (c + .5) * W / 4, y: H * .31 });
@@ -579,7 +590,11 @@ run('顾客记忆传播链：朋友新客标记与计数', () => {
   S.rep = 90; G().bulk = null; G().referNext = null; G().bringFriend = { from: 'worker', fromName: '王叔' };
   S.stats.friendBrings = 0; G().day.friendBrings = 0; G().queue.length = 0;
   let spawned = false;
-  for (let i = 0; i < 40; i++) { sandbox.tryArrive(); if (G().bringFriend === null) { spawned = true; break; } }
+  for (let i = 0; i < 40; i++) {
+    G().queue.length = 0; G().prebook = null; G().online = null; G().bulk = null; G().referNext = null;
+    sandbox.tryArrive();
+    if (G().bringFriend === null) { spawned = true; break; }
+  }
   if (!spawned) throw new Error('bringFriend 应被消费并生成朋友新客');
   if (!G().queue.some(c => c.broughtBy)) throw new Error('朋友新客应带 broughtBy 标记');
   if ((S.stats.friendBrings || 0) < 1) throw new Error('friendBrings 应 +1');
