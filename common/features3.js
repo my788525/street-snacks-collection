@@ -264,18 +264,34 @@ function checkEndings(){
 function victoryExit(c){
   SFX.fanfare();
   saveMeta({runs:(metaGet().runs||0)+1, hardDone:!!(metaGet().hardDone||S.diff==='hard')});
-  modal(`<div class="h1 center">🎬 大结局</div>
-    <div class="center h2" style="color:var(--caramel);margin:8px 0">${c.n}</div>
+  const st=S.stats||{};
+  // 解锁成果（本次拿到的难度模式 + 高阶材料）
+  const m=metaGet();
+  const unlocks=[];
+  if(m.everUpgraded)unlocks.push('🌶 硬核模式');
+  if(m.hardDone)unlocks.push('🔥 疯狂模式');
+  const hiLv=(GAME.fillings||[]).filter(f=>f.lv>=3&&unlockedFillings().some(u=>u.id===f.id));
+  if(hiLv.length)unlocks.push('🥟 '+hiLv.map(f=>f.n).join('、'));
+  const avgQ=st.sold?Math.round((st.perfect||0)/Math.max(1,st.sold)*100):0;
+  modal(`<div class="h1 center">🎬 大结局 · ${c.n}</div>
+    <div class="tiny mut center" style="margin:8px 0">${c.d}</div>
     <div class="card" style="margin:10px 0">
-      <div class="billRow"><span>经营天数</span><b>${S.day} 天</b></div>
-      <div class="billRow"><span>卖出${V('good')}</span><b>${S.stats.sold} ${V('unit')}</b></div>
-      <div class="billRow"><span>累计营收</span><b>${money(S.stats.earn)}</b></div>
-      <div class="billRow"><span>招牌菜</span><b>${S.signatures.length} 道</b></div>
-      <div class="billRow"><span>解锁结局</span><b>${S.endings.join('、')}</b></div>
+      <div style="font-weight:900;font-size:15px;color:var(--caramel);margin-bottom:6px">📋 复盘总结</div>
+      <div class="billRow"><span>📅 经营天数</span><b>${S.day} 天</b></div>
+      <div class="billRow"><span>${GAME.emoji} 卖出${V('good')}</span><b>${st.sold} ${V('unit')}</b></div>
+      <div class="billRow"><span>💰 累计营收</span><b>${money(st.earn||0)}</b></div>
+      <div class="billRow"><span>⭐ 完美出锅</span><b>${st.perfect||0} 次</b></div>
+      <div class="billRow"><span>😤 流失 / 罚款</span><b>${(st.left||0)} 人流失 · ${money(st.fine||0)}</b></div>
+      <div class="billRow"><span>🏆 招牌菜</span><b>${S.signatures.length} 道</b></div>
+      <div class="billRow"><span>🎯 达成结局</span><b>${c.n}</b></div>
     </div>
-    <div class="deskNote">江湖路远，${V('good')}永流传。传承奖励照旧。</div>
-    <button class="btn big leaf" id="winOk" style="width:100%;margin-top:10px">带着荣耀重新开摊</button>`,
+    <div class="deskNote" style="margin:8px 0">🔓 <b>解锁成果</b>：${unlocks.length?unlocks.join(' · '):'本次未新增解锁，继续冲疯狂模式与高阶配料！'}<br>江湖路远，${V('good')}永流传。传承奖励照旧。</div>
+    <div class="row" style="margin-top:10px;gap:8px">
+      <button class="btn ghost grow" id="winShare">📤 生成复盘分享卡</button>
+      <button class="btn leaf grow" id="winOk">带着荣耀重新开摊</button>
+    </div>`,
     {onMount:(box,close)=>{
+      box.querySelector('#winShare').onclick=()=>{ SFX.click(); shareCard(true); };
       box.querySelector('#winOk').onclick=()=>{
         close();
         newGame(S.playerName,S.shopName,{money:true,deaths:S.deaths||0,hint:S.signatures[0]||null},S.diff);

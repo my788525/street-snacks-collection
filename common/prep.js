@@ -2,6 +2,49 @@
 /* 巷口蛋烘糕 · prep.js · 自动拆分自 index.html，请在此文件内继续维护 */
 
 /* ---------- 备货页 ---------- */
+
+/* 通关目标栏：写明「要达成什么才算赢 + 解锁什么」，动态显示当前进度 */
+function winTargetCard(){
+  const st=S.stats||{};
+  // 三大可达成结局（与 features3.checkEndings 条件一致，让玩家提前知道目标）
+  const goals=[
+    {id:'tycoon', ic:'🏆', name:'餐饮大亨', cond:'升到旗舰店 + 账上 ≥ ¥20000',
+      prog:`旗帜 ${S.premises+1}/4 · 现金 ${money(S.money)}/¥20000`, done:S.premises>=4&&S.money>=20000},
+    {id:'legend', ic:'⭐', name:'巷口传奇', cond:'口碑 ≥ 95 且经营 ≥ 15 天',
+      prog:`口碑 ${Math.round(S.rep)}/95 · 天数 ${S.day}/15`, done:S.rep>=95&&S.day>=15},
+    {id:'star', ic:'📸', name:'网红暴发户', cond:'3 道招牌 + 3 次博主爆红',
+      prog:`招牌 ${S.signatures.length}/3 · 爆红 ${st.bloggerWin||0}/3`, done:S.signatures.length>=3&&(st.bloggerWin||0)>=3},
+  ];
+  const left=goals.filter(g=>!S.endings.includes(g.id));
+  let h=`<div class="card" style="margin:14px 0">
+    <div class="h2">🏁 通关目标 · 达成任意一条即可收摊拿结局</div>
+    <div class="tiny mut" style="margin:6px 0 8px">做到任意一条，就能在结算时「见好就收」拿称号 + 传承；不满足则继续经营或触发倒闭危机。难度越高，结局越硬。</div>`;
+  goals.forEach(gt=>{
+    const got=S.endings.includes(gt.id);
+    h+=`<div class="billRow" style="align-items:center">
+      <span style="display:flex;align-items:center;gap:6px">${got?'✅':'${gt.ic}'} <b>${gt.name}</b></span>
+      <b style="font-size:11px;color:var(--ink2);text-align:right">${got?'已达成':gt.prog}</b>
+    </div>`;
+    h+=`<div class="tiny mut" style="padding-left:22px">🎯 ${gt.cond}</div>`;
+  });
+  h+=`<div class="divider"></div>
+    <div class="tiny mut">🔓 解锁（元进度，跨局保留）：${unlockedGoalHints()}</div>
+  </div>`;
+  return h;
+}
+/* 难度模式 / 材料解锁提示（写进通关卡 + 备货栏） */
+function unlockedGoalHints(){
+  const m=metaGet();
+  const bits=[];
+  // 难度模式
+  bits.push(m.hardDone?'🔥 疯狂模式（已通）':'🔒 疯狂模式：打完一局硬核解锁');
+  bits.push(m.everUpgraded?'🌶 硬核模式（已通）':'🔒 硬核模式：完成一次场地升级解锁');
+  // 材料（高 lv 馅料，随经营/天数渐进解锁）
+  const hiLv=(GAME.fillings||[]).filter(f=>f.lv>=3&&unlockedFillings().some(u=>u.id===f.id));
+  if(hiLv.length)bits.push('🥟 高阶配料：'+hiLv.map(f=>f.n).join('、'));
+  return bits.join(' · ');
+}
+
 function renderPrep(){
   const W=GAME.weathers.find(w=>w.id===S.weather), WI=GAME.winds.find(w=>w.id===S.wind);
   const pm=GAME.premises[S.premises], nx=GAME.premises[S.premises+1];
@@ -101,6 +144,8 @@ function renderPrep(){
   // 库存总览
   const stock=GAME.baseItems.map(b=>b.n+' '+(S[b.id]||0)).join(' · ')+' · '+V('batter')+' '+(S.batter||0);
   h+=`<div class="deskNote" style="margin:12px 0">📋 库存：${stock}<br>今日天气 ${W.ic}${W.n} · 明日预告 ${GAME.weathers.find(w=>w.id===S.tomorrow).ic}${GAME.weathers.find(w=>w.id===S.tomorrow).n}</div>`;
+  // 通关目标（写明胜利条件 + 当前进度，让玩家知道要什么）
+  h+=winTargetCard();
   // 出摊营业按钮（prep 屏唯一进营业屏入口）
   h+=`<button id="btnOpen" class="btn big leaf" style="width:100%;margin-top:14px">出摊营业 →</button>`;
   $('#prepBody').innerHTML=h;

@@ -71,37 +71,58 @@ function bindExtraPrep(){
   });
 }
 
-/* ---------- 分享卡片 ---------- */
-function shareCard(){
+/* ---------- 分享卡片（shareCard(victory)：胜利复盘专属卡，含解锁成果） ---------- */
+function shareCard(victory){
   const cv=document.createElement('canvas'); cv.width=600; cv.height=780;
   const x=cv.getContext('2d');
   x.fillStyle='#FBF6EC'; x.fillRect(0,0,600,780);
   x.strokeStyle='#3D2C1E'; x.lineWidth=6; x.strokeRect(18,18,564,744);
   x.textAlign='center'; x.fillStyle='#3D2C1E';
-  x.font='700 46px sans-serif'; x.fillText(V('defaultShop'),300,104);
+  x.font='700 46px sans-serif'; x.fillText(victory?V('victoryTitle')||'🏆 通关':'🧾 营业卡',300,104);
   x.font='30px sans-serif'; x.fillText(S.shopName,300,152);
   x.font='22px sans-serif'; x.fillStyle='#756554';
   x.fillText(S.playerName+' · 第 '+S.day+' 天 · '+diffOf().n+'模式',300,188);
-  x.fillStyle='#C97B2D'; x.font='700 34px sans-serif';
-  x.fillText('今日营收 '+money(G.day?G.day.rev:0),300,248);
-  x.fillStyle='#3D2C1E'; x.font='24px sans-serif';
-  x.fillText('卖出 '+(G.day?G.day.sold:0)+' 个 · 口碑 '+Math.round(S.rep),300,290);
-  x.fillText('完美 '+(G.day?Math.round(G.day.qN?G.day.qSum/G.day.qN*100:0):0)+' 分 · 城管罚款 '+money(S.stats.fine),300,326);
-  if(S.signatures.length){
-    x.fillStyle='#4E7A4E'; x.font='700 26px sans-serif';
-    x.fillText('🏆 '+S.signatures.map(k=>S.known[k].name||comboNames(k)).join(' / '),300,380);
+  if(victory){
+    const st=S.stats||{};
+    x.fillStyle='#C97B2D'; x.font='700 34px sans-serif';
+    x.fillText('累计营收 '+money(st.earn||0),300,248);
+    x.fillStyle='#3D2C1E'; x.font='24px sans-serif';
+    x.fillText('卖出 '+(st.sold||0)+' · 口碑 '+Math.round(S.rep)+' · 完美 '+(st.perfect||0)+' 次',300,290);
+    x.fillText('招牌 '+S.signatures.length+' 道 · 城管罚款 '+money(st.fine||0),300,326);
+    // 解锁成果
+    const m=metaGet();
+    const unlocks=[];
+    if(m.everUpgraded)unlocks.push('🌶 硬核模式');
+    if(m.hardDone)unlocks.push('🔥 疯狂模式');
+    const hiLv=(GAME.fillings||[]).filter(f=>f.lv>=3&&unlockedFillings().some(u=>u.id===f.id));
+    if(hiLv.length)unlocks.push('🥟 '+hiLv.map(f=>f.n).join('/'));
+    x.fillStyle='#4E7A4E'; x.font='700 24px sans-serif';
+    x.fillText(unlocks.length?('🔓 解锁：'+unlocks.join(' · ')):'🔓 解锁：高阶配料等你拿',300,380);
+  }else{
+    x.fillStyle='#C97B2D'; x.font='700 34px sans-serif';
+    x.fillText('今日营收 '+money(G.day?G.day.rev:0),300,248);
+    x.fillStyle='#3D2C1E'; x.font='24px sans-serif';
+    x.fillText('卖出 '+(G.day?G.day.sold:0)+' 个 · 口碑 '+Math.round(S.rep),300,290);
+    x.fillText('完美 '+(G.day?Math.round(G.day.qN?G.day.qSum/G.day.qN*100:0):0)+' 分 · 城管罚款 '+money(S.stats.fine),300,326);
+    if(S.signatures.length){
+      x.fillStyle='#4E7A4E'; x.font='700 26px sans-serif';
+      x.fillText('🏆 '+S.signatures.map(k=>S.known[k].name||comboNames(k)).join(' / '),300,380);
+    }
   }
-  x.fillStyle='#756554'; x.font='26px sans-serif';
+  x.fillStyle='#3D2C1E'; x.font='24px sans-serif';
   x.fillText('称号：'+endingTitle(),300,436);
   for(let i=0;i<26;i++){
     x.fillStyle=pick(['#F5B942','#D95D5D','#6B9E5A','#7FB0D6','#C97B2D']);
     x.fillRect(40+Math.random()*520,470+Math.random()*60,9,13);
   }
   x.fillStyle='#B4A48E'; x.font='20px sans-serif';
-  x.fillText('—— 成都街头 · 火候是门玄学 ——',300,600);
-  x.fillText('背配方不能保证赢，就像背单词不能保证涨薪',300,636);
+  x.fillText(victory?'—— 通关复盘 · 火候是门玄学 · 经营是门艺术 ——':'—— 成都街头 · 火候是门玄学 ——',300,600);
+  x.fillText(victory?'带着荣耀，重新开摊':'背配方不能保证赢，就像背单词不能保证涨薪',300,636);
   const url=cv.toDataURL('image/png');
-  modal('<div class="h2 center">📤 分享卡片</div><img src="'+url+'" style="width:100%;border-radius:12px;margin:8px 0;border:2px solid var(--ink)"><div class="tiny mut center">长按保存图片，或右键另存为——发朋友圈配文：今天又没亏</div><button class="btn big" data-close style="width:100%">爽</button>');
+  const tip=victory
+    ?'长按保存通关复盘卡，发朋友圈配文：'+S.shopName+' 通关！解锁了'+(metaGet().hardDone?'疯狂模式':'硬核模式')
+    :'长按保存图片，或右键另存为——发朋友圈配文：今天又没亏';
+  modal('<div class="h2 center">'+(victory?'🏆 通关复盘卡':'📤 分享卡片')+'</div><img src="'+url+'" style="width:100%;border-radius:12px;margin:8px 0;border:2px solid var(--ink)"><div class="tiny mut center">'+tip+'</div><button class="btn big" data-close style="width:100%">爽</button>');
 }
 
 /* ---------- 抹零议价 ---------- */
