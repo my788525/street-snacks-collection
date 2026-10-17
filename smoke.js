@@ -143,6 +143,26 @@ run('renderSettle', () => sandbox.renderSettle());
 run('startDay(false)', () => sandbox.startDay(false));
 run('save/load', () => { sandbox.save(); const s = sandbox.load(); if (!s || s.shopName !== '测试小摊') throw new Error('save/load broken'); });
 run('gracefulExit', () => { sandbox.S.money = 5; G().crisisDays = 3; sandbox.checkCrisis(); });
+run('危机兜底按难度缩放（破产边界适配）', () => {
+  const bail = { chill: 100, std: 80, hard: 50, crazy: 30 };
+  const cd = { chill: 4, std: 3, hard: 3, crazy: 2 };
+  Object.keys(bail).forEach(d => {
+    sandbox.S.diff = d;
+    if (sandbox.diffOf().bail !== bail[d]) throw new Error(d + ' 兜底金应为 ' + bail[d] + '，实为 ' + sandbox.diffOf().bail);
+    if (sandbox.diffOf().crisisDays !== cd[d]) throw new Error(d + ' 危机窗口应为 ' + cd[d] + '，实为 ' + sandbox.diffOf().crisisDays);
+  });
+  // 实际兜底路径：crazy 账上 5、连续 2 天触底 → 点“众筹”后回到 5+30=35
+  sandbox.S.diff = 'crazy'; sandbox.S.money = 5; sandbox.S.rep = 60; G().crisisDays = 2;
+  const mb = getEl('#modalBox');
+  const fundBtn = { onclick: null };
+  const realMbQ = mb.querySelector.bind(mb);
+  mb.querySelector = (sel) => sel === '#crFund' ? fundBtn : realMbQ(sel);
+  sandbox.checkCrisis();
+  mb.querySelector = realMbQ;
+  if (!fundBtn.onclick) throw new Error('crazy 危机未被触发（窗口=2 应触发）');
+  fundBtn.onclick();
+  if (sandbox.S.money !== 35) throw new Error('crazy 兜底后应为 35，实为 ' + sandbox.S.money);
+});
 run('continueDay', () => sandbox.continueDay());
 run('回归：读档后营业不炸', () => {
   sandbox.save();

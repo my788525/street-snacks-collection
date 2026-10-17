@@ -71,17 +71,19 @@ function renderSettle(){
 }
 function comboNames(key){ return key.split('+').map(id=>F(id).n).join('+'); }
 function checkCrisis(){
-  if(G.crisisDays<BAL.crisisDays)return;
+  const bail=diffOf().bail||BAL.bailDef||80;
+  const cd=diffOf().crisisDays||BAL.crisisDays;
+  if(G.crisisDays<cd)return;
   modal(`<div class="h1 center">📉 倒闭危机</div>
     <div class="tiny mut center" style="margin:8px 0">账上不到 ${money(BAL.crisisMoney)}，房东在敲门，猫在看你。选一个：</div>
     <div class="row" style="flex-direction:column;gap:8px">
-      <button class="btn leaf" id="crFund" style="width:100%">🙏 老顾客众筹 +${money(80)}（口碑 −3）</button>
+      <button class="btn leaf" id="crFund" style="width:100%">🙏 老顾客众筹 +${money(bail)}（口碑 −3）</button>
       <button class="btn rouge" id="crEnd" style="width:100%">🎬 体面结业（拿称号，开传承）</button>
     </div>`,
     {onMount:(box,close)=>{
       box.querySelector('#crFund').onclick=()=>{
-        S.money+=80; S.rep=clamp(S.rep-3,0,100); G.crisisDays=0;
-        SFX.ding(); toast('熟客凑了 80 块：“老板，挺住！”','gold'); close(); save(); hudUpdate();
+        S.money+=bail; S.rep=clamp(S.rep-3,0,100); G.crisisDays=0;
+        SFX.ding(); toast('熟客凑了 '+money(bail)+'：“老板，挺住！”','gold'); close(); save(); hudUpdate();
       };
       box.querySelector('#crEnd').onclick=()=>{ close(); gracefulExit(); };
     }});

@@ -149,6 +149,7 @@ function tryArrive(){
     type, order:order, referred, broughtBy, fromName,
     pat:(skillPat(type.pat*(S.day<=BAL.newbieDays?BAL.newbiePat:1))*(S.helper>=2?1.1:1)*(1+(S.fxToday.pat||0)/100)*(S.premises>=3?1.3:1)*(S.fxToday.hunger?.9:1)*(0.9+(S.buzz==null?60:S.buzz)/500)),
     wait:0, el:null, barEl:null, said:false,
+    hello:(type.order&&type.order.length)?pick(type.order):'',
   };
   if(type.special==='regular'&&S.mood&&S.mood.fav)c.order={fills:[...S.mood.fav],done:'std'};
   else { const m=custMem(type.id); if(m.loyal&&m.fav&&m.fav.length){ c.order={fills:[...m.fav],done:'std'}; c.usual=true; } }  // 老主顾点老规矩
@@ -218,6 +219,7 @@ function renderQueue(){
     d.innerHTML=`<div class="custBubble">${icons}</div>
       <div class="custFace"><div class="eye l"></div><div class="eye r"></div><div class="mouth"></div></div>
       <div class="custName">${c.type.ic}${c.type.n}</div>
+      <div class="custSay">${c.hello||''}</div>
       <div class="custOrder">${orderHtml}</div>
       <div class="custPat"><div class="bar"><i style="width:100%;background:var(--leaf)"></i></div></div>`;
     c.el=d; c.barEl=d.querySelector('.bar>i'); c.faceEl=d.querySelector('.custFace');

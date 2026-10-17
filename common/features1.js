@@ -161,7 +161,7 @@ function renderCodex(){
       if(m.loyal)extra+=' · 🤝会带朋友';
       if(m.fav&&m.fav.length)extra+=' · 老规矩：'+m.fav.map(id=>F(id).n).join('+');
       const v=m.visits||n;
-      h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="mktIcon">'+c.ic+'</div><div class="grow"><div class="mktName"><div class="n">'+c.n+(m.nick?' <span class="pill leaf">'+m.nick+'</span>':'')+'</div><div class="p">'+(n?('累计 '+v+' 次 · 好感 '+Math.round(a)+(a>=LOYAL_AT?' · 老主顾':'')+extra):'还没见过')+'</div></div></div>'+(n?'<div style="font-size:15px;letter-spacing:2px">'+hearts+'</div>':'')+'</div></div>';
+      h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="mktIcon">'+c.ic+'</div><div class="grow"><div class="mktName"><div class="n">'+c.n+(m.nick?' <span class="pill leaf">'+m.nick+'</span>':'')+'</div><div class="p">'+(n?('累计 '+v+' 次 · 好感 '+Math.round(a)+(a>=LOYAL_AT?' · 老主顾':'')+extra):'还没见过')+'</div></div></div>'+(n?'<div style="font-size:15px;letter-spacing:2px">'+hearts+'</div>':'')+(c.desc?'<div class="tiny mut" style="margin-top:3px">'+c.desc+'</div>':'')+'</div></div>';
     });
     if((S.stats.friendBrings||0)>0)h+='<div class="deskNote" style="margin-top:6px">🤝 累计靠老客带朋友拉来新客 '+S.stats.friendBrings+' 位——口碑是传出来的。</div>';
   }else{
@@ -197,22 +197,6 @@ function tastingDeal(key,price){
   S.stats.tastings=(S.stats.tastings||0)+1;
   toast('🤤 试吃价！半价招募勇士，翻车了也不伤口碑','gold');
   return {price:price*.5,repMul:.4,first:true};
-}
-
-/* ---------- 新手引导 ---------- */
-const TUT=[
- {t:'① '+V('prepName'),d:'三种方式：快速（'+V('yeast')+'，快但口感−1）/ 标准 / 慢工出细活（质量+10%）。'+V('batter')+'是今天的产能上限。'},
- {t:'② 进货定价',d:'菜市场买'+V('flour')+'、鸡蛋和馅料，价格每天波动；定价别超过心理价位 1.3 倍，否则客人扭头就走。营销预算量力而行。'},
- {t:'③ 出摊三板斧',d:'点空锅'+GAME.flow.pour+' → '+V('cookSign')+'加馅 → 火候到了'+GAME.flow.fold+'（准头决定外形）。做好会自动放上'+GAME.flow.tray+'，对口味的客人自己拿——不用你送！'},
-];
-function tutStart(){
-  if(S.tut>=TUT.length)return;
-  const t=TUT[S.tut];
-  modal('<div class="h1 center">🎓 '+t.t+'</div><div class="center" style="margin:10px 0;font-size:14px">'+t.d+'</div><div class="row"><button class="btn ghost grow" id="tutSkip">跳过教学</button><button class="btn grow" id="tutNext">'+(S.tut<TUT.length-1?'下一步':'开摊！')+'</button></div>',
-    {onMount:(box,close)=>{
-      box.querySelector('#tutSkip').onclick=()=>{ S.tut=TUT.length; close(); save(); };
-      box.querySelector('#tutNext').onclick=()=>{ S.tut++; close(); if(S.tut<TUT.length)tutStart(); save(); };
-    }});
 }
 
 /* ---------- 每日签到 / 连续天数（用户粘性） ---------- */

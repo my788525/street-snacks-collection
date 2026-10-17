@@ -6,7 +6,7 @@ const BAL={
   startMoney:60, newbieDays:3, newbieFlow:1.2, newbiePat:1.35,
   rentInflateEvery:10, rentInflate:.10,
   comfortAfter:2, comfortFlow:1.2,
-  crisisMoney:10, crisisDays:3, legacyMoney:30,
+  crisisMoney:10, crisisDays:3, legacyMoney:30, bailDef:80,
   batterPerFlour:4, cakeBase:.5, repTarget:.62, repK:6, repDamp:.3,
   dayLen:150, gasRate:[0,.5,1,2], gasCanCap:200, spoilAt:24, staleAt:12, discountFrom:4, discountRate:.025, discountFloor:.5,
 };
@@ -33,7 +33,7 @@ function newGame(name,shop,legacy,diff){
     inv:{}, flour:6, egg:10, gas:2, batter:0, batterQ:1, ferm:'std',
     known:{}, signatures:[], darks:[], banned:[], legacyHint: legacy&&legacy.hint?legacy.hint:null,
     buffs:[], adTier:0, budget:0, base:2.5,
-    mile:[], ach:[], seenFill:[], seenCust:{}, limits:{}, tasting:false, tut:0, codexTab:'馅料',
+    mile:[], ach:[], seenFill:[], seenCust:{}, limits:{}, tasting:false, codexTab:'馅料',
     skillPts:0, skills:{heat:0,speed:0,hype:0,bargain:0},
     spoil:{}, rotten:[], helper:0, waimai:false, dayType:'normal', spot:'metro', change:20,
     clues:0, earlyUnlock:[], pairSeen:[], month:null, endings:[], preheat:0,

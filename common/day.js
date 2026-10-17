@@ -39,7 +39,6 @@ function startDay(first){
   G.day=freshDayRec();
   S.batter=0;
   save(); renderPrep(); startNewsLoop(); show('prep');
-  if(first&&S.tut<TUT.length)setTimeout(tutStart,450);
 }
 function applyNewsFx(){
   const fx=G.news.reduce((a,n)=>{const f=n.fx||{};for(const k in f)a[k]=(a[k]||0)+f[k];return a;},{});

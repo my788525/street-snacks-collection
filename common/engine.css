@@ -181,6 +181,7 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
 .custFace.angry .mouth{border:2px solid var(--ink);border-bottom:none;border-radius:99px 99px 0 0;top:26px}
 .custFace.angry .eye{height:3px;border-radius:2px}
 .custName{font-size:12px;font-weight:700;text-align:center;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.custSay{font-size:9.5px;color:var(--caramel);text-align:center;line-height:1.15;height:23px;overflow:hidden;margin-top:1px;font-weight:600}
 .custOrder{font-size:11px;color:var(--ink2);text-align:center;line-height:1.25;height:29px;overflow:hidden;margin-top:2px}
 .custPat{margin-top:4px}
 .custBubble{position:absolute;top:-12px;right:-8px;background:#fff;border:1.5px solid var(--ink);border-radius:99px;font-size:10px;padding:1px 6px;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}

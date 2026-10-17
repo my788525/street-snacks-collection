@@ -2,10 +2,10 @@
 /* 巷口蛋烘糕 · features2.js · P1：难度模式 / 办证 / 技能点 / 分享卡片 / 抹零议价 */
 
 const DIFFS={
- chill:{n:'佛系',desc:'慢慢来，火候和人情都要慢慢烘。客流稀疏、耐心加倍、火候更宽容、无限时压力',pat:2,evt:1.8,rep:.8,rent:.6,money:100,arrival:.72,cg:.3,fine:.5,tol:1.15,burn:60,dayLen:1.35,noBulk:true},
- std:{n:'标准',desc:'不好不坏，像你的工资',pat:1,evt:1,rep:1,rent:1,money:60,tol:1,burn:0,dayLen:1,fine:1},
- hard:{n:'硬核',desc:'启动金仅 ¥40，城管更勤，口碑更脆——真·街头求生',pat:.8,evt:.75,rep:1.2,rent:1.15,money:40,tol:.9,burn:0,dayLen:1,fine:1.3},
- crazy:{n:'疯狂',desc:'全成都最疯的摊：客流爆炸、耐心归零、罚款翻倍、碳化更快——地狱难度',pat:.6,evt:.6,rep:1.4,rent:1.3,money:30,arrival:1.35,cg:1.6,fine:1.5,tol:.85,burn:-40,dayLen:.85},
+ chill:{n:'佛系',desc:'慢慢来，火候和人情都要慢慢烘。客流稀疏、耐心加倍、火候更宽容、无限时压力。倒闭也有老街坊兜底，基本散不了',pat:2,evt:1.8,rep:.8,rent:.6,money:100,arrival:.72,cg:.3,fine:.5,tol:1.15,burn:60,dayLen:1.35,noBulk:true,bail:100,crisisDays:4},
+ std:{n:'标准',desc:'不好不坏，像你的工资。偶尔有难，街坊帮一把，但救急钱只够喘口气',pat:1,evt:1,rep:1,rent:1,money:60,tol:1,burn:0,dayLen:1,fine:1,bail:80,crisisDays:3},
+ hard:{n:'硬核',desc:'启动金仅 ¥40，城管更勤，口碑更脆——真·街头求生。救急钱不多，错两步就悬',pat:.8,evt:.75,rep:1.2,rent:1.15,money:40,tol:.9,burn:0,dayLen:1,fine:1.3,bail:50,crisisDays:3},
+ crazy:{n:'疯狂',desc:'全成都最疯的摊：客流爆炸、耐心归零、罚款翻倍、碳化更快——地狱难度。救急仅够重启，刀尖上讨生活',pat:.6,evt:.6,rep:1.4,rent:1.3,money:30,arrival:1.35,cg:1.6,fine:1.5,tol:.85,burn:-40,dayLen:.85,bail:30,crisisDays:2},
 };
 
 /* ---------- 难度解锁门禁（元进度，独立存档） ---------- */
