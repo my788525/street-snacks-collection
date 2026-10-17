@@ -101,6 +101,8 @@ function renderPrep(){
   // 库存总览
   const stock=GAME.baseItems.map(b=>b.n+' '+(S[b.id]||0)).join(' · ')+' · '+V('batter')+' '+(S.batter||0);
   h+=`<div class="deskNote" style="margin:12px 0">📋 库存：${stock}<br>今日天气 ${W.ic}${W.n} · 明日预告 ${GAME.weathers.find(w=>w.id===S.tomorrow).ic}${GAME.weathers.find(w=>w.id===S.tomorrow).n}</div>`;
+  // 出摊营业按钮（prep 屏唯一进营业屏入口）
+  h+=`<button id="btnOpen" class="btn big leaf" style="width:100%;margin-top:14px">出摊营业 →</button>`;
   $('#prepBody').innerHTML=h;
   if(typeof staggerIn==='function')staggerIn($('#prepBody'));
   bindPrep();
@@ -138,6 +140,7 @@ function bindPrep(){
     if(fermMake(f)){ renderPrep(); hudUpdate(); save(); }
   });
   $$('#prepBody [data-buy]').forEach(b=>b.onclick=()=>{ buyOne(b.dataset.buy); });
+  const bo=$('#btnOpen'); if(bo)bo.onclick=()=>{ SFX.click(); if(typeof startService==='function')startService(); };
   const vm=()=>{$('#pVal').textContent=fmt(S.base)};
   $('#pMinus').onclick=()=>{SFX.click();S.base=Math.max(1,S.base-.5);vm();renderPrep();save()};
   $('#pPlus').onclick=()=>{SFX.click();S.base=Math.min(8,S.base+.5);vm();renderPrep();save()};
