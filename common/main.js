@@ -30,6 +30,7 @@ function bindSoundButtons(){
 function continueDay(){
   const s=load(); if(!s){ toast('存档读取失败，重新开摊吧','bad'); return; }
   S=s; RNG=mulberry32(S.seed);
+  if(typeof checkSignIn==='function')checkSignIn();
   G.day=freshDayRec(); G.combo=0;
   G.windTags=GAME.winds.find(w=>w.id===S.wind).tags;
   G.news=(S.pendingNews||[]).map(t=>GAME.news.find(n=>n.t===t)).filter(Boolean);

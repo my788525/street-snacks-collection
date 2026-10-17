@@ -46,7 +46,9 @@ window.GAME_PROFILE={
   {id:'osman',n:'桂花蜜',c:.3,t:'甜',ic:'🌼',tags:['创新','怀旧'],lv:5},
   {id:'seaweed',n:'海苔碎',c:.3,t:'咸',ic:'🟢',tags:['创新','脆'],lv:4},
   {id:'salted',n:'咸蛋黄',c:.7,t:'咸',ic:'🟡',tags:['创新','豪华'],lv:6},
- ],
+   {id:'f_chun',n:'腊肉馅',c:0.9,t:'咸',ic:'🥓',tags:['节日','限定'],fest:'f_chun'},
+  {id:'f_yue',n:'桂花月饼馅',c:0.8,t:'甜',ic:'🌕',tags:['节日','限定'],fest:'f_yue'},
+],
  premises:[
   {n:'流动小推车',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'学校门口定点摊',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -120,7 +122,7 @@ window.GAME_PROFILE={
   {a:'salted',b:'cheese',m:.06,n:'咸蛋黄×芝士：咸香核爆'},
   {a:'osman',b:'sesame',m:.04,n:'桂花×芝麻：老派清香'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_chun',name:'春节限定',m:2,d:9,span:6},{fid:'f_yue',name:'中秋限定',m:9,d:17,span:1}], spots:{
     school:{n:'校门口',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},
     alley:{n:'巷子深处',ic:'🌃',flow:.9,psych:.95,d:'酒香不怕巷子深（但也怕没人）'},

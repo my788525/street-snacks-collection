@@ -1,15 +1,61 @@
 /* 巷口小吃合集 · 公共引擎 features1.js */
 /* 巷口蛋烘糕 · features1.js · P0：连击 / 里程碑 / 图鉴 / 招牌限量 / 试吃价 / 新手引导（含成就框架） */
 
-/* ---------- 连击 Combo ---------- */
+/* ---------- 连击 Combo + Fever 爆发 ---------- */
+const FEVER_AT=8, FEVER_SERVES=10;
 function comboBump(perfect){
   if(perfect){
     G.combo=(G.combo||0)+1;
     if(G.combo>(S.stats.maxCombo||0))S.stats.maxCombo=G.combo;
+    if(!G.fever && G.combo>=FEVER_AT){ startFever(); }
+    if(G.fever){
+      G.feverLeft=(G.feverLeft||0)-1;
+      S.money=(S.money||0)+ri(2,5);                 // 爆发期每单额外金币
+      if(G.feverLeft<=0) endFever();
+    }
     if(G.combo%5===0){ toast('🔥 连击 x'+G.combo+'！小费概率提升','gold'); SFX.coin(); if(typeof comboPop==='function')comboPop(); addXp(G.combo*2); checkAch(); }
-  }else G.combo=0;
+  }else{
+    G.combo=0;
+    if(G.fever) endFever();
+  }
+  if(typeof renderComboBadge==='function')renderComboBadge();
+}
+function feverActive(){ return !!G.fever; }
+function feverMult(){ return G.fever?1.6:1; }
+function startFever(){
+  if(G.fever)return;
+  G.fever=true; G.feverLeft=FEVER_SERVES;
+  S.stats.feverCount=(S.stats.feverCount||0)+1;
+  if(G.combo>(S.stats.maxFeverCombo||0))S.stats.maxFeverCombo=G.combo;
+  toast('🔥🔥 FEVER TIME！手别抖，连击翻倍金币雨！','gold');
+  SFX.fanfare(); feverFlash(); if(typeof coinRain==='function')coinRain(14); showFeverBanner();
+  checkAch();
+}
+function endFever(){
+  if(!G.fever)return;
+  G.fever=false;
+  toast('✨ FEVER 结束！这波连击爽不爽？','good');
+  hideFeverBanner();
 }
 function tipChance(){ return .35+Math.min(G.combo||0,10)*.03; }
+
+/* ---------- 连击徽章（动态注入，跨游戏通用） ---------- */
+function renderComboBadge(){
+  const app=$('#app'); if(!app)return;
+  let b=$('#comboBadge');
+  if(!b){ b=document.createElement('div'); b.id='comboBadge'; app.appendChild(b); }
+  const showIt=(G.combo>=2 && G.screen==='service');
+  if(showIt){
+    b.style.display='flex';
+    b.innerHTML='<span class="cbNum">'+(G.fever?'🔥'+G.combo:G.combo)+'</span><span class="cbLbl">'+(G.fever?'FEVER':'连击')+'</span>';
+    b.classList.toggle('fever',!!G.fever);
+    b.classList.remove('beat'); void b.offsetWidth; b.classList.add('beat');
+  }else{
+    b.style.display='none'; b.classList.remove('fever');
+  }
+  if(G.fever && G.screen==='service'){ if(typeof showFeverBanner==='function')showFeverBanner(); }
+  else{ if(typeof hideFeverBanner==='function')hideFeverBanner(); }
+}
 
 /* ---------- 里程碑 ---------- */
 const MILESTONES=[
@@ -60,6 +106,7 @@ const ACHIEVEMENTS=[
  {id:'a15',n:'餐饮冥灯',d:'第一次破产结业',chk:()=>(S.deaths||0)>=1},
  {id:'a16',n:'试吃勇士赞助商',d:'发起 3 次试吃价',chk:()=>(S.stats.tastings||0)>=3},
  {id:'a17',n:'雨神关照',d:'暴雨天出摊还赚了',chk:()=>S.weather==='storm'&&G.day&&G.day.net>0},
+ {id:'a18',n:'手感爆棚',d:'触发一次 FEVER 连击爆发',chk:()=>(S.stats.feverCount||0)>=1},
 ];
 function checkAch(){
   ACHIEVEMENTS.forEach(a=>{
@@ -79,7 +126,10 @@ function renderCodex(){
     h+='<div class="tiny mut" style="margin-bottom:8px">卖出过即点亮。未解锁的原料随等级开放。</div>';
     GAME.fillings.forEach(f=>{
       const unlocked=!f.lv||f.lv<=S.lv, seen=S.seenFill.includes(f.id);
-      if(!unlocked){
+      if(f.fest && !festOn(f.fest)){
+        const ft=GAME.festivals.find(x=>x.fid===f.fest);
+        h+='<div class="card" style="margin-bottom:8px;opacity:.6"><div class="row"><div class="mktIcon">🎏</div><div class="grow"><div class="mktName"><div class="n">'+f.n+'</div><div class="p">'+(ft?ft.name:'节日')+' · 到节日才上架</div></div></div></div></div>';
+      }else if(!unlocked){
         h+='<div class="card" style="margin-bottom:8px;opacity:.55"><div class="row"><div class="mktIcon">❔</div><div class="grow"><div class="mktName"><div class="n">???</div><div class="p">Lv'+f.lv+' 解锁</div></div></div></div></div>';
       }else if(seen){
         h+='<div class="card" style="margin-bottom:8px"><div class="row"><div class="mktIcon">'+f.ic+'</div><div class="grow"><div class="mktName"><div class="n">'+f.n+' <span class="pill">'+f.t+'</span></div><div class="p">成本 '+fmt(f.c)+(f.cold?' · 冷藏易变质':'')+' · '+f.tags.join('/')+'</div></div></div></div></div>';
@@ -152,4 +202,37 @@ function tutStart(){
       box.querySelector('#tutSkip').onclick=()=>{ S.tut=TUT.length; close(); save(); };
       box.querySelector('#tutNext').onclick=()=>{ S.tut++; close(); if(S.tut<TUT.length)tutStart(); save(); };
     }});
+}
+
+/* ---------- 每日签到 / 连续天数（用户粘性） ---------- */
+function checkSignIn(){
+  if(!S||!S.ver)return;
+  const t=todayStr();
+  if(S.lastLogin===t)return;                       // 今天已签到
+  if(S.lastLogin===yesterdayStr()) S.streak=(S.streak||0)+1;   // 连续
+  else S.streak=1;                                  // 断签重置
+  S.lastLogin=t;
+  const rewards=[
+    {d:1,m:20},{d:2,m:25},{d:3,m:35},{d:4,m:40},{d:5,m:50},{d:6,m:60},{d:7,m:100}
+  ];
+  const r=rewards[Math.min(S.streak,7)-1]||rewards[6];
+  S.money=(S.money||0)+r.m;
+  let gift='';
+  if(S.streak%7===0){                               // 每满 7 天送一道限定馅料
+    const pool=GAME.fillings.filter(f=>f.lv&&f.lv>=4&&!S.earlyUnlock.includes(f.id));
+    if(pool.length){ const g=pick(pool); S.earlyUnlock.push(g.id); gift='🎁 幸运馅料解锁：'+g.ic+' '+g.n+'（已提前解锁）'; }
+  }
+  save();
+  const dots=[0,1,2,3,4,5,6].map(i=>{
+    const day=S.streak-i; const on=day>0;
+    return '<span class="sigDot '+(on?'on':'')+'">'+(on?(day%7===0?'★':'●'):'○')+'</span>';
+  }).reverse().join('');
+  const html='<div class="h1 center">📅 连续签到 '+S.streak+' 天</div>'+
+    '<div class="center" style="margin:8px 0 4px">'+dots+'</div>'+
+    '<div class="center h2" style="color:var(--caramel)">今日奖励 +'+money(r.m)+'</div>'+
+    (gift?'<div class="center tiny mut" style="margin-top:6px">'+gift+'</div>':'')+
+    '<div class="center tiny mut" style="margin-top:6px">'+(S.streak%7===0?'🎉 七日一轮，明天继续有礼！':'连续签到越久，奖励越厚')+'</div>'+
+    '<button class="btn big" data-close style="width:100%;margin-top:12px">收下，开摊！</button>';
+  modal(html);
+  SFX.coin();
 }

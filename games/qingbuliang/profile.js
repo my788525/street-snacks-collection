@@ -50,7 +50,9 @@ window.GAME_PROFILE={
   {id:'guiling',n:'龟苓膏',c:.5,t:'甜',ic:'⚫',tags:['创新','养生'],lv:5},
   {id:'coconut2',n:'椰果',c:.4,t:'甜',ic:'⚪',tags:['创新'],lv:4},
   {id:'papaya',n:'木瓜',c:.4,t:'甜',ic:'🟠',tags:['创新','果'],lv:4},
- ],
+   {id:'f_mooncool',n:'月饼清补凉',c:0.7,t:'甜',ic:'🌕',tags:['节日','限定'],fest:'f_mooncool'},
+  {id:'f_laborcool',n:'劳模椰奶',c:0.6,t:'甜',ic:'🥥',tags:['节日','限定'],fest:'f_laborcool'},
+],
  premises:[
   {n:'巷口冷饮摊',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'景区门口摊',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -116,7 +118,7 @@ window.GAME_PROFILE={
   {a:'papaya',b:'xiancao',m:.05,n:'木瓜×仙草：清润组合'},
   {a:'yuyuan',b:'taro',m:.06,n:'芋圆×芋头：芋香加倍'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_mooncool',name:'中秋限定',m:9,d:17,span:1},{fid:'f_laborcool',name:'劳动节限定',m:5,d:1,span:2}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     beach:{n:'海滩门口',ic:'🏖️',flow:1.2,psych:1.15,d:'游客多，溢价空间大'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},

@@ -51,7 +51,9 @@ window.GAME_PROFILE={
   {id:'wasabi',n:'芥末',c:.4,t:'辣',ic:'🟢',tags:['创新','争议'],lv:5},
   {id:'blackpep',n:'黑椒',c:.4,t:'咸',ic:'⚫',tags:['创新'],lv:4},
   {id:'korean',n:'韩式辣酱',c:.5,t:'辣',ic:'🔴',tags:['创新','辣'],lv:5},
- ],
+   {id:'f_gqchick',n:'国庆黄金桶',c:1.2,t:'咸',ic:'🍗',tags:['节日','限定'],fest:'f_gqchick'},
+  {id:'f_nychick',n:'年夜炸鸡桶',c:1.2,t:'咸',ic:'🎆',tags:['节日','限定'],fest:'f_nychick'},
+],
  premises:[
   {n:'巷口炸鸡车',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'学校门口摊',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'korean',b:'mala',m:.06,n:'韩式辣酱×麻辣：双重辣'},
   {a:'ganmei',b:'honey',m:.05,n:'甘梅×蜂蜜：甜党福音'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_gqchick',name:'国庆限定',m:10,d:1,span:3},{fid:'f_nychick',name:'春节限定',m:2,d:9,span:6}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     night:{n:'夜市街',ic:'🌃',flow:1.2,psych:1.1,d:'夜宵流量大，客单价高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'下班族赶时间，不快不行'},

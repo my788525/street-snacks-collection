@@ -51,7 +51,9 @@ window.GAME_PROFILE={
   {id:'zheer',n:'折耳根',c:.4,t:'咸',ic:'🌿',tags:['创新','争议'],lv:5},
   {id:'zhadanegg',n:'炸蛋',c:.5,t:'咸',ic:'🍳',tags:['创新'],lv:5},
   {id:'cheeseburst',n:'芝士爆浆',c:.8,t:'咸',ic:'💥',tags:['创新','拉丝'],lv:6},
- ],
+   {id:'f_zongxiu',n:'粽香臭豆腐',c:0.6,t:'咸',ic:'🍙',tags:['节日','限定'],fest:'f_zongxiu'},
+  {id:'f_moonst',n:'月饼臭豆腐',c:0.7,t:'咸',ic:'🌕',tags:['节日','限定'],fest:'f_moonst'},
+],
  premises:[
   {n:'街边臭干子车',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'小吃街档口',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'cheeseburst',b:'chilioil',m:.07,n:'芝士×辣油：爆浆警告'},
   {a:'suansun2',b:'zheer',m:.05,n:'酸笋×折耳根：臭界双雄'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_zongxiu',name:'端午限定',m:6,d:10,span:1},{fid:'f_moonst',name:'中秋限定',m:9,d:17,span:1}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     night:{n:'夜市街',ic:'🌃',flow:1.2,psych:1.1,d:'夜宵流量大，客单价高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},

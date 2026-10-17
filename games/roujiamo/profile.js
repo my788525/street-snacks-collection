@@ -50,7 +50,9 @@ window.GAME_PROFILE={
   {id:'ludan',n:'卤蛋',c:.4,t:'咸',ic:'🥚',tags:['创新'],lv:4},
   {id:'doupi',n:'卤豆皮',c:.3,t:'咸',ic:'🟫',tags:['创新','素'],lv:4},
   {id:'yangrou',n:'孜然羊肉',c:.9,t:'咸',ic:'🐑',tags:['创新','豪华'],lv:6},
- ],
+   {id:'f_lajirou',n:'腊汁全家福',c:1.0,t:'咸',ic:'🥩',tags:['节日','限定'],fest:'f_lajirou'},
+  {id:'f_moonrou',n:'月饼夹馍馅',c:0.7,t:'甜',ic:'🌕',tags:['节日','限定'],fest:'f_moonrou'},
+],
  premises:[
   {n:'街边馍摊',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'回民街档口',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'yangrou',b:'chili',m:.06,n:'羊肉×辣：西北豪情'},
   {a:'feichang',b:'greenpepper',m:.05,n:'肥肠×青椒：下饭神器'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_lajirou',name:'春节限定',m:2,d:9,span:6},{fid:'f_moonrou',name:'中秋限定',m:9,d:17,span:1}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生娃流量大，心理价位略高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},
     street:{n:'回民街',ic:'🕌',flow:1.1,psych:1.15,d:'游客多，溢价空间大'},

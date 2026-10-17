@@ -51,7 +51,9 @@ window.GAME_PROFILE={
   {id:'bacon',n:'培根',c:.7,t:'咸',ic:'🥓',tags:['创新','肉'],lv:5},
   {id:'cheesesl',n:'芝士片',c:.8,t:'咸',ic:'🧀',tags:['创新','拉丝'],lv:6},
   {id:'tuna',n:'金枪鱼',c:.9,t:'咸',ic:'🐟',tags:['创新','豪华'],lv:6},
- ],
+   {id:'f_bacon',n:'腊汁脆饼',c:0.7,t:'咸',ic:'🥓',tags:['节日','限定'],fest:'f_bacon'},
+  {id:'f_guoqing',n:'五星果酱',c:0.5,t:'甜',ic:'⭐',tags:['节日','限定'],fest:'f_guoqing'},
+],
  premises:[
   {n:'街边煎饼车',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'小区门口摊',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'cheesesl',b:'baocui',m:.06,n:'芝士×薄脆：拉丝绝杀'},
   {a:'chicken10',b:'tianmian',m:.05,n:'鸡柳×甜面酱：京味儿'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_bacon',name:'春节限定',m:2,d:9,span:6},{fid:'f_guoqing',name:'国庆限定',m:10,d:1,span:3}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},
     block:{n:'老小区门口',ic:'🏘️',flow:1.1,psych:1.05,d:'街坊生意，讲究实惠'},

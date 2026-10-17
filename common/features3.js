@@ -1,9 +1,16 @@
 /* 巷口小吃合集 · 公共引擎 features3.js */
 /* 巷口蛋烘糕 · features3.js · P2 全家桶 */
 
-/* ---------- 节日限定 ---------- */
-function festOn(fid){ const f=GAME.festivals.find(x=>x.fid===fid); return !!f&&S&&S.day>=f.win[0]&&S.day<=f.win[1]; }
-function festToday(){ return GAME.festivals.find(f=>S.day>=f.win[0]&&S.day<=f.win[1])||null; }
+/* ---------- 节日限定（按真实日历日期，跨年可复现） ---------- */
+function festOn(fid){ const f=GAME.festivals.find(x=>x.fid===fid); return !!f&&festActive(f); }
+function festActive(f){
+  if(!f)return false;
+  const now=new Date(), ny=now.getFullYear();
+  const start=new Date(ny,f.m-1,f.d,0,0,0);
+  const end=new Date(ny,f.m-1,f.d+(f.span||0),23,59,59);
+  return now>=start && now<=end;
+}
+function festToday(){ return GAME.festivals.find(f=>festActive(f))||null; }
 
 /* ---------- 原料相性 ---------- */
 function pairMod(fills){ let m=0; GAME.pairs.forEach(p=>{ if(fills.includes(p.a)&&fills.includes(p.b))m+=p.m; }); return m; }

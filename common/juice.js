@@ -42,6 +42,31 @@ function comboPop(){
   chip.style.transition='transform .12s'; chip.style.transform='scale(1.15)';
   setTimeout(()=>{chip.style.transform=''},140);
 }
+/* 金币雨（FEVER 爆发） */
+function coinRain(n){
+  const app=$('#app'); if(!app)return;
+  const layer=$('#toastLayer')||app;
+  for(let i=0;i<(n||10);i++){
+    const c=document.createElement('div');
+    c.textContent='🪙';
+    c.style.cssText='position:absolute;top:-20px;left:'+(Math.random()*92)+'%;font-size:18px;z-index:97;pointer-events:none;animation:coinRain 1s ease-in '+(Math.random()*.5)+'s forwards';
+    layer.appendChild(c); setTimeout(()=>c.remove(),1600);
+  }
+}
+/* FEVER 金闪 */
+function feverFlash(){
+  const f=$('#flash'); if(!f)return;
+  f.classList.remove('fever'); void f.offsetWidth; f.classList.add('fever');
+}
+/* FEVER 横幅 */
+function showFeverBanner(){
+  const app=$('#app'); if(!app)return;
+  let b=$('#feverBanner');
+  if(!b){ b=document.createElement('div'); b.id='feverBanner'; b.textContent='🔥 FEVER！连击翻倍'; app.appendChild(b); }
+  if(b.style.display==='block')return;              // 已显示，不重复动画
+  b.style.display='block'; b.classList.remove('in'); void b.offsetWidth; b.classList.add('in');
+}
+function hideFeverBanner(){ const b=$('#feverBanner'); if(b)b.style.display='none'; }
 /* 成品飞向客人 */
 function flyCake(fromEl,toEl){
   const app=$('#app'); if(!app||!fromEl||!toEl)return;

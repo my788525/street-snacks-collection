@@ -94,7 +94,7 @@ vm.createContext(sandbox);
 for (const f of ['games/danhongao/profile.js', ...ENGINE.map(m => 'common/' + m + '.js')]) {
   vm.runInContext(fs.readFileSync(path.join(BASE, f), 'utf8'), sandbox, { filename: path.basename(f) });
 }
-vm.runInContext('globalThis.__x={get G(){return G},get S(){return S},get CUSTOMERS(){return GAME.customers},get BAL(){return BAL},get FILLINGS(){return GAME.fillings},get PREMISES(){return GAME.premises},get FESTIVALS(){return GAME.festivals}};', sandbox);
+vm.runInContext('globalThis.__x={get G(){return G},get S(){return S},get CUSTOMERS(){return GAME.customers},get BAL(){return BAL},get FILLINGS(){return GAME.fillings},get PREMISES(){return GAME.premises},get FESTIVALS(){return GAME.festivals},get FEVER_AT(){return FEVER_AT},get FEVER_SERVES(){return FEVER_SERVES}};', sandbox);
 const X = sandbox.__x;
 const G = () => X.G;
 
@@ -266,6 +266,50 @@ run('难度解锁门禁', () => {  sandbox.saveMeta({});
   sandbox.saveMeta({ everUpgraded: true, hardDone: true });
   if (!sandbox.diffUnlocked('crazy')) throw new Error('通关硬核后应解锁疯狂');
   sandbox.S.diff = 'chill';
+});
+run('FEVER 连击爆发：触发与结束', () => {
+  const S = sandbox.S;
+  G().combo = 0; G().fever = false; G().feverLeft = 0;
+  for (let i = 0; i < X.FEVER_AT; i++) sandbox.comboBump(true);
+  if (!G().fever) throw new Error('连击达阈值应触发 FEVER');
+  if ((S.stats.feverCount || 0) < 1) throw new Error('feverCount 应 +1');
+  let guard = 0;
+  while (G().fever && guard++ < 40) sandbox.comboBump(true);
+  if (G().fever) throw new Error('FEVER 应在预算耗尽后结束');
+  if (!S.ach.includes('a18')) throw new Error('应解锁成就 a18');
+  G().combo = 0; // 复位，避免影响后续
+});
+run('FEVER 断连即止', () => {
+  G().combo = X.FEVER_AT; G().fever = true; G().feverLeft = 5;
+  sandbox.comboBump(false);
+  if (G().fever) throw new Error('失误应立刻结束 FEVER');
+  if (G().combo !== 0) throw new Error('失误应清零连击');
+});
+run('每日签到：连续 / 断签 / 不重复', () => {
+  const S = sandbox.S;
+  S.lastLogin = null; S.streak = 0; S.money = 100; S.earlyUnlock = [];
+  sandbox.checkSignIn();
+  if (S.streak !== 1) throw new Error('首日签到应为 1');
+  if (S.lastLogin !== sandbox.todayStr()) throw new Error('lastLogin 应为今天');
+  const m1 = S.money;
+  sandbox.checkSignIn();
+  if (S.streak !== 1) throw new Error('同日不应重复累计');
+  if (S.money !== m1) throw new Error('同日不应重复发奖');
+  S.lastLogin = sandbox.yesterdayStr(); S.streak = 3;
+  sandbox.checkSignIn();
+  if (S.streak !== 4) throw new Error('连续签到应 +1');
+});
+run('节日日期门禁逻辑（按真实日历）', () => {
+  const t = sandbox.todayStr(); const [Y, M, D] = t.split('-').map(Number);
+  if (sandbox.festActive({ m: M, d: D, span: 0 }) !== true) throw new Error('今天应命中');
+  if (sandbox.festActive({ m: (M % 12) + 1, d: D, span: 0 }) !== false) throw new Error('非今天应落空');
+  if (sandbox.festActive({ m: M, d: Math.max(1, D - 5), span: 10 }) !== true) throw new Error('跨 10 天窗口应命中');
+});
+run('节日限定馅料按日期隐藏/显示', () => {
+  const fz = X.FILLINGS.find(f => f.fest);
+  if (!fz) throw new Error('应有节日限定馅料');
+  const inList = sandbox.unlockedFillings().some(f => f.id === fz.id);
+  if (inList !== sandbox.festOn(fz.fest)) throw new Error('unlockedFillings 与 festOn 应一致');
 });
 
 console.log('\n结果: ' + pass + ' 通过, ' + fail + ' 失败');

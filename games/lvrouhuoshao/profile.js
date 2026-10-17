@@ -51,7 +51,9 @@ window.GAME_PROFILE={
   {id:'doupi2',n:'卤豆皮',c:.3,t:'咸',ic:'🟫',tags:['创新','素'],lv:4},
   {id:'lvrdong',n:'驴肉冻',c:.8,t:'咸',ic:'🟤',tags:['创新','豪华'],lv:6},
   {id:'qingjiao',n:'青椒肉丝',c:.6,t:'咸',ic:'🫑',tags:['创新','肉'],lv:5},
- ],
+   {id:'f_ladonkey',n:'腊驴肉',c:1.0,t:'咸',ic:'🐴',tags:['节日','限定'],fest:'f_ladonkey'},
+  {id:'f_dzhuo',n:'冬至火烧',c:0.7,t:'咸',ic:'🔥',tags:['节日','限定'],fest:'f_dzhuo'},
+],
  premises:[
   {n:'街边火烧车',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'菜市火烧铺',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'qingjiao',b:'chili',m:.06,n:'青椒肉丝×辣：北方家常'},
   {a:'ludan4',b:'lvrdong',m:.05,n:'卤蛋×肉冻：卤味全家福'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_ladonkey',name:'春节限定',m:2,d:9,span:6},{fid:'f_dzhuo',name:'冬至限定',m:12,d:21,span:1}], spots:{
   school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
   night:{n:'夜市街',ic:'🌃',flow:1.2,psych:1.1,d:'夜宵流量大，客单价高'},
   metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},

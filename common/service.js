@@ -552,7 +552,7 @@ function serveCustomer(c,cake){
   G.day.sold++; G.day.rev+=price; G.day.qSum+=q; G.day.qN++;
   if(perfect){ S.stats.perfect++; G.day.tips+=1; }
   let tip=0;
-  if(perfect&&chance(tipChance())){ tip=ri(1,2); S.money+=tip; G.day.tips+=tip; SFX.coin(); }
+  if(perfect&&chance(tipChance())){ tip=Math.round(ri(1,2)*feverMult()); S.money+=tip; G.day.tips+=tip; SFX.coin(); }
   S.rep=clamp(S.rep+(sat-BAL.repTarget)*BAL.repK*deal.repMul*diffOf().rep*(c.type.special==='blogger'?3:1),0,100);
   addXp(Math.round(6+q*14+(perfect?6:0)));
   comboBump(perfect);

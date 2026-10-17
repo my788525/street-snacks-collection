@@ -17,7 +17,7 @@ function renderPrep(){
     <div class="row wrap" style="gap:6px">
       <span class="pill sky">${W.ic} ${W.n} · ${W.desc}</span>
       <span class="pill">🌪️ ${WI.n}</span>
-      ${festToday()?`<span class="pill">${festToday().ic} ${festToday().n}限定馅料上架</span>`:''}
+      ${festToday()?`<span class="pill" style="background:var(--yolk)">🎏 ${esc(festToday().name)}：限定馅料上架！</span>`:''}
       ${S.dayType==='taste'?'<span class="pill leaf">😋 尝鲜日：新组合更易出惊喜</span>':S.dayType==='safe'?'<span class="pill sky">🧣 保守日：顾客只点经典款</span>':''}
       ${S.renameCd>0?`<span class="pill rouge">换牌震荡：老客户回流中（${S.renameCd} 天）</span>`:''}
       ${S.buffs.map(b=>`<span class="pill leaf">${b.ic} ${b.name}（${b.days}天）</span>`).join('')}

@@ -51,7 +51,9 @@ window.GAME_PROFILE={
   {id:'zhadanegg2',n:'炸蛋',c:.5,t:'咸',ic:'🍳',tags:['创新'],lv:5},
   {id:'jizhua',n:'虎皮鸡爪',c:.9,t:'咸',ic:'🐔',tags:['创新','肉'],lv:6},
   {id:'luomeatball',n:'螺肉丸',c:.8,t:'咸',ic:'⚪',tags:['创新','豪华'],lv:6},
- ],
+   {id:'f_nianwei',n:'年味螺蛳',c:0.8,t:'咸',ic:'🐌',tags:['节日','限定'],fest:'f_nianwei'},
+  {id:'f_laborfen',n:'劳模红油粉',c:0.6,t:'辣',ic:'🌶️',tags:['节日','限定'],fest:'f_laborfen'},
+],
  premises:[
   {n:'巷口粉摊',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'菜市粉店',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'luomeatball',b:'luosi',m:.06,n:'螺丸×螺肉：螺味加倍'},
   {a:'zhuti',b:'larou',m:.05,n:'猪蹄×腊肉：硬菜双拼'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_nianwei',name:'春节限定',m:2,d:9,span:6},{fid:'f_laborfen',name:'劳动节限定',m:5,d:1,span:2}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     night:{n:'夜市街',ic:'🌃',flow:1.2,psych:1.1,d:'夜宵流量大，客单价高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},

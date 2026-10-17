@@ -51,7 +51,9 @@ window.GAME_PROFILE={
   {id:'ludan2',n:'卤蛋',c:.4,t:'咸',ic:'🥚',tags:['创新'],lv:4},
   {id:'huashengs',n:'花生碎',c:.3,t:'咸',ic:'🥜',tags:['创新'],lv:3},
   {id:'zhurou',n:'炸酱肉',c:.6,t:'咸',ic:'🍖',tags:['创新','肉'],lv:5},
- ],
+   {id:'f_zongmian',n:'粽子小面',c:0.6,t:'辣',ic:'🍙',tags:['节日','限定'],fest:'f_zongmian'},
+  {id:'f_gqmian',n:'国庆红油',c:0.6,t:'辣',ic:'⭐',tags:['节日','限定'],fest:'f_gqmian'},
+],
  premises:[
   {n:'巷口面摊',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'街坊面馆',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'zhurou',b:'zajiang',m:.06,n:'炸酱肉×杂酱：酱香暴击'},
   {a:'wandouj',b:'zhuyou',m:.05,n:'豌豆尖×猪油：锅气十足'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_zongmian',name:'端午限定',m:6,d:10,span:1},{fid:'f_gqmian',name:'国庆限定',m:10,d:1,span:3}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     night:{n:'夜市街',ic:'🌃',flow:1.2,psych:1.1,d:'夜宵流量大，客单价高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},

@@ -50,7 +50,9 @@ window.GAME_PROFILE={
   {id:'yaoz',n:'瑶柱',c:.9,t:'咸',ic:'🤍',tags:['创新','豪华'],lv:6},
   {id:'century',n:'皮蛋',c:.5,t:'咸',ic:'🥚',tags:['创新','争议'],lv:5},
   {id:'beefball',n:'牛肉丸',c:.6,t:'咸',ic:'⚪',tags:['创新','肉'],lv:5},
- ],
+   {id:'f_nian',n:'年糕肠粉馅',c:0.6,t:'咸',ic:'🍡',tags:['节日','限定'],fest:'f_nian'},
+  {id:'f_zong',n:'粽子馅',c:0.7,t:'咸',ic:'🍙',tags:['节日','限定'],fest:'f_zong'},
+],
  premises:[
   {n:'巷口肠粉摊',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'菜市场档口',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'beefball',b:'beef',m:.05,n:'牛肉丸×牛肉：弹牙加倍'},
   {a:'crabr',b:'yaoz',m:.04,n:'蟹籽×瑶柱：富到流油'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_nian',name:'春节限定',m:2,d:9,span:6},{fid:'f_zong',name:'端午限定',m:6,d:10,span:1}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生哥流量大，心理价位略高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'上班族赶时间，不快不行'},
     market:{n:'菜市场内',ic:'🏪',flow:.9,psych:.95,d:'阿公阿婆为主，便宜是王道'},

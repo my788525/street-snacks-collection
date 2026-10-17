@@ -51,7 +51,9 @@ window.GAME_PROFILE={
   {id:'cheesen',n:'芝士年糕',c:.8,t:'咸',ic:'🧀',tags:['创新','拉丝'],lv:6},
   {id:'suan2',n:'酸菜',c:.3,t:'咸',ic:'🥬',tags:['创新'],lv:4},
   {id:'corn',n:'玉米粒',c:.3,t:'甜',ic:'🌽',tags:['创新','甜'],lv:3},
- ],
+   {id:'f_nykao',n:'年味烤冷',c:0.7,t:'咸',ic:'🥓',tags:['节日','限定'],fest:'f_nykao'},
+  {id:'f_dzkao',n:'冬至热冷面',c:0.7,t:'咸',ic:'🔥',tags:['节日','限定'],fest:'f_dzkao'},
+],
  premises:[
   {n:'夜市小推车',ic:'🛒',rent:0,cap:4,sat:-5,pmax:6,cg:'高',up:300},
   {n:'学校门口摊',ic:'⛺',rent:15,cap:8,sat:0,pmax:7,cg:'中',up:2000},
@@ -117,7 +119,7 @@ window.GAME_PROFILE={
   {a:'corn',b:'tianmian',m:.05,n:'玉米×甜面酱：甜脆收尾'},
   {a:'xievr',b:'cheesen',m:.05,n:'蟹柳×芝士：海鲜芝士控'},
  ],
- festivals:[], spots:{
+ festivals:[{fid:'f_nykao',name:'春节限定',m:2,d:9,span:6},{fid:'f_dzkao',name:'冬至限定',m:12,d:21,span:1}], spots:{
     school:{n:'学校后门',ic:'🏫',flow:1.15,psych:1.05,d:'学生流量大，心理价位略高'},
     night:{n:'夜市街',ic:'🌃',flow:1.2,psych:1.1,d:'夜宵流量大，客单价高'},
     metro:{n:'地铁口',ic:'🚇',flow:1.0,psych:1.0,d:'下班族赶时间，不快不行'},

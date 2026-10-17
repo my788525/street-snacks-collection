@@ -215,6 +215,29 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
 #shake.on{animation:shake .3s}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
+/* ---------- FEVER 爆发 / 连击徽章 ---------- */
+#flash.fever{animation:feverFlash .5s}
+@keyframes feverFlash{0%{opacity:0;background:radial-gradient(circle,#F5B942,rgba(245,185,66,0))}30%{opacity:.6}100%{opacity:0}}
+#comboBadge{
+  position:absolute;top:54px;left:50%;transform:translateX(-50%);z-index:92;pointer-events:none;
+  display:none;align-items:center;gap:6px;background:var(--ink);color:#FFF3D6;
+  border:2px solid var(--yolk);border-radius:999px;padding:4px 14px;font-weight:900;font-family:var(--font-display);
+  box-shadow:3px 3px 0 rgba(61,44,30,.2);
+}
+#comboBadge .cbNum{font-size:20px;color:var(--yolk)}
+#comboBadge .cbLbl{font-size:11px;letter-spacing:1px}
+#comboBadge.fever{background:linear-gradient(90deg,#C97B2D,#F5B942);color:#3D2C1E;border-color:#fff}
+#comboBadge.fever .cbNum{color:#fff}
+#comboBadge.beat{animation:comboBeat .25s}
+#feverBanner{
+  display:none;position:absolute;top:96px;left:50%;transform:translateX(-50%);z-index:92;pointer-events:none;
+  background:linear-gradient(90deg,#C97B2D,#F5B942);color:#3D2C1E;font-family:var(--font-display);font-weight:900;
+  border:2px solid #fff;border-radius:999px;padding:5px 18px;font-size:15px;letter-spacing:1px;
+  box-shadow:0 4px 14px rgba(201,123,45,.5);
+}
+#feverBanner.in{animation:comboBeat .3s}
+@keyframes coinRain{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(80vh) rotate(360deg);opacity:0}}
+
 /* ---------- 结算页 ---------- */
 .billRow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1.5px dashed var(--line);font-size:14px}
 .billRow:last-child{border-bottom:none}
