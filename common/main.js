@@ -64,7 +64,7 @@ function bindDiffUI(){
       b.classList.toggle('ghost',!sel);
       b.style.opacity=un?'1':'.5';
     });
-    $('#diffDesc').textContent=descs[G.pendingDiff]||'';
+    const dd=$('#diffDesc'); if(dd)dd.textContent=descs[G.pendingDiff]||'';
   };
   $$('.diffBtn').forEach(b=>b.onclick=()=>{
     const d=b.dataset.d;
@@ -77,16 +77,16 @@ function bindDiffUI(){
 function boot(){
   bindSoundButtons(); initBgmBtn(); bindDiffUI(); loadVConsoleIfDebug();
   if(hasSave()){ const b=$('#btnContinue'); if(b)b.style.display=''; }
-  $('#btnStart').onclick=()=>{
+  const bS=$('#btnStart'); if(bS)bS.onclick=()=>{
     SFX.init(); SFX.resume(); SFX.click();
     const name=$('#inpName').value.trim()||'张师';
     const shop=$('#inpShop').value.trim()||V('defaultShop');
     newGame(name,shop,null,G.pendingDiff||'std'); startDay(true); show('prep');
     toast('开摊大吉！先'+V('fermDone')+'、进货、定价','gold');
   };
-  $('#btnContinue').onclick=()=>{ SFX.init(); SFX.resume(); SFX.click(); continueDay(); };
-  $('#btnNextDay').onclick=()=>{ SFX.click(); startDay(false); show('prep'); };
-  $('#btnBackPrep').onclick=()=>{ SFX.click(); show('prep'); };
+  const bC=$('#btnContinue'); if(bC)bC.onclick=()=>{ SFX.init(); SFX.resume(); SFX.click(); continueDay(); };
+  const bN=$('#btnNextDay'); if(bN)bN.onclick=()=>{ SFX.click(); startDay(false); show('prep'); };
+  const bP=$('#btnBackPrep'); if(bP)bP.onclick=()=>{ SFX.click(); show('prep'); };
   document.addEventListener('pointerdown',function once(){ SFX.init(); SFX.resume(); document.removeEventListener('pointerdown',once); },{once:true});
   // 画布分辨率
   const fixDpr=()=>{ panDpr=Math.min(2,window.devicePixelRatio||1); const cv=$('#panCanvas'); if(cv){cv.width=cv.width||0;} };
