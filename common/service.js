@@ -345,15 +345,24 @@ function discardServe(i){
   toast('🗑 '+pick(TRASH_LINES)+'（损耗 '+money(waste)+'）','bad');
 }
 function renderFillTray(){
-  const t=$('#fillTray'); t.innerHTML='';
-  $('#trayZone').classList.toggle('picking',G.picked>=0);
-  if(G.picked<0){
-    $('#fillPickTip').textContent='点锅'+GAME.flow.pour+' → 开锅加馅 → '+GAME.flow.fold+'（越准越漂亮）→ '+GAME.flow.tray+'卖';
-    t.innerHTML='<div class="tiny mut" style="padding:8px">馅料在备货时采购；放好馅后，'+GAME.flow.fold+'——绿圈内完美，圈外越远越歪。做好自动上'+GAME.flow.tray+'：烫嘴 🔥 晾 2–5 秒客人才端走；临期会降价，但挑剔的客人不要临期（🆕 要现做）；24 秒放黑变质只能 🗑 丢掉</div>';
-    return;
-  }
+  const t=$('#fillTray');
+  t.innerHTML='<div class="tiny mut" style="padding:8px">馅料在备货时采购；点能加料的锅会<b>弹出选料窗</b>，放好馅后，'+GAME.flow.fold+'——绿圈内完美，圈外越远越歪。做好自动上'+GAME.flow.tray+'：烫嘴 🔥 晾 2–5 秒客人才端走；临期会降价，但挑剔的客人不要临期（🆕 要现做）；24 秒放黑变质只能 🗑 丢掉</div>';
+  let fl=$('#fillFloat');
+  if(G.picked<0){ if(fl)fl.remove(); return; }
   const w=G.wells[G.picked];
-  $('#fillPickTip').textContent='选 1–3 种馅（已选 '+w.fills.length+'/3），选好点「选好了」';
+  if(!fl){
+    fl=document.createElement('div'); fl.id='fillFloat';
+    fl.innerHTML='<div class="ffCard"><div id="ffTitle" class="h2" style="text-align:center"></div><div id="ffBtns"></div><button class="btn leaf" id="ffOk" style="width:100%;min-height:44px">选好了</button></div>';
+    $('#app').appendChild(fl);
+    // 点空白处 = 取消（已选的馅保留在锅里，与旧版一致）
+    fl.addEventListener('click',e=>{
+      if(e.target!==fl)return;
+      SFX.click(); G.picked=-1; renderFillTray(); drawPan();
+    });
+  }
+  fl.style.display='flex';
+  $('#ffTitle').textContent='🥣 选馅（已选 '+w.fills.length+'/3）';
+  const btns=$('#ffBtns'); btns.innerHTML='';
   unlockedFillings().forEach(f=>{
     const on=w.fills.includes(f.id);
     const stock=(S.inv[f.id]||0)+(on?1:0);
@@ -372,15 +381,12 @@ function renderFillTray(){
       }
       renderFillTray(); drawPan(); save();
     };
-    t.appendChild(b);
+    btns.appendChild(b);
   });
-  const ok=document.createElement('button');
-  ok.className='btn leaf'; ok.style.minHeight='44px'; ok.textContent='选好了';
-  ok.onclick=()=>{
+  $('#ffOk').onclick=()=>{
     SFX.click(); G.picked=-1; renderFillTray(); drawPan();
     if(w.fills.length>0)toast('选好了～火候到了就'+GAME.flow.fold,'gold');
   };
-  t.appendChild(ok);
 }
 
 /* ---------- 锅的操作 ---------- */

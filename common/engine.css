@@ -285,10 +285,10 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
   .serveSlot{width:58px;font-size:18px}
   .hudItem{font-size:13px;padding:2px 8px}
 }
-/* 选馅进行中：出让空间给馅料区 */
-#trayZone.picking #fillPickTip{display:none}
-#trayZone.picking #serveRow{min-height:42px}
-#trayZone.picking .serveSlot{width:54px;font-size:16px}
+/* 选料浮动弹窗：点锅弹出，替代底部内嵌选料区 */
+#fillFloat{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(61,44,30,.45);z-index:60;padding:20px}
+.ffCard{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:12px;width:100%;max-width:360px;max-height:80%;overflow-y:auto;box-shadow:0 10px 30px rgba(61,44,30,.3);animation:pop .22s}
+#ffBtns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
 
 /* ---------- 动效增强层 ---------- */
 @keyframes floatUp{0%{transform:translateY(0);opacity:1}20%{transform:translateY(-10px)}100%{transform:translateY(-46px);opacity:0}}

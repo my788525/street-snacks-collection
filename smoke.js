@@ -125,7 +125,15 @@ run('ferment slow', () => { sandbox.S.batter = 0; sandbox.S.ferm = 'slow'; sandb
 run('psychPrice/cakePrice', () => { if (sandbox.psychPrice() <= 0) throw new Error('psych<=0'); if (sandbox.cakePrice(['sugar']) <= 0) throw new Error('cake<=0'); });
 run('startService', () => sandbox.startService());
 run('pour batter', () => sandbox.wellTap(0));
-run('open picker', () => { G().wells[0].heat = 200; sandbox.wellTap(0); if (G().picked !== 0) throw new Error('picker not opened'); });
+run('open picker', () => {
+  G().wells[0].heat = 200; sandbox.wellTap(0);
+  if (G().picked !== 0) throw new Error('picker not opened');
+  // 选料改为浮动弹窗：#fillFloat 应显示且含按钮与「选好了」
+  const fl = sandbox.document.querySelector('#fillFloat');
+  if (!fl || fl.style.display !== 'flex') throw new Error('浮动选料窗未显示');
+  const btns = sandbox.document.querySelector('#ffBtns');
+  if (!btns.children || !btns.children.length) throw new Error('浮动选料窗无馅料按钮');
+});
 run('pick fillings', () => { G().wells[0].fills = ['sugar', 'cream']; sandbox.S.inv.sugar = 5; sandbox.S.inv.cream = 5; });
 run('fold center (perfect)', () => {
   G().wells[0].heat = 320;
@@ -482,8 +490,10 @@ run('社会工程学：被安利来的新客标记', () => {
 run('口碑热度影响到达率（高 buzz 更聚客）', () => {
   const S = sandbox.S;
   S.adTier = 0; S.buffs = []; S.renameCd = 0; S.signatures = []; G().hypeT = 0;
+  S.rep = 50; S.skills = {}; S.fxToday = {}; S.spot = 'metro'; S.diff = 'std';
   S.buzz = 20; const slow = sandbox.arrivalInterval();
   S.buzz = 95; const fast = sandbox.arrivalInterval();
+  if (slow <= 1.6 || fast <= 1.6) throw new Error('到达间隔触底钳制，无法比较');
   if (!(fast < slow)) throw new Error('高 buzz 应缩短到达间隔');
 });
 run('图鉴顾客页含好感度渲染', () => {
