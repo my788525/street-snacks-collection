@@ -4,7 +4,13 @@ const BASE = path.join(__dirname);
 
 function el() {
   const e = {
-    style: { cssText: '', setProperty() {} }, dataset: {}, classList: { add() {}, remove() {}, toggle() {}, contains() { return false } },
+    style: { cssText: '', setProperty() {} }, dataset: {},
+    classList: (() => { const s = new Set(); return {
+      add(...n) { n.forEach(x => s.add(x)); },
+      remove(...n) { n.forEach(x => s.delete(x)); },
+      toggle(n, f) { if (f === undefined) { if (s.has(n)) { s.delete(n); return false; } s.add(n); return true; } if (f) s.add(n); else s.delete(n); return !!f; },
+      contains(n) { return s.has(n); }
+    }; })(),
     children: [], innerHTML: '', textContent: '', value: '', disabled: false,
     appendChild(c) { this.children.push(c); return c }, remove() {},
     insertBefore(c) { this.children.unshift(c); return c }, prepend(c) { this.children.unshift(c); return c },
@@ -194,6 +200,45 @@ run('燃气指示 + 倒计时 + 断气门槛', () => {
   G().gasUsed = 0; G().dayT = 10; sandbox.renderStoveStatus();
   const ss = getEl('#stoveStatus').innerHTML;
   if (!ss.includes('今日') || !ss.includes('燃气')) throw new Error('状态条应含倒计时与燃气');
+});
+run('低气状态条脉动 + 断气强红抖', () => {
+  // 低气：剩 1 瓶且已用 70%（rem=200-140=60 < 200×0.35=70）→ 加 low 类
+  sandbox.S.gas = 1; G().gasOut = false; G().gasUsed = 140;
+  sandbox.renderStoveStatus();
+  const ss = getEl('#stoveStatus');
+  if (!ss.classList.contains('low')) throw new Error('低气应加 low 类');
+  if (ss.classList.contains('out')) throw new Error('未断气不应加 out 类');
+  // 断气 → 加 out 类、去掉 low
+  G().gasOut = true; sandbox.renderStoveStatus();
+  if (!ss.classList.contains('out')) throw new Error('断气应加 out 类');
+  if (ss.classList.contains('low')) throw new Error('断气时不应再加 low 类');
+  // 正常 → 无 low/out
+  G().gasOut = false; sandbox.S.gas = 3; G().gasUsed = 0; sandbox.renderStoveStatus();
+  if (ss.classList.contains('low') || ss.classList.contains('out')) throw new Error('正常状态不应有 low/out 类');
+});
+run('“随便”概率按客群细分（大爷>游客）', () => {
+  vm.runInContext('GAME.__orig = GAME.customers', sandbox);
+  try {
+    const mk = id => ({ id, n: id, ic: 'x', pat: 100, pmul: 1, like: [], special: (id === 'blogger' ? 'blogger' : (id === 'regular' ? 'regular' : undefined)), order: ['o'], happy: ['h'], sad: ['s'] });
+    const setC = ids => vm.runInContext('GAME.customers=' + JSON.stringify(ids.map(mk)), sandbox);
+    const rate = id => {
+      setC([id]); let w = 0; const N = 600;
+      for (let i = 0; i < N; i++) {
+        // 清空会从 customers 里按 id 找人的分支，避免缩水后的 customers 找不到
+        G().bringFriend = null; G().prebook = null; G().online = null; G().bulk = null; G().referNext = null;
+        G().queue.length = 0; sandbox.tryArrive();
+        const c = G().queue[0]; if (c && c.whatever) w++;
+      }
+      return w / N;
+    };
+    const ru = rate('uncle');
+    const rt = rate('tourist');
+    if (!(ru > 0.3 && ru < 0.55)) throw new Error('大爷随便率应≈.42，实为 ' + ru.toFixed(2));
+    if (!(rt > 0.04 && rt < 0.18)) throw new Error('游客随便率应≈.1，实为 ' + rt.toFixed(2));
+    if (!(ru > rt)) throw new Error('大爷随便率应高于游客');
+  } finally {
+    vm.runInContext('GAME.customers = GAME.__orig', sandbox);
+  }
 });
 run('顾客“随便”接受任意糕 + 优先级 + 波动', () => {
   const mk = (whatever) => ({ type: X.CUSTOMERS[0], order: { fills: [], done: 'std', whatever: true }, whatever, pat: 60, wait: 0, max: 60, el: sandbox.document.createElement('div'), barEl: null, said: false });

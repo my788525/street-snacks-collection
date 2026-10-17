@@ -80,6 +80,16 @@ function renderStoveStatus(){
   const curUsed=clamp((G.gasUsed%BAL.gasCanCap)/BAL.gasCanCap*100,0,100);
   const tcol=remain<total*.2?'var(--rouge-d)':'var(--caramel)';
   const gcol=G.gasOut?'var(--rouge)':(rem<BAL.gasCanCap?'var(--yolk-d)':'var(--leaf)');
+  // 低气提醒：剩最后一瓶且已用掉 65% 起 → 脉动；断气 → 强红抖 + 震动
+  const low=!G.gasOut && rem<BAL.gasCanCap*0.35;
+  if(G.gasOut){ p.classList.add('out'); p.classList.remove('low'); }
+  else if(low){ p.classList.add('low'); p.classList.remove('out'); }
+  else { p.classList.remove('low','out'); }
+  if((G.gasOut||low)&&!p.dataset.warned){
+    p.dataset.warned='1';
+    if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate(G.gasOut?[200,80,200]:120);
+  }
+  if(!G.gasOut&&!low)p.dataset.warned='';
   p.innerHTML=
     '<div style="display:flex;justify-content:space-between;font-weight:700;line-height:1.2"><span>⏱ 今日</span><span>'+tstr+'</span></div>'+
     '<div class="meter"><i style="width:'+tpct+'%;background:'+tcol+'"></i></div>'+
@@ -162,11 +172,13 @@ function tryArrive(){
     const pool=GAME.customers.filter(c=>c.special!=='blogger'&&c.special!=='regular');
     const w=pool.map(c=>1+aff(c.id)/100);     // 好感越高的客群越常来（回头客）
     type=wPick(pool,w);
-    if(chance(.22))type=GAME.customers.find(c=>c.id==='regular');
-    if(chance(.08))type=GAME.customers.find(c=>c.id==='blogger');
+    const regC=GAME.customers.find(c=>c.id==='regular'); if(regC&&chance(.22))type=regC;
+    const blogC=GAME.customers.find(c=>c.id==='blogger'); if(blogC&&chance(.08))type=blogC;
   }
   const psych=psychPrice();
-  const whatever=(type.special!=='blogger')&&chance(.18);
+  // “随便”概率按客群细分：大爷/街坊最随性，游客最挑，博主从不随便
+  const WHATEVER_P={uncle:.42, regular:.3, worker:.18, student:.14, tourist:.1};
+  const whatever=(type.special!=='blogger')&&chance(WHATEVER_P[type.id]??.15);
   const order=whatever?{fills:[],done:'std',whatever:true}:makeOrder(type);
   const price=cakePrice(order.fills);
   if(!whatever){
