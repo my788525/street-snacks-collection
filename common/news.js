@@ -1,1 +1,47 @@
-Lyog5be35Y+j5bCP5ZCD5ZCI6ZuGIMK3IOWFrOWFseW8leaTjiBuZXdzLmpzICovDQovKiDlt7flj6Pom4vng5jns5UgwrcgbmV3cy5qcyDCtyDoh6rliqjmi4bliIboh6ogaW5kZXguaHRtbO+8jOivt+WcqOatpOaWh+S7tuWGhee7p+e7ree7tOaKpCAqLw0KDQovKiAtLS0tLS0tLS0tIOaWsOmXu+a7muWKqOW8leaTjiAtLS0tLS0tLS0tICovDQpmdW5jdGlvbiBidWlsZE5ld3MoKXsNCiAgY29uc3QgYXJyPVtdOw0KICBjb25zdCBwb29sPUdBTUUubmV3cy5maWx0ZXIobj0+IVMuc2Vlbk5ld3MuaW5jbHVkZXMobi50KSk7DQogIGZvcihsZXQgaT0wO2k8MztpKyspew0KICAgIGNvbnN0IHNyYz0ocG9vbC5sZW5ndGgmJmk8Mik/cG9vbDpHQU1FLm5ld3M7DQogICAgY29uc3Qgbj1waWNrKHNyYyk7IGFyci5wdXNoKG4pOyBTLnNlZW5OZXdzLnB1c2gobi50KTsNCiAgICBpZihTLnNlZW5OZXdzLmxlbmd0aD4yNClTLnNlZW5OZXdzLnNoaWZ0KCk7DQogIH0NCiAgRy5uZXdzPWFycjsgRy5uZXdzSWR4PTA7DQp9DQpmdW5jdGlvbiBuZXdzRnhDaGlwcyhmeCl7DQogIGNvbnN0IG91dD1bXTsNCiAgaWYoZnguZmxvdylvdXQucHVzaCgoZnguZmxvdz4wPyflrqLmtYEgKyc6J+Wuoua1gSAnKStNYXRoLnJvdW5kKGZ4LmZsb3cqMTAwKSsnJScpOw0KICBpZihmeC5wcmljZSlvdXQucHVzaCgn6L+b5Lu3ICsnK01hdGgucm91bmQoZngucHJpY2UqMTAwKSsnJScpOw0KICBpZihmeC5nYXMpb3V0LnB1c2goJ+eHg+awlCArJytNYXRoLnJvdW5kKGZ4LmdhcyoxMDApKyclJyk7DQogIGlmKGZ4LmNnKW91dC5wdXNoKCfln47nrqHlhbPms6gg4oaRJyk7DQogIGlmKGZ4Lmh1bmdlcilvdXQucHVzaCgn6ZmQ6YeP6aOO5r2uIOKGkScpOw0KICBpZihmeC5hZHJpc2spb3V0LnB1c2goJ+W5v+WRiuWuoeafpSDihpEnKTsNCiAgaWYoZngucmVwKW91dC5wdXNoKCflj6PnopEgJysoZngucmVwPjA/JysnOicnKStmeC5yZXApOw0KICBpZihmeC5zdHVkZW50RmxvdylvdXQucHVzaCgn5a2m55Sf5rWBICcrKGZ4LnN0dWRlbnRGbG93PjA/JysnOicnKStNYXRoLnJvdW5kKGZ4LnN0dWRlbnRGbG93KjEwMCkrJyUnKTsNCiAgaWYoZnguY2F0KW91dC5wdXNoKCfnjKvnjKvlh7rmsqEg4oaRJyk7DQogIHJldHVybiBvdXQ7DQp9DQpmdW5jdGlvbiBuZXdzVGljaygpew0KICBpZighRy5uZXdzLmxlbmd0aClyZXR1cm47DQogIGNvbnN0IG49Ry5uZXdzW0cubmV3c0lkeCVHLm5ld3MubGVuZ3RoXTsgRy5uZXdzSWR4Kys7DQogIGNvbnN0IHRyYWNrPSQoJyNuZXdzVHJhY2snKSxjbGlwPSQoJyNuZXdzQ2xpcCcpOw0KICB0cmFjay5pbm5lckhUTUw9J/Cfk7AgJytuLnQ7DQogIGNvbnN0IHc9Y2xpcC5jbGllbnRXaWR0aHx8MzAwOw0KICBjb25zdCBkdXI9TWF0aC5tYXgoOSwgbi50Lmxlbmd0aCouMzIpOw0KICB0cmFjay5zdHlsZS50cmFuc2l0aW9uPSdub25lJzsgdHJhY2suc3R5bGUudHJhbnNmb3JtPSd0cmFuc2xhdGVYKCcrdysncHgpJzsNCiAgcmVxdWVzdEFuaW1hdGlvbkZyYW1lKCgpPT5yZXF1ZXN0QW5pbWF0aW9uRnJhbWUoKCk9PnsNCiAgICB0cmFjay5zdHlsZS50cmFuc2l0aW9uPSd0cmFuc2Zvcm0gJytkdXIrJ3MgbGluZWFyJzsNCiAgICB0cmFjay5zdHlsZS50cmFuc2Zvcm09J3RyYW5zbGF0ZVgoLScrKHRyYWNrLnNjcm9sbFdpZHRoKzEwKSsncHgpJzsNCiAgfSkpOw0KICAkKCcjbmV3c0Z4JykuaW5uZXJIVE1MPW5ld3NGeENoaXBzKG4uZnh8fHt9KS5tYXAodD0+JzxzcGFuIGNsYXNzPSJmeGNoaXAiPicrdCsnPC9zcGFuPicpLmpvaW4oJycpOw0KICBpZihHLm5ld3NJZHglRy5uZXdzLmxlbmd0aD09PTApc2V0VGltZW91dChidWlsZE5ld3MsOTAwMCk7DQp9DQpmdW5jdGlvbiBzdGFydE5ld3NMb29wKCl7DQogIGlmKEcubmV3c1RpbWVyKWNsZWFySW50ZXJ2YWwoRy5uZXdzVGltZXIpOw0KICBidWlsZE5ld3MoKTsgbmV3c1RpY2soKTsNCiAgRy5uZXdzVGltZXI9c2V0SW50ZXJ2YWwobmV3c1RpY2ssMTIwMDApOw0KfQ0K
+/* 巷口小吃合集 · 公共引擎 news.js */
+/* 巷口蛋烘糕 · news.js · 自动拆分自 index.html，请在此文件内继续维护 */
+
+/* ---------- 新闻滚动引擎 ---------- */
+function buildNews(){
+  const arr=[];
+  const pool=GAME.news.filter(n=>!S.seenNews.includes(n.t));
+  for(let i=0;i<3;i++){
+    const src=(pool.length&&i<2)?pool:GAME.news;
+    const n=pick(src); arr.push(n); S.seenNews.push(n.t);
+    if(S.seenNews.length>24)S.seenNews.shift();
+  }
+  G.news=arr; G.newsIdx=0;
+}
+function newsFxChips(fx){
+  const out=[];
+  if(fx.flow)out.push((fx.flow>0?'客流 +':'客流 ')+Math.round(fx.flow*100)+'%');
+  if(fx.price)out.push('进价 +'+Math.round(fx.price*100)+'%');
+  if(fx.gas)out.push('燃气 +'+Math.round(fx.gas*100)+'%');
+  if(fx.cg)out.push('城管关注 ↑');
+  if(fx.hunger)out.push('限量风潮 ↑');
+  if(fx.adrisk)out.push('广告审查 ↑');
+  if(fx.rep)out.push('口碑 '+(fx.rep>0?'+':'')+fx.rep);
+  if(fx.studentFlow)out.push('学生流 '+(fx.studentFlow>0?'+':'')+Math.round(fx.studentFlow*100)+'%');
+  if(fx.cat)out.push('猫猫出没 ↑');
+  return out;
+}
+function newsTick(){
+  if(!G.news.length)return;
+  const n=G.news[G.newsIdx%G.news.length]; G.newsIdx++;
+  const track=$('#newsTrack'),clip=$('#newsClip');
+  track.innerHTML='📰 '+n.t;
+  const w=clip.clientWidth||300;
+  const dur=Math.max(9, n.t.length*.32);
+  track.style.transition='none'; track.style.transform='translateX('+w+'px)';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    track.style.transition='transform '+dur+'s linear';
+    track.style.transform='translateX(-'+(track.scrollWidth+10)+'px)';
+  }));
+  $('#newsFx').innerHTML=newsFxChips(n.fx||{}).map(t=>'<span class="fxchip">'+t+'</span>').join('');
+  if(G.newsIdx%G.news.length===0)setTimeout(buildNews,9000);
+}
+function startNewsLoop(){
+  if(G.newsTimer)clearInterval(G.newsTimer);
+  buildNews(); newsTick();
+  G.newsTimer=setInterval(newsTick,12000);
+}

@@ -1,1 +1,128 @@
-Lyog5be35Y+j5bCP5ZCD5ZCI6ZuGIMK3IOWFrOWFseW8leaTjiBzZXR0bGUuanMgKi8NCi8qIOW3t+WPo+ibi+eDmOezlSDCtyBzZXR0bGUuanMgwrcg5pS25pGK57uT566X44CB6L+e6LSl5L+d5oqk44CB5YCS6Zet5Y2x5py644CB5L2T6Z2i57uT5LiaICovDQoNCmZ1bmN0aW9uIHJlbmRlclNldHRsZSgpew0KICBjb25zdCBkPUcuZGF5Ow0KICBjb25zdCByZW50PXJlbnRPZigpOw0KICBjb25zdCBuZXQ9ZC5yZXYtZC5jb3N0LWQuZ2FzLXJlbnQtZC5wcmVwLWQuZmluZXM7DQogIGNvbnN0IGF2Z1E9ZC5xTj9kLnFTdW0vZC5xTjowOw0KICBsZXQgaD0nJzsNCiAgaCs9YDxkaXYgY2xhc3M9ImNhcmQgdGFwZWQiPg0KICAgIDxkaXYgY2xhc3M9ImNlbnRlciBoMSI+8J+nviDnrKwgJHtTLmRheX0g5aSp6LSm5Y2VPC9kaXY+DQogICAgPGRpdiBjbGFzcz0iY2VudGVyIHRpbnkgbXV0Ij4ke2VzYyhTLnNob3BOYW1lKX0gwrcgJHtHQU1FLndlYXRoZXJzLmZpbmQodz0+dy5pZD09PVMud2VhdGhlcikuaWN9JHtHQU1FLndlYXRoZXJzLmZpbmQodz0+dy5pZD09PVMud2VhdGhlcikubn0gwrcg8J+Mqu+4jyR7R0FNRS53aW5kcy5maW5kKHc9PncuaWQ9PT1TLndpbmQpLm59PC9kaXY+DQogICAgPGRpdiBjbGFzcz0iYmlsbEJpZyAke25ldD49MD8ncmVwVXAnOidyZXBEb3duJ30iPiR7bmV0Pj0wPycrJzonJ30ke21vbmV5KG5ldCl9PC9kaXY+DQogICAgPGRpdiBjbGFzcz0idGlueSBjZW50ZXIgbXV0Ij4ke25ldD49MD8obmV0PjYwPyfotZrpurvkuobvvIzku4rmmZrnu5noh6rlt7HliqDkuKrom4snOiflsI/otZrkuIDnrJTvvIznqLPlvZMnKTon5LqP5LqG4oCm55yL55yL5LqP5Zyo5ZOq5Liq5Yaz562WJ308L2Rpdj4NCiAgPC9kaXY+YDsNCiAgaCs9YDxkaXYgY2xhc3M9ImNhcmQiIHN0eWxlPSJtYXJnaW4tdG9wOjEwcHgiPg0KICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPiR7R0FNRS5lbW9qaX0g5Y2W5Ye6JHtWKCdnb29kJyl9PC9zcGFuPjxiPiR7ZC5zb2xkfSAke1YoJ3VuaXQnKX0gwrcgPHNwYW4gY2xhc3M9InJlcFVwIj4rJHttb25leShkLnJldil9PC9zcGFuPjwvYj48L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJiaWxsUm93Ij48c3Bhbj7wn6WsIOmjn+adkOa2iOiAlzwvc3Bhbj48YiBjbGFzcz0icmVwRG93biI+4oiSJHttb25leShkLmNvc3QpfTwvYj48L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJiaWxsUm93Ij48c3Bhbj7wn5SlIOeHg+awlDwvc3Bhbj48YiBjbGFzcz0icmVwRG93biI+4oiSJHttb25leShkLmdhcyl9PC9iPjwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPvCfp74g5aSH6LSn5Y6L5qy+PC9zcGFuPjxiIGNsYXNzPSJyZXBEb3duIj7iiJIke21vbmV5KGQucHJlcCl9PC9iPjwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPvCfj6Ag5Zy65Zyw5pel56efPC9zcGFuPjxiIGNsYXNzPSJyZXBEb3duIj7iiJIke21vbmV5KHJlbnQpfSR7Uy5yZW50TXVsPjE/J++8iOmAmuiDgCAnK01hdGgucm91bmQoKFMucmVudE11bC0xKSoxMDApKycl77yJJzonJ308L2I+PC9kaXY+DQogICAgJHtkLmZpbmVzP2A8ZGl2IGNsYXNzPSJiaWxsUm93Ij48c3Bhbj7wn5qoIOe9muasviAvIOe/u+i9pjwvc3Bhbj48YiBjbGFzcz0icmVwRG93biI+4oiSJHttb25leShkLmZpbmVzKX08L2I+PC9kaXY+YDonJ30NCiAgICAke2Qud2FnZXM/YDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPvCfp5HigI3wn42zIOWRmOW3peW3pei1hDwvc3Bhbj48YiBjbGFzcz0icmVwRG93biI+4oiSJHttb25leShkLndhZ2VzKX08L2I+PC9kaXY+YDonJ30NCiAgICAke2QudGlwcz9gPGRpdiBjbGFzcz0iYmlsbFJvdyI+PHNwYW4+8J+SnSDlsI/otLk8L3NwYW4+PGIgY2xhc3M9InJlcFVwIj4rJHttb25leShkLnRpcHMpfTwvYj48L2Rpdj5gOicnfQ0KICAgIDxkaXYgY2xhc3M9ImRpdmlkZXIiPjwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPvCfmKQg562J5LiN5Y+K6LWw5LqGPC9zcGFuPjxiPiR7ZC5sZWZ0fSDkuro8L2I+PC9kaXY+DQogICAgPGRpdiBjbGFzcz0iYmlsbFJvdyI+PHNwYW4+8J+Xke+4jyDng6Tns4ogLyDmtarotLk8L3NwYW4+PGI+JHtkLndhc3RlfSDkuKo8L2I+PC9kaXY+DQogICAgPGRpdiBjbGFzcz0iYmlsbFJvdyI+PHNwYW4+4q2QIOW5s+Wdh+i0qOmHj+WIhjwvc3Bhbj48Yj4ke01hdGgucm91bmQoYXZnUSoxMDApfTwvYj48L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJiaWxsUm93Ij48c3Bhbj7wn5OjIOW9k+WJjeWPo+eikTwvc3Bhbj48Yj4ke01hdGgucm91bmQoUy5yZXApfTwvYj48L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJiaWxsUm93Ij48c3Bhbj7wn5SlIOWPo+eikeeDreW6pjwvc3Bhbj48Yj4ke01hdGgucm91bmQoUy5idXp6PT1udWxsPzYwOlMuYnV6eil9PC9iPjwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPvCfpJ0g6ICB5Li76aG+IC8g5bim5pyL5Y+LPC9zcGFuPjxiPiR7KFMuc3RhdHMubG95YWxDb3VudHx8MCl9IOS9jeiAgeS4u+mhviDCtyDku4rml6XluKbmlrAgJHtHLmRheS5mcmllbmRCcmluZ3N8fDB9PC9iPjwvZGl2Pg0KICA8L2Rpdj5gOw0KICBjb25zdCBxdWlwcz1bXTsNCiAgaWYoZC5sZWZ0Pj00KXF1aXBzLnB1c2goJ+i1sOS6hiAnK2QubGVmdCsnIOS9jeWuouS6uu+8jOS7luS7rOabvuWcqOWvkumjjuS4reaOkui/h+mYnycpOw0KICBpZihkLndhc3RlPj0zKXF1aXBzLnB1c2goJ+eziuS6hiAnK2Qud2FzdGUrJyDkuKrvvIzmtojpmLLlronlhajmhI/or4bmi4nmu6EnKTsNCiAgaWYoYXZnUT4uODUpcXVpcHMucHVzaCgn6LSo6YeP5YiGICcrTWF0aC5yb3VuZChhdmdRKjEwMCkrJ++8jOiAgeW4iOWCheawtOW5sycpOw0KICBpZihhdmdRPC41NSYmZC5xTj4zKXF1aXBzLnB1c2goJ+i0qOmHj+WIhiAnK01hdGgucm91bmQoYXZnUSoxMDApKyfigKblrqLkurrlmLTkuIrmsqHor7TvvIzlv4Pph4zorrDkuoblsI/mnKzmnKwnKTsNCiAgaWYoZC5maW5lcz4wKXF1aXBzLnB1c2goJ+e9muasviAnK21vbmV5KGQuZmluZXMpKyfvvIzkuLrln47luILnrqHnkIblgZrotKHnjK7kuoYnKTsNCiAgaWYobmV0PDApcXVpcHMucHVzaCgn5LqP54K55Zyo5ZOq77yaJysoZC5wcmVwPmQucmV2Ki42PyflpIfotKfljovmrL7lpKrlpJrvvIzmmI7lpKnlsJHov5vngrknOiflrprku7fmiJblrqLmtYHlh7rkuobpl67popjvvIzosIPkuIDosIMnKSk7DQogIGNvbnN0IG54PUdBTUUucHJlbWlzZXNbUy5wcmVtaXNlcysxXTsNCiAgaWYobngmJlMubW9uZXk+PW54LnVwKi45JiZTLm1vbmV5PG54LnVwKXF1aXBzLnB1c2goJ+W3ruS4gOeCue+8muWGjei1miAnK21vbmV5KG54LnVwLVMubW9uZXkpKycg5bCx6IO95Y2H57qn44CMJytueC5uKyfjgI0nKTsNCiAgaWYoZC5zb2xkPT09MClxdWlwcy5wdXNoKCfpm7bmiJDkuqTjgIInK1YoJ2dvb2QnKSsn5LiN5Lya6Ieq5bex5Y2W5Ye65Y6777yM5bCx5YOP5bel6LWE5LiN5Lya6Ieq5bex5raoJyk7DQogIGlmKCFxdWlwcy5sZW5ndGgpcXVpcHMucHVzaChwaWNrKFsn5bmz5bmz5peg5aWH55qE5LiA5aSp77yM5YOP55m95byA5rC077yM5L2G6Kej5ri0Jywn5rKh5pyJ5pWF5LqL55qE5LiA5aSp77yM5bCx5piv5aW95pel5a2QJ10pKTsNCiAgaCs9YDxkaXYgY2xhc3M9ImRlc2tOb3RlIiBzdHlsZT0ibWFyZ2luLXRvcDoxMHB4Ij4ke3F1aXBzLm1hcChxPT4nwrcgJytxKS5qb2luKCc8YnI+Jyl9PC9kaXY+YDsNCiAgY29uc3QgVFc9R0FNRS53ZWF0aGVycy5maW5kKHc9PncuaWQ9PT1TLnRvbW9ycm93KTsNCiAgaCs9YDxkaXYgY2xhc3M9ImNhcmQiIHN0eWxlPSJtYXJnaW4tdG9wOjEwcHgiPg0KICAgIDxkaXYgY2xhc3M9ImgyIj7wn5SuIOaYjuaXpemihOWRijwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9InJvdyB3cmFwIiBzdHlsZT0iZ2FwOjZweDttYXJnaW4tdG9wOjZweCI+DQogICAgICA8c3BhbiBjbGFzcz0icGlsbCBza3kiPiR7VFcuaWN9ICR7VFcubn0gwrcgJHtUVy5kZXNjfTwvc3Bhbj4NCiAgICAgICR7Uy5idWZmcy5tYXAoYj0+YDxzcGFuIGNsYXNzPSJwaWxsIGxlYWYiPiR7Yi5pY30gJHtiLm5hbWV977yIJHtiLmRheXN95aSp77yJPC9zcGFuPmApLmpvaW4oJycpfQ0KICAgIDwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9InRpbnkgbXV0IiBzdHlsZT0ibWFyZ2luLXRvcDo4cHgiPiR7Uy5zaWduYXR1cmVzLmxlbmd0aD8n8J+PhiDmi5vniYzvvJonK1Muc2lnbmF0dXJlcy5tYXAoaz0+Uy5rbm93bltrXS5uYW1lfHxjb21ib05hbWVzKGspKS5qb2luKCfjgIEnKTon6L+Y5rKh5pyJ5oub54mM6I+c4oCU4oCU5aSa6K+V6K+V5paw57uE5ZCI77yM56ysIDUg5Liq5ZSu5Ye65omN6aqM6K+BJ308L2Rpdj4NCiAgICAke1MuZGFya3MubGVuZ3RoP2A8ZGl2IGNsYXNzPSJ0aW55IiBzdHlsZT0ibWFyZ2luLXRvcDo0cHg7Y29sb3I6dmFyKC0tcm91Z2UtZCkiPvCfkoAg6buR5Y6G5Y+y77yaJHtTLmRhcmtzLm1hcChjb21ib05hbWVzKS5qb2luKCfjgIEnKX08L2Rpdj5gOicnfQ0KICA8L2Rpdj5gOw0KICBjb25zdCBsb3c9dW5sb2NrZWRGaWxsaW5ncygpLmZpbHRlcihmPT4oUy5pbnZbZi5pZF18fDApPD0wKTsNCiAgaWYobG93Lmxlbmd0aCloKz1gPGRpdiBjbGFzcz0idGlueSBtdXQiIHN0eWxlPSJtYXJnaW46OHB4IDJweCI+4pqgIOe8uui0p+mihOitpu+8miR7bG93Lm1hcChmPT5mLm4pLmpvaW4oJ+OAgScpfTwvZGl2PmA7DQogIGlmKFMuYmF0dGVyPD0wKWgrPWA8ZGl2IGNsYXNzPSJ0aW55IG11dCIgc3R5bGU9Im1hcmdpbjowIDJweCA4cHgiPuKaoCDmsqEke1YoJ2JhdHRlcicpfeS6hu+8jOaYjuWkqeWFiCR7VignZmVybURvbmUnKX08L2Rpdj5gOw0KICAkKCcjc2V0dGxlQm9keScpLmlubmVySFRNTD1oOw0KICBjb25zdCBjYj1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsgY2IuaWQ9J3NDb2RleCc7IGNiLmNsYXNzTmFtZT0nYnRuIGdob3N0IHRpbnknOyBjYi50ZXh0Q29udGVudD0n8J+TliDlm77pibQgLyDmiJDlsLEnOw0KICBjYi5zdHlsZS5tYXJnaW5Cb3R0b209JzhweCc7IGNiLm9uY2xpY2s9KCk9PntTRlguY2xpY2soKTtvcGVuQ29kZXgoKX07DQogICQoJyNzZXR0bGVCb2R5JykucHJlcGVuZChjYik7DQogIGNvbnN0IHNiPWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2J1dHRvbicpOyBzYi5pZD0nc1NoYXJlJzsgc2IuY2xhc3NOYW1lPSdidG4gZ2hvc3QgdGlueSc7IHNiLnRleHRDb250ZW50PSfwn5OkIOWIhuS6q+WNoeeJhyc7DQogIHNiLnN0eWxlLm1hcmdpbkJvdHRvbT0nOHB4Jzsgc2Iub25jbGljaz0oKT0+e1NGWC5jbGljaygpO3NoYXJlQ2FyZCgpfTsNCiAgJCgnI3NldHRsZUJvZHknKS5wcmVwZW5kKHNiKTsNCiAgY29uc3QgYmlnPSQoJyNzZXR0bGVCb2R5IC5iaWxsQmlnJyk7IGlmKGJpZyYmdHlwZW9mIGNvdW50VXA9PT0nZnVuY3Rpb24nKWNvdW50VXAoYmlnLG5ldCw5MDApOw0KICAkKCcjYnRuTmV4dERheScpLnRleHRDb250ZW50PSfov47mjqXnrKwgJysoUy5kYXkrMSkrJyDlpKkg4oaSJzsNCiAgLyog54i95oSf77ya6LWa6ZKx5pelIGNvbmZldHRpIOmbqO+8iG5ldD4wIOi2iuWkmuaSkui2iuWkmu+8m+S6j+mSseaXpeeBsOiJsueijuWxkeiHquWTgO+8iSAqLw0KICBpZihuZXQ+MCl7IGNvbmZldHRpUmFpbihNYXRoLm1pbig0MCwxNCtNYXRoLnJvdW5kKG5ldC84KSkpOyBpZihuZXQ+NjApU0ZYLmZhbmZhcmUoKTsgfQ0KICBlbHNlIGlmKG5ldDwwKXsgY29uZmV0dGlSYWluKDgsJ3NhZCcpOyB9DQogIG9mZmVyUHJlYm9vaygpOw0KICBjaGVja0VuZGluZ3MoKTsNCiAgY2hlY2tDcmlzaXMoKTsNCiAgc2F2ZSgpOw0KfQ0KZnVuY3Rpb24gY29tYm9OYW1lcyhrZXkpeyByZXR1cm4ga2V5LnNwbGl0KCcrJykubWFwKGlkPT5GKGlkKS5uKS5qb2luKCcrJyk7IH0NCmZ1bmN0aW9uIGNoZWNrQ3Jpc2lzKCl7DQogIGNvbnN0IGJhaWw9ZGlmZk9mKCkuYmFpbHx8QkFMLmJhaWxEZWZ8fDgwOw0KICBjb25zdCBjZD1kaWZmT2YoKS5jcmlzaXNEYXlzfHxCQUwuY3Jpc2lzRGF5czsNCiAgaWYoRy5jcmlzaXNEYXlzPGNkKXJldHVybjsNCiAgbW9kYWwoYDxkaXYgY2xhc3M9ImgxIGNlbnRlciI+8J+TiSDlgJLpl63ljbHmnLo8L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJ0aW55IG11dCBjZW50ZXIiIHN0eWxlPSJtYXJnaW46OHB4IDAiPui0puS4iuS4jeWIsCAke21vbmV5KEJBTC5jcmlzaXNNb25leSl977yM5oi/5Lic5Zyo5pWy6Zeo77yM54yr5Zyo55yL5L2g44CC6YCJ5LiA5Liq77yaPC9kaXY+DQogICAgPGRpdiBjbGFzcz0icm93IiBzdHlsZT0iZmxleC1kaXJlY3Rpb246Y29sdW1uO2dhcDo4cHgiPg0KICAgICAgPGJ1dHRvbiBjbGFzcz0iYnRuIGxlYWYiIGlkPSJjckZ1bmQiIHN0eWxlPSJ3aWR0aDoxMDAlIj7wn5mPIOiAgemhvuWuouS8l+etuSArJHttb25leShiYWlsKX3vvIjlj6PnopEg4oiSM++8iTwvYnV0dG9uPg0KICAgICAgPGJ1dHRvbiBjbGFzcz0iYnRuIHJvdWdlIiBpZD0iY3JFbmQiIHN0eWxlPSJ3aWR0aDoxMDAlIj7wn46sIOS9k+mdoue7k+S4mu+8iOaLv+ensOWPt++8jOW8gOS8oOaJv++8iTwvYnV0dG9uPg0KICAgIDwvZGl2PmAsDQogICAge29uTW91bnQ6KGJveCxjbG9zZSk9PnsNCiAgICAgIGJveC5xdWVyeVNlbGVjdG9yKCcjY3JGdW5kJykub25jbGljaz0oKT0+ew0KICAgICAgICBTLm1vbmV5Kz1iYWlsOyBTLnJlcD1jbGFtcChTLnJlcC0zLDAsMTAwKTsgRy5jcmlzaXNEYXlzPTA7DQogICAgICAgIFNGWC5kaW5nKCk7IHRvYXN0KCfnhp/lrqLlh5HkuoYgJyttb25leShiYWlsKSsn77ya4oCc6ICB5p2/77yM5oy65L2P77yB4oCdJywnZ29sZCcpOyBjbG9zZSgpOyBzYXZlKCk7IGh1ZFVwZGF0ZSgpOw0KICAgICAgfTsNCiAgICAgIGJveC5xdWVyeVNlbGVjdG9yKCcjY3JFbmQnKS5vbmNsaWNrPSgpPT57IGNsb3NlKCk7IGdyYWNlZnVsRXhpdCgpOyB9Ow0KICAgIH19KTsNCn0NCmZ1bmN0aW9uIGVuZGluZ1RpdGxlKCl7DQogIGNvbnN0IHN0PVMuc3RhdHM7DQogIGlmKHN0LmZpbmU+MTUwKXJldHVybifln47nrqHkuYvlj4snOw0KICBpZihzdC5kYXJrPj0yKXJldHVybifnlJ/ljJbmrablmajkuJPlrrYnOw0KICBpZihzdC5wZXJmZWN0Pj0yNSlyZXR1cm4n54Gr5YCZ5LmL56We77yI5bey5YCS6Zet77yJJzsNCiAgaWYoc3Quc29sZD4xNTApcmV0dXJuJ+WKs+aooeaRiuS4u++8iOW3suWAkumXre+8iSc7DQogIHJldHVybifppJDppa7lhqXnga8nOw0KfQ0KZnVuY3Rpb24gZ3JhY2VmdWxFeGl0KCl7DQogIGNvbnN0IHN0PVMuc3RhdHM7DQogIGNvbnN0IGhpbnQ9Uy5zaWduYXR1cmVzLmxlbmd0aD9TLnNpZ25hdHVyZXNbMF06bnVsbDsNCiAgY29uc3QgbGVnYWN5PXttb25leTp0cnVlLGRlYXRoczooUy5kZWF0aHN8fDApKzEsaGludH07DQogIHNhdmVNZXRhKHtydW5zOihtZXRhR2V0KCkucnVuc3x8MCkrMSwgaGFyZERvbmU6ISEobWV0YUdldCgpLmhhcmREb25lfHxTLmRpZmY9PT0naGFyZCcpfSk7DQogIFMuZGVhdGhzPShTLmRlYXRoc3x8MCkrMTsgc2F2ZSgpOw0KICBtb2RhbChgPGRpdiBjbGFzcz0iaDEgY2VudGVyIj7wn46sIOWJp+e7iDwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9ImNlbnRlciBoMiIgc3R5bGU9Im1hcmdpbjo2cHggMDtjb2xvcjp2YXIoLS1jYXJhbWVsKSI+6I635b6X56ew5Y+377yaJHtlbmRpbmdUaXRsZSgpfTwvZGl2Pg0KICAgIDxkaXYgY2xhc3M9ImNhcmQiIHN0eWxlPSJtYXJnaW46MTBweCAwIj4NCiAgICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPue7j+iQpeWkqeaVsDwvc3Bhbj48Yj4ke3N0LmRheXN9IOWkqTwvYj48L2Rpdj4NCiAgICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPuWNluWHuiR7VignZ29vZCcpfTwvc3Bhbj48Yj4ke3N0LnNvbGR9ICR7VigndW5pdCcpfTwvYj48L2Rpdj4NCiAgICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPue0r+iuoeiQpeaUtjwvc3Bhbj48Yj4ke21vbmV5KHN0LmVhcm4pfTwvYj48L2Rpdj4NCiAgICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPuWujOe+juWHuumUhTwvc3Bhbj48Yj4ke3N0LnBlcmZlY3R9IOasoTwvYj48L2Rpdj4NCiAgICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPum7keaal+aWmeeQhjwvc3Bhbj48Yj4ke3N0LmRhcmt9IOmBkzwvYj48L2Rpdj4NCiAgICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPuS4iue8tOWfjueuoTwvc3Bhbj48Yj4ke21vbmV5KHN0LmZpbmUpfTwvYj48L2Rpdj4NCiAgICAgIDxkaXYgY2xhc3M9ImJpbGxSb3ciPjxzcGFuPuaLm+eJjOiPnDwvc3Bhbj48Yj4ke1Muc2lnbmF0dXJlcy5sZW5ndGh9IOmBkzwvYj48L2Rpdj4NCiAgICA8L2Rpdj4NCiAgICA8ZGl2IGNsYXNzPSJkZXNrTm90ZSI+56C05Lqn5Lmf5piv57uP6JCl55qE5LiA6YOo5YiG77yM6ICM5LiU5L2g6LSh54yu5LqG5peg5pWw56yR5paZ44CC5Lyg5om/5aWW5Yqx77ya5LiL5bGA5ZCv5Yqo6YeRICske21vbmV5KEJBTC5sZWdhY3lNb25leSl9JHtoaW50PyfvvIzlubbkv53nlZnkuIDmnaHmi5vniYznur/ntKLjgIwnK2NvbWJvTmFtZXMoaGludCkrJ+OAjSc6Jyd9PC9kaXY+DQogICAgPGJ1dHRvbiBjbGFzcz0iYnRuIGJpZyBsZWFmIiBpZD0ibGdPayIgc3R5bGU9IndpZHRoOjEwMCU7bWFyZ2luLXRvcDoxMHB4Ij7luKbnnYDnu4/pqozph43mlrDlvIDmkYo8L2J1dHRvbj5gLA0KICAgIHtvbk1vdW50Oihib3gsY2xvc2UpPT57DQogICAgICBib3gucXVlcnlTZWxlY3RvcignI2xnT2snKS5vbmNsaWNrPSgpPT57DQogICAgICAgIGNsb3NlKCk7IFNGWC5mYW5mYXJlKCk7DQogICAgICAgIG5ld0dhbWUoUy5wbGF5ZXJOYW1lLFMuc2hvcE5hbWUsbGVnYWN5LFMuZGlmZik7IHN0YXJ0RGF5KHRydWUpOyBzaG93KCdwcmVwJyk7DQogICAgICAgIHRvYXN0KCfkvKDmib/nlJ/mlYjvvJrlkK/liqjph5EgKycrbW9uZXkoQkFMLmxlZ2FjeU1vbmV5KSwnZ29sZCcpOw0KICAgICAgfTsNCiAgICB9fSk7DQp9DQo=
+/* 巷口小吃合集 · 公共引擎 settle.js */
+/* 巷口蛋烘糕 · settle.js · 收摊结算、连败保护、倒闭危机、体面结业 */
+
+function renderSettle(){
+  const d=G.day;
+  const rent=rentOf();
+  const net=d.rev-d.cost-d.gas-rent-d.prep-d.fines;
+  const avgQ=d.qN?d.qSum/d.qN:0;
+  let h='';
+  h+=`<div class="card taped">
+    <div class="center h1">🧾 第 ${S.day} 天账单</div>
+    <div class="center tiny mut">${esc(S.shopName)} · ${GAME.weathers.find(w=>w.id===S.weather).ic}${GAME.weathers.find(w=>w.id===S.weather).n} · 🌪️${GAME.winds.find(w=>w.id===S.wind).n}</div>
+    <div class="billBig ${net>=0?'repUp':'repDown'}">${net>=0?'+':''}${money(net)}</div>
+    <div class="tiny center mut">${net>=0?(net>60?'赚麻了，今晚给自己加个蛋':'小赚一笔，稳当'):'亏了…看看亏在哪个决策'}</div>
+  </div>`;
+  h+=`<div class="card" style="margin-top:10px">
+    <div class="billRow"><span>${GAME.emoji} 卖出${V('good')}</span><b>${d.sold} ${V('unit')} · <span class="repUp">+${money(d.rev)}</span></b></div>
+    <div class="billRow"><span>🥬 食材消耗</span><b class="repDown">−${money(d.cost)}</b></div>
+    <div class="billRow"><span>🔥 燃气</span><b class="repDown">−${money(d.gas)}</b></div>
+    <div class="billRow"><span>🧾 备货压款</span><b class="repDown">−${money(d.prep)}</b></div>
+    <div class="billRow"><span>🏠 场地日租</span><b class="repDown">−${money(rent)}${S.rentMul>1?'（通胀 '+Math.round((S.rentMul-1)*100)+'%）':''}</b></div>
+    ${d.fines?`<div class="billRow"><span>🚨 罚款 / 翻车</span><b class="repDown">−${money(d.fines)}</b></div>`:''}
+    ${d.wages?`<div class="billRow"><span>🧑‍🍳 员工工资</span><b class="repDown">−${money(d.wages)}</b></div>`:''}
+    ${d.tips?`<div class="billRow"><span>💝 小费</span><b class="repUp">+${money(d.tips)}</b></div>`:''}
+    <div class="divider"></div>
+    <div class="billRow"><span>😤 等不及走了</span><b>${d.left} 人</b></div>
+    <div class="billRow"><span>🗑️ 烤糊 / 浪费</span><b>${d.waste} 个</b></div>
+    <div class="billRow"><span>⭐ 平均质量分</span><b>${Math.round(avgQ*100)}</b></div>
+    <div class="billRow"><span>📣 当前口碑</span><b>${Math.round(S.rep)}</b></div>
+    <div class="billRow"><span>🔥 口碑热度</span><b>${Math.round(S.buzz==null?60:S.buzz)}</b></div>
+    <div class="billRow"><span>🤝 老主顾 / 带朋友</span><b>${(S.stats.loyalCount||0)} 位老主顾 · 今日带新 ${G.day.friendBrings||0}</b></div>
+  </div>`;
+  const quips=[];
+  if(d.left>=4)quips.push('走了 '+d.left+' 位客人，他们曾在寒风中排过队');
+  if(d.waste>=3)quips.push('糊了 '+d.waste+' 个，消防安全意识拉满');
+  if(avgQ>.85)quips.push('质量分 '+Math.round(avgQ*100)+'，老师傅水平');
+  if(avgQ<.55&&d.qN>3)quips.push('质量分 '+Math.round(avgQ*100)+'…客人嘴上没说，心里记了小本本');
+  if(d.fines>0)quips.push('罚款 '+money(d.fines)+'，为城市管理做贡献了');
+  if(net<0)quips.push('亏点在哪：'+(d.prep>d.rev*.6?'备货压款太多，明天少进点':'定价或客流出了问题，调一调'));
+  const nx=GAME.premises[S.premises+1];
+  if(nx&&S.money>=nx.up*.9&&S.money<nx.up)quips.push('差一点：再赚 '+money(nx.up-S.money)+' 就能升级「'+nx.n+'」');
+  if(d.sold===0)quips.push('零成交。'+V('good')+'不会自己卖出去，就像工资不会自己涨');
+  if(!quips.length)quips.push(pick(['平平无奇的一天，像白开水，但解渴','没有故事的一天，就是好日子']));
+  h+=`<div class="deskNote" style="margin-top:10px">${quips.map(q=>'· '+q).join('<br>')}</div>`;
+  const TW=GAME.weathers.find(w=>w.id===S.tomorrow);
+  h+=`<div class="card" style="margin-top:10px">
+    <div class="h2">🔮 明日预告</div>
+    <div class="row wrap" style="gap:6px;margin-top:6px">
+      <span class="pill sky">${TW.ic} ${TW.n} · ${TW.desc}</span>
+      ${S.buffs.map(b=>`<span class="pill leaf">${b.ic} ${b.name}（${b.days}天）</span>`).join('')}
+    </div>
+    <div class="tiny mut" style="margin-top:8px">${S.signatures.length?'🏆 招牌：'+S.signatures.map(k=>S.known[k].name||comboNames(k)).join('、'):'还没有招牌菜——多试试新组合，第 5 个售出才验证'}</div>
+    ${S.darks.length?`<div class="tiny" style="margin-top:4px;color:var(--rouge-d)">💀 黑历史：${S.darks.map(comboNames).join('、')}</div>`:''}
+  </div>`;
+  const low=unlockedFillings().filter(f=>(S.inv[f.id]||0)<=0);
+  if(low.length)h+=`<div class="tiny mut" style="margin:8px 2px">⚠ 缺货预警：${low.map(f=>f.n).join('、')}</div>`;
+  if(S.batter<=0)h+=`<div class="tiny mut" style="margin:0 2px 8px">⚠ 没${V('batter')}了，明天先${V('fermDone')}</div>`;
+  $('#settleBody').innerHTML=h;
+  const cb=document.createElement('button'); cb.id='sCodex'; cb.className='btn ghost tiny'; cb.textContent='📖 图鉴 / 成就';
+  cb.style.marginBottom='8px'; cb.onclick=()=>{SFX.click();openCodex()};
+  $('#settleBody').prepend(cb);
+  const sb=document.createElement('button'); sb.id='sShare'; sb.className='btn ghost tiny'; sb.textContent='📤 分享卡片';
+  sb.style.marginBottom='8px'; sb.onclick=()=>{SFX.click();shareCard()};
+  $('#settleBody').prepend(sb);
+  const big=$('#settleBody .billBig'); if(big&&typeof countUp==='function')countUp(big,net,900);
+  $('#btnNextDay').textContent='迎接第 '+(S.day+1)+' 天 →';
+  /* 爽感：赚钱日 confetti 雨（net>0 越多撒越多；亏钱日灰色碎屑自哀） */
+  if(net>0){ confettiRain(Math.min(40,14+Math.round(net/8))); if(net>60)SFX.fanfare(); }
+  else if(net<0){ confettiRain(8,'sad'); }
+  offerPrebook();
+  checkEndings();
+  checkCrisis();
+  save();
+}
+function comboNames(key){ return key.split('+').map(id=>F(id).n).join('+'); }
+function checkCrisis(){
+  const bail=diffOf().bail||BAL.bailDef||80;
+  const cd=diffOf().crisisDays||BAL.crisisDays;
+  if(G.crisisDays<cd)return;
+  modal(`<div class="h1 center">📉 倒闭危机</div>
+    <div class="tiny mut center" style="margin:8px 0">账上不到 ${money(BAL.crisisMoney)}，房东在敲门，猫在看你。选一个：</div>
+    <div class="row" style="flex-direction:column;gap:8px">
+      <button class="btn leaf" id="crFund" style="width:100%">🙏 老顾客众筹 +${money(bail)}（口碑 −3）</button>
+      <button class="btn rouge" id="crEnd" style="width:100%">🎬 体面结业（拿称号，开传承）</button>
+    </div>`,
+    {onMount:(box,close)=>{
+      box.querySelector('#crFund').onclick=()=>{
+        S.money+=bail; S.rep=clamp(S.rep-3,0,100); G.crisisDays=0;
+        SFX.ding(); toast('熟客凑了 '+money(bail)+'：“老板，挺住！”','gold'); close(); save(); hudUpdate();
+      };
+      box.querySelector('#crEnd').onclick=()=>{ close(); gracefulExit(); };
+    }});
+}
+function endingTitle(){
+  const st=S.stats;
+  if(st.fine>150)return'城管之友';
+  if(st.dark>=2)return'生化武器专家';
+  if(st.perfect>=25)return'火候之神（已倒闭）';
+  if(st.sold>150)return'劳模摊主（已倒闭）';
+  return'餐饮冥灯';
+}
+function gracefulExit(){
+  const st=S.stats;
+  const hint=S.signatures.length?S.signatures[0]:null;
+  const legacy={money:true,deaths:(S.deaths||0)+1,hint};
+  saveMeta({runs:(metaGet().runs||0)+1, hardDone:!!(metaGet().hardDone||S.diff==='hard')});
+  S.deaths=(S.deaths||0)+1; save();
+  modal(`<div class="h1 center">🎬 剧终</div>
+    <div class="center h2" style="margin:6px 0;color:var(--caramel)">获得称号：${endingTitle()}</div>
+    <div class="card" style="margin:10px 0">
+      <div class="billRow"><span>经营天数</span><b>${st.days} 天</b></div>
+      <div class="billRow"><span>卖出${V('good')}</span><b>${st.sold} ${V('unit')}</b></div>
+      <div class="billRow"><span>累计营收</span><b>${money(st.earn)}</b></div>
+      <div class="billRow"><span>完美出锅</span><b>${st.perfect} 次</b></div>
+      <div class="billRow"><span>黑暗料理</span><b>${st.dark} 道</b></div>
+      <div class="billRow"><span>上缴城管</span><b>${money(st.fine)}</b></div>
+      <div class="billRow"><span>招牌菜</span><b>${S.signatures.length} 道</b></div>
+    </div>
+    <div class="deskNote">破产也是经营的一部分，而且你贡献了无数笑料。传承奖励：下局启动金 +${money(BAL.legacyMoney)}${hint?'，并保留一条招牌线索「'+comboNames(hint)+'」':''}</div>
+    <button class="btn big leaf" id="lgOk" style="width:100%;margin-top:10px">带着经验重新开摊</button>`,
+    {onMount:(box,close)=>{
+      box.querySelector('#lgOk').onclick=()=>{
+        close(); SFX.fanfare();
+        newGame(S.playerName,S.shopName,legacy,S.diff); startDay(true); show('prep');
+        toast('传承生效：启动金 +'+money(BAL.legacyMoney),'gold');
+      };
+    }});
+}
