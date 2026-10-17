@@ -98,7 +98,12 @@ const SFX={
       this.master=this.ctx.createGain(); this.master.gain.value=.5; this.master.connect(this.ctx.destination);
     }catch(e){}
   },
-  resume(){ if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume(); },
+  resume(){
+    if(this.ctx&&this.ctx.state==='suspended'){
+      const p=this.ctx.resume();
+      if(p&&p.catch)p.catch(()=>{}); // 部分浏览器手势后仍可能失败，静默兜底
+    }
+  },
   tone(f,d,type='sine',v=.25,slide=0){
     if(!this.ctx||this.muted)return;
     const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();

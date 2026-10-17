@@ -87,7 +87,14 @@ function boot(){
   const bC=$('#btnContinue'); if(bC)bC.onclick=()=>{ SFX.init(); SFX.resume(); SFX.click(); continueDay(); };
   const bN=$('#btnNextDay'); if(bN)bN.onclick=()=>{ SFX.click(); startDay(false); show('prep'); };
   const bP=$('#btnBackPrep'); if(bP)bP.onclick=()=>{ SFX.click(); show('prep'); };
-  document.addEventListener('pointerdown',function once(){ SFX.init(); SFX.resume(); document.removeEventListener('pointerdown',once); },{once:true});
+  // AudioContext 必须在用户手势内创建/恢复（Chrome 自动播放策略）；无手势时只挂监听，不主动 new
+  const unlockAudio=()=>{
+    SFX.init(); SFX.resume();
+    document.removeEventListener('pointerdown',unlockAudio);
+    document.removeEventListener('keydown',unlockAudio);
+  };
+  document.addEventListener('pointerdown',unlockAudio,{once:true});
+  document.addEventListener('keydown',unlockAudio,{once:true});
   // 画布分辨率
   const fixDpr=()=>{ panDpr=Math.min(2,window.devicePixelRatio||1); const cv=$('#panCanvas'); if(cv){cv.width=cv.width||0;} };
   window.addEventListener('resize',fixDpr); fixDpr();
