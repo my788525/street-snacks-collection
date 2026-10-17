@@ -243,6 +243,13 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
 }
 #feverBanner.in{animation:comboBeat .3s}
 @keyframes coinRain{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(80vh) rotate(360deg);opacity:0}}
+/* 结算 confetti 雨：旋转飘落 */
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(90vh) rotate(540deg);opacity:0}}
+/* 顾客到店弹跳入场（cubic-bezier 回弹） */
+@keyframes custIn{0%{transform:scale(.4) translateY(18px);opacity:0}60%{transform:scale(1.08) translateY(-4px);opacity:1}100%{transform:scale(1) translateY(0)}}
+/* FEVER 倒计时条（挂在 #feverBanner 内部下方，胶囊变高容纳） */
+#feverCount{position:absolute;left:0;right:0;bottom:-8px;height:6px;border-radius:3px;background:rgba(61,44,30,.22);overflow:hidden}
+#feverCount i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#F5B942,#E87A4F);border-radius:3px;transition:width .3s ease-out}
 
 /* ---------- 结算页 ---------- */
 .billRow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1.5px dashed var(--line);font-size:14px}

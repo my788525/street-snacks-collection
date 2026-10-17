@@ -54,7 +54,16 @@ function renderComboBadge(){
   }else{
     b.style.display='none'; b.classList.remove('fever');
   }
-  if(G.fever && G.screen==='service'){ if(typeof showFeverBanner==='function')showFeverBanner(); }
+  if(G.fever && G.screen==='service'){
+    if(typeof showFeverBanner==='function')showFeverBanner();
+    /* FEVER 剩余单数可视化：横幅下倒计时条（从满到空） */
+    const fb=$('#feverBanner');
+    if(fb){
+      let fc=fb.querySelector('#feverCount');
+      if(!fc){ fc=document.createElement('div'); fc.id='feverCount'; fc.innerHTML='<i></i>'; fb.appendChild(fc); }
+      fc.querySelector('i').style.width=(Math.max(0,(G.feverLeft||0))/FEVER_SERVES*100)+'%';
+    }
+  }
   else{ if(typeof hideFeverBanner==='function')hideFeverBanner(); }
 }
 

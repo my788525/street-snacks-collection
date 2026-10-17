@@ -23,7 +23,21 @@ function bindSoundButtons(){
       SFX.muted=!SFX.muted;
       if(SFX.master)SFX.master.gain.value=SFX.muted?0:.5;
       ids.forEach(s=>{ const x=$(s); if(x)x.textContent=SFX.muted?'🔇':'🔊'; });
-      if(!SFX.muted)SFX.click();
+      if(!SFX.muted){ SFX.click(); if(SFX.bgmOn)SFX.bgmStop(); }
+    };
+  });
+}
+/* BGM 开关（🎵）：程序化轻快 loop，FEVER 时自动加料 */
+function initBgmBtn(){
+  const ids=['#btnBgm','#btnBgmS','#btnBgmE'];
+  ids.forEach(sel=>{
+    const b=$(sel); if(!b)return;
+    b.onclick=()=>{
+      SFX.init(); SFX.resume();
+      if(SFX.muted){ toast('先开音效再开 BGM 哦','bad'); return; }
+      SFX.bgm();
+      ids.forEach(s=>{ const x=$(s); if(x)x.textContent=SFX.bgmOn?'🎵':'🎶'; });
+      SFX.click();
     };
   });
 }
@@ -61,7 +75,7 @@ function bindDiffUI(){
   render();
 }
 function boot(){
-  bindSoundButtons(); bindDiffUI(); loadVConsoleIfDebug();
+  bindSoundButtons(); initBgmBtn(); bindDiffUI(); loadVConsoleIfDebug();
   if(hasSave()){ const b=$('#btnContinue'); if(b)b.style.display=''; }
   $('#btnStart').onclick=()=>{
     SFX.init(); SFX.resume(); SFX.click();

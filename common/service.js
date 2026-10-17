@@ -252,6 +252,8 @@ function renderQueue(){
   const z=$('#queueZone'); z.innerHTML='';
   G.queue.forEach((c,i)=>{
     const d=document.createElement('div'); d.className='cust'+(c.short?' short':'')+(c.vip?' vip':'');
+    /* 爽感：新到的顾客（el 还没创建过）弹跳入场，老顾客 re-render 不重复播 */
+    if(!c.el)d.style.animation='custIn .38s cubic-bezier(.3,1.4,.5,1) both';
     let icons=c.whatever?'🙆':(c.order?c.order.fills.map(f=>F(f).ic).join(''):(c.type.special==='blogger'?'🎥':'❔'));
     if(c.type.special==='blogger')icons='🎥'+icons;
     if(c.order&&c.order.hidden)icons+={hot:'🔥',warm:'🍵',neat:'📦'}[c.order.hidden];
@@ -511,7 +513,7 @@ function foldAt(i,hit){
   const off=clamp((hit&&hit.dist!=null?hit.dist:R)/R,0,1.2);
   w.foldOff=off; w.foldHeat=w.heat; w.st='fold'; w.foldT=0;
   G.picked=-1; renderFillTray(); drawPan();
-  if(off<.35){ SFX.ding(); w.spark={t:0}; vibrate(25); toast('对折漂亮！','good'); }
+  if(off<.35){ SFX.ding(); w.spark={t:0}; w.aura=1; vibrate(25); toast('对折漂亮！','good'); }
   else if(off<.6){ toast('折歪了一点点，凑合','bad'); }
   else if(off<.8){ SFX.fail(); toast('折歪了…顾客看在火的份上忍了','bad'); }
   else { SFX.fail(); shake(); vibrate(40); toast('这形状属于行为艺术','bad'); }
@@ -1046,6 +1048,7 @@ function serviceLoop(now){
   G.arrivalAcc+=dt;
   if(G.arrivalAcc>=arrivalInterval()){ G.arrivalAcc=0; tryArrive(); }
   helperTick(dt); onlineTick(dt); fpsTick(dt); autoDeliver(); spoilBatterTick();
+  if(typeof SFX!=='undefined'&&SFX.bgmOn)SFX.bgmTick(dt);
   if(G.hypeT>0)G.hypeT-=dt;
   if(G.godT>0)G.godT-=dt;
   if(G.preheatT>0)G.preheatT-=dt;
@@ -1218,6 +1221,19 @@ function drawPan(){
         ctx.font='11px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillStyle='rgba(255,255,255,.9)';
         ctx.fillText(Math.round(w.heat)+'°',p.x,p.y+R*.52);
+      }
+      /* 爽感：完美对折后金光环脉冲（w.aura 从 1 衰减到 0），FEVER 期间整锅常驻呼吸金晕 */
+      if(w.aura>0||G.fever){
+        let a=w.aura||0;
+        if(G.fever)a=Math.max(a,.32+.14*Math.sin(Date.now()/300));
+        if(a>0){
+          ctx.beginPath(); ctx.arc(p.x,p.y,R*.95,0,7);
+          ctx.strokeStyle='rgba(245,185,66,'+(.75*a)+')';
+          ctx.lineWidth=3+2*a; ctx.stroke();
+          ctx.beginPath(); ctx.arc(p.x,p.y,R*1.06,0,7);
+          ctx.strokeStyle='rgba(245,185,66,'+(.35*a)+')'; ctx.lineWidth=1.5; ctx.stroke();
+        }
+        if(w.aura>0)w.aura=Math.max(0,w.aura-(.016*60)/75);   /* 约 1.25s 衰减 */
       }
       if(w.st==='burn'){
         ctx.beginPath(); ctx.arc(p.x,p.y,R*.78,0,7);

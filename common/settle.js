@@ -64,6 +64,9 @@ function renderSettle(){
   $('#settleBody').prepend(sb);
   const big=$('#settleBody .billBig'); if(big&&typeof countUp==='function')countUp(big,net,900);
   $('#btnNextDay').textContent='迎接第 '+(S.day+1)+' 天 →';
+  /* 爽感：赚钱日 confetti 雨（net>0 越多撒越多；亏钱日灰色碎屑自哀） */
+  if(net>0){ confettiRain(Math.min(40,14+Math.round(net/8))); if(net>60)SFX.fanfare(); }
+  else if(net<0){ confettiRain(8,'sad'); }
   offerPrebook();
   checkEndings();
   checkCrisis();

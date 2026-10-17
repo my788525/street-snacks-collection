@@ -78,6 +78,20 @@ function coinRain(n){
     layer.appendChild(c); setTimeout(()=>c.remove(),1600);
   }
 }
+/* 结算页彩带雨（net>0 撒金带，net<0 灰色碎屑「自哀」模式） */
+function confettiRain(n,mode){
+  const app=$('#app'); if(!app)return;
+  const layer=$('#toastLayer')||app;
+  const palette=mode==='sad'?['#9a9a9a','#7d7d7d','#b5b5b5']:['#F5B942','#E87A4F','#7FB069','#4D8BC4','#D77BA6','#fff'];
+  for(let i=0;i<(n||20);i++){
+    const c=document.createElement('div');
+    const w=6+Math.random()*8, h=10+Math.random()*8;
+    c.style.cssText='position:absolute;top:-24px;left:'+(Math.random()*94)+'%;width:'+w+'px;height:'+h+'px;z-index:97;pointer-events:none;'+
+      'background:'+palette[(Math.random()*palette.length)|0]+';border-radius:'+(Math.random()>.5?'2px':'50%')+';'+
+      'animation:confettiFall '+(1.4+Math.random()*1.2)+'s ease-in '+(Math.random()*.6)+'s forwards';
+    layer.appendChild(c); setTimeout(()=>c.remove(),3400);
+  }
+}
 /* FEVER 金闪 */
 function feverFlash(){
   const f=$('#flash'); if(!f)return;

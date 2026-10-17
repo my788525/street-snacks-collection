@@ -127,6 +127,30 @@ const SFX={
     this.tone(base,.1,'triangle',.18);
     setTimeout(()=>this.tone(base*1.5,.14,'triangle',.14),60);
   },
+  /* BGM：轻快 loop（帧驱动 bgmTick(dt)，挂主循环；FEVER 时节奏翻倍+加料） */
+  bgmOn:false,bgmAcc:0,bgmStep:0,
+  bgm(){
+    if(this.bgmOn){ this.bgmStop(); return; }
+    if(!this.ctx)return;
+    this.bgmOn=true; this.bgmAcc=0; this.bgmStep=0;
+  },
+  bgmTick(dt){
+    if(!this.bgmOn)return;
+    this.bgmAcc+=dt;
+    const stepDur=(typeof G!=='undefined'&&G&&G.fever)?0.15:0.3;   /* FEVER 时八分节奏 */
+    while(this.bgmAcc>=stepDur){
+      this.bgmAcc-=stepDur;
+      const notes=[392,523.25,659.25,783.99,659.25,523.25];   /* G4-C5-E5-G5-E5-C5 轻快上行 */
+      const f=notes[(this.bgmStep>>1)%notes.length];
+      const up=(this.bgmStep%2);
+      this.tone(up?f*2:f,.16,'sine',up?.05:.06);
+      if(typeof G!=='undefined'&&G&&G.fever)this.tone(f*4,.12,'triangle',.045);   /* FEVER 加倍音 */
+      this.bgmStep++;
+    }
+  },
+  bgmStop(){
+    this.bgmOn=false; this.bgmAcc=0; this.bgmStep=0;
+  },
   ding(){this.tone(1046,.35,'sine',.3);setTimeout(()=>this.tone(1568,.4,'sine',.2),90)},
   pop(){this.tone(300,.1,'sine',.25,260)},
   fail(){this.tone(220,.4,'sawtooth',.25,-140);this.noise(.25,.18,500,1)},
