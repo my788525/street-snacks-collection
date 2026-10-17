@@ -24,6 +24,8 @@ function renderPrep(){
     </div>
     <div class="tiny mut" style="margin-top:8px">今日心理价位 ≈ <b style="color:var(--caramel)">${fmt(psych)}</b> · 超过 1.3 倍会有客人扭头就走</div>
   </div>`;
+  const DLT=dayLenTotal();
+  h+=`<div class="tiny mut" style="margin-top:4px">⏱ 今日营业约 <b style="color:var(--caramel)">${fmt(Math.round(DLT))} 秒</b>（${Math.round(DLT/60*10)/10} 分钟）· 出摊后右上角有倒计时</div>`;
   // 发酵
   h+=`<div class="h2" style="margin:14px 0 8px">🫙 ${V('prepName')}</div><div class="prepGrid">`;
   GAME.ferms.forEach(f=>{

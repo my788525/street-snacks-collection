@@ -175,6 +175,46 @@ run('回归：读档后营业不炸', () => {
   sandbox.lostCustomer('测试流失');
   sandbox.serviceLoop(sandbox.performance.now() + 16);
 });
+run('燃气指示 + 倒计时 + 断气门槛', () => {
+  sandbox.S.gas = 3; G().gasUsed = 0; G().gasOut = false; G().dayT = 0; sandbox.S.day = 5;
+  const total = sandbox.dayLenTotal();
+  if (!(total > 0)) throw new Error('dayLenTotal 应为正');
+  // 用掉 1.5 瓶（300 单位）→ 剩余瓶数 3 - floor(300/200)=2；当前瓶已用 (300%200)/200=50%
+  G().gasUsed = 300;
+  const cansLeft = Math.max(0, sandbox.S.gas - Math.floor(G().gasUsed / 200));
+  const curUsed = (G().gasUsed % 200) / 200 * 100;
+  if (cansLeft !== 2) throw new Error('剩余瓶数应为 2，实为 ' + cansLeft);
+  if (Math.round(curUsed) !== 50) throw new Error('当前瓶已用应为 50%，实为 ' + curUsed);
+  // 断气事件门槛：满气不应有资格；仅剩 <1 瓶才有资格
+  sandbox.S.gas = 3; G().gasUsed = 0;
+  if ((sandbox.S.gas * 200 - G().gasUsed) < 200) throw new Error('满气时断气事件不应有资格');
+  sandbox.S.gas = 3; G().gasUsed = 3 * 200 - 100;
+  if (!((sandbox.S.gas * 200 - G().gasUsed) < 200)) throw new Error('仅剩<1瓶时断气事件应有资格');
+  // 状态条渲染不崩，且含倒计时与燃气
+  G().gasUsed = 0; G().dayT = 10; sandbox.renderStoveStatus();
+  const ss = getEl('#stoveStatus').innerHTML;
+  if (!ss.includes('今日') || !ss.includes('燃气')) throw new Error('状态条应含倒计时与燃气');
+});
+run('顾客“随便”接受任意糕 + 优先级 + 波动', () => {
+  const mk = (whatever) => ({ type: X.CUSTOMERS[0], order: { fills: [], done: 'std', whatever: true }, whatever, pat: 60, wait: 0, max: 60, el: sandbox.document.createElement('div'), barEl: null, said: false });
+  // 任意糕都应被随便顾客接受（最后兜底）
+  G().queue.length = 0; G().queue.push(mk(true));
+  const ti = sandbox.findTaker({ fills: ['sugar', 'cream'], q: .9, foldHeat: 330, foldOff: 0 });
+  if (ti < 0) throw new Error('随便顾客应接受任意糕');
+  // 与明确口味顾客同队时，明确者优先
+  const explicit = { type: X.CUSTOMERS[1], order: { fills: ['sugar'], done: 'std' }, pat: 60, wait: 60, max: 60, el: sandbox.document.createElement('div'), barEl: null, said: false };
+  G().queue.length = 0; G().queue.push(mk(true)); G().queue.push(explicit);
+  const ti2 = sandbox.findTaker({ fills: ['sugar'], q: .9, foldHeat: 330, foldOff: 0 });
+  if (ti2 < 0 || G().queue[ti2] !== explicit) throw new Error('明确口味应优先于随便顾客');
+  // 真实出餐管线：随便顾客接到任意糕不崩，且满意度波动放大
+  const c2 = mk(true);
+  const r = sandbox.serveCustomer(c2, { fills: ['sugar'], q: .9, foldHeat: 330, foldOff: 0 });
+  if (!r || typeof r.sat !== 'number' || r.sat < 0 || r.sat > 1.15) throw new Error('随便顾客出餐应返回合法 sat');
+  // 波动更大：偏离中性的幅度被 ×1.3
+  const hi = Math.max(0, Math.min(1.15, 0.5 + (0.6 - 0.5) * 1.3));
+  const lo = Math.max(0, Math.min(1.15, 0.5 + (0.4 - 0.5) * 1.3));
+  if (!(hi > 0.6 && lo < 0.4)) throw new Error('随便顾客增益/减益应同时放大');
+});
 run('P0 combo/milestone', () => { const before = G().combo; sandbox.comboBump(true); if (G().combo !== before + 1) throw new Error('combo fail'); sandbox.checkMilestones(); sandbox.checkAch(); });
 run('P0 limits', () => { sandbox.S.limits = { 'cream+sugar': 1 }; sandbox.startLimits(); if (!sandbox.limitCheck('cream+sugar')) throw new Error('first should pass'); if (sandbox.limitCheck('cream+sugar')) throw new Error('second should sell out'); });
 run('P0 tasting', () => { sandbox.S.tasting = true; const d = sandbox.tastingDeal('never+seen', 10); if (d.price !== 5 || !d.first) throw new Error('tasting fail'); });
@@ -372,9 +412,14 @@ run('高影响力顾客满意 → 触发安利链', () => {
 });
 run('社会工程学：被安利来的新客标记', () => {
   const S = sandbox.S;
-  G().bulk = null; G().prebook = null; G().online = null; G().referNext = { inf: 3 };
+  G().bulk = null; G().prebook = null; G().online = null; G().bringFriend = null;
   let consumed = false;
-  for (let i = 0; i < 30; i++) { sandbox.tryArrive(); if (G().referNext === null) { consumed = true; break; } }
+  for (let i = 0; i < 40; i++) {
+    G().queue.length = 0; // 防止队列填满导致提前 return，保证每次都能走到 referNext 消费分支
+    G().referNext = { inf: 3 };
+    sandbox.tryArrive();
+    if (G().referNext === null) { consumed = true; break; }
+  }
   if (!consumed) throw new Error('referNext 应被消费');
 });
 run('口碑热度影响到达率（高 buzz 更聚客）', () => {

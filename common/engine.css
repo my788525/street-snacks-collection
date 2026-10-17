@@ -149,6 +149,8 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
 .fireBtn.on{background:var(--caramel);color:#fff}
 .fireBtn.on small{color:#FFE9C9}
 #fireHint{font-size:11px;color:var(--ink2);margin-top:5px;text-align:center}
+.meter{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:2px}
+.meter i{display:block;height:100%;background:var(--leaf);transition:width .25s linear}
 .serveSlot.perfect{border-color:var(--yolk-d);border-style:solid;box-shadow:0 0 0 2px rgba(245,185,66,.35);background:#FFF9E8}
 .serveSlot.wonky{border-style:dotted;opacity:.9;transform:rotate(-1.5deg)}
 .serveSlot .coolBar{position:absolute;left:6px;right:6px;bottom:4px;height:5px;background:#EFE6D4;border:1px solid rgba(61,44,30,.3);border-radius:99px;overflow:hidden}

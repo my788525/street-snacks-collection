@@ -62,6 +62,31 @@ function renderDayChip(){
   if(G.gasOut)t+=' · ⚠断气';
   chip.textContent=t;
 }
+function dayLenTotal(){ return (S.day<=2?200:BAL.dayLen)*(diffOf().dayLen||1); }
+/* 营业页常驻状态条：今日倒计时 + 燃气瓶数与当前瓶消耗%（解决“不知道燃气消耗情况”） */
+function renderStoveStatus(){
+  let p=$('#stoveStatus');
+  if(!p){
+    p=document.createElement('div'); p.id='stoveStatus';
+    p.style.cssText='position:absolute;top:8px;right:10px;z-index:5;font-size:11px;background:rgba(255,253,247,.92);border:1.5px solid var(--ink);border-radius:12px;padding:5px 8px;min-width:124px;box-shadow:0 2px 0 rgba(61,44,30,.18)';
+    $('#panWrap').appendChild(p);
+  }
+  const total=dayLenTotal(), remain=Math.max(0,total-G.dayT);
+  const mm=Math.floor(remain/60), ss=Math.floor(remain%60);
+  const tstr=(mm>0?mm+'分':'')+ss+'秒';
+  const tpct=clamp(remain/total*100,0,100);
+  const rem=Math.max(0,S.gas*BAL.gasCanCap-G.gasUsed);
+  const cansLeft=clamp(S.gas-Math.floor(G.gasUsed/BAL.gasCanCap),0,S.gas);
+  const curUsed=clamp((G.gasUsed%BAL.gasCanCap)/BAL.gasCanCap*100,0,100);
+  const tcol=remain<total*.2?'var(--rouge-d)':'var(--caramel)';
+  const gcol=G.gasOut?'var(--rouge)':(rem<BAL.gasCanCap?'var(--yolk-d)':'var(--leaf)');
+  p.innerHTML=
+    '<div style="display:flex;justify-content:space-between;font-weight:700;line-height:1.2"><span>⏱ 今日</span><span>'+tstr+'</span></div>'+
+    '<div class="meter"><i style="width:'+tpct+'%;background:'+tcol+'"></i></div>'+
+    '<div style="display:flex;justify-content:space-between;font-weight:700;margin-top:4px;line-height:1.2"><span>🛢 燃气 ×'+cansLeft+'</span>'+
+      '<span style="'+(G.gasOut?'color:var(--rouge-d)':'')+'">'+(G.gasOut?'断气':('已用'+Math.round(curUsed)+'%'))+'</span></div>'+
+    '<div class="meter"><i style="width:'+(100-curUsed)+'%;background:'+gcol+'"></i></div>';
+}
 const FIRE_NAMES=['关火','文火','中火','武火'];
 function setFire(f){
   f=clamp(f|0,0,3);
@@ -141,17 +166,21 @@ function tryArrive(){
     if(chance(.08))type=GAME.customers.find(c=>c.id==='blogger');
   }
   const psych=psychPrice();
-  const order=makeOrder(type);
+  const whatever=(type.special!=='blogger')&&chance(.18);
+  const order=whatever?{fills:[],done:'std',whatever:true}:makeOrder(type);
   const price=cakePrice(order.fills);
-  if(price>psych*1.5&&chance(.55)){ lostCustomer('“'+money(price)+'？抢劫哦！”'); return; }
-  if(price>psych*1.3&&chance(.22)){ lostCustomer('“啧，吃不起吃不起。”'); return; }
+  if(!whatever){
+    if(price>psych*1.5&&chance(.55)){ lostCustomer('“'+money(price)+'？抢劫哦！”'); return; }
+    if(price>psych*1.3&&chance(.22)){ lostCustomer('“啧，吃不起吃不起。”'); return; }
+  }
   const c={
-    type, order:order, referred, broughtBy, fromName,
+    type, order:order, whatever, referred, broughtBy, fromName,
     pat:(skillPat(type.pat*(S.day<=BAL.newbieDays?BAL.newbiePat:1))*(S.helper>=2?1.1:1)*(1+(S.fxToday.pat||0)/100)*(S.premises>=3?1.3:1)*(S.fxToday.hunger?.9:1)*(0.9+(S.buzz==null?60:S.buzz)/500)),
     wait:0, el:null, barEl:null, said:false,
     hello:(type.order&&type.order.length)?pick(type.order):'',
   };
-  if(type.special==='regular'&&S.mood&&S.mood.fav)c.order={fills:[...S.mood.fav],done:'std'};
+  if(whatever){ /* 随便：不挑口味，出餐优先级最低、满意度波动更大 */ }
+  else if(type.special==='regular'&&S.mood&&S.mood.fav)c.order={fills:[...S.mood.fav],done:'std'};
   else { const m=custMem(type.id); if(m.loyal&&m.fav&&m.fav.length){ c.order={fills:[...m.fav],done:'std'}; c.usual=true; } }  // 老主顾点老规矩
   if(referred||broughtBy)S.affinity[type.id]=Math.max(aff(type.id),60);
   c.max=c.pat;
@@ -203,7 +232,7 @@ function renderQueue(){
   const z=$('#queueZone'); z.innerHTML='';
   G.queue.forEach((c,i)=>{
     const d=document.createElement('div'); d.className='cust'+(c.short?' short':'')+(c.vip?' vip':'');
-    let icons=c.order?c.order.fills.map(f=>F(f).ic).join(''):(c.type.special==='blogger'?'🎥':'❔');
+    let icons=c.whatever?'🙆':(c.order?c.order.fills.map(f=>F(f).ic).join(''):(c.type.special==='blogger'?'🎥':'❔'));
     if(c.type.special==='blogger')icons='🎥'+icons;
     if(c.order&&c.order.hidden)icons+={hot:'🔥',warm:'🍵',neat:'📦'}[c.order.hidden];
     if(c.umb)icons='☂️'+icons;
@@ -212,10 +241,10 @@ function renderQueue(){
     if(c.broughtBy)icons='🤝'+icons;
     else if(c.referred)icons='📣'+icons;
     else if(aff(c.type.id)>=LOYAL_AT)icons='❤️'+icons;
-    const orderHtml=c.order?c.order.fills.map(f=>{
+    const orderHtml=c.whatever?'🙆 随便':(c.order?c.order.fills.map(f=>{
       const miss=(S.inv[f]||0)<=0;
       return '<span style="'+(miss?'color:var(--rouge-d);text-decoration:line-through':'')+'">'+F(f).n+'</span>';
-    }).join('+')+(c.order.done!=='std'?'·'+GAME.doneness.find(x=>x.id===c.order.done).n:'')+(c.wantsFresh?'·<b style="color:var(--caramel)">要现做</b>':'')+(c.short?'·缺货':'')+(c.order.hidden?'·'+({hot:'烫嘴',warm:'温热',neat:'别洒'})[c.order.hidden]:''):'观察中…';
+    }).join('+')+(c.order.done!=='std'?'·'+GAME.doneness.find(x=>x.id===c.order.done).n:'')+(c.wantsFresh?'·<b style="color:var(--caramel)">要现做</b>':'')+(c.short?'·缺货':'')+(c.order.hidden?'·'+({hot:'烫嘴',warm:'温热',neat:'别洒'})[c.order.hidden]:''):'观察中…');
     d.innerHTML=`<div class="custBubble">${icons}</div>
       <div class="custFace"><div class="eye l"></div><div class="eye r"></div><div class="mouth"></div></div>
       <div class="custName">${c.type.ic}${c.type.n}</div>
@@ -422,8 +451,9 @@ function findTaker(s){
     const c=G.queue[i]; if(!c.order||c.type.special!=='blogger')continue;
     if(c.order.fills.length===s.fills.length&&c.order.fills.every(f=>s.fills.includes(f))&&!(stale&&c.wantsFresh))return i;
   }
+  // 明确口味的顾客（无明确需求者最后兜底）
   for(let i=0;i<G.queue.length;i++){
-    const c=G.queue[i]; if(!c.order)continue;
+    const c=G.queue[i]; if(!c.order||c.whatever)continue;
     if(c.order.fills.length===s.fills.length&&c.order.fills.every(f=>s.fills.includes(f))){
       if(stale&&c.wantsFresh)continue;
       return i;
@@ -431,7 +461,7 @@ function findTaker(s){
   }
   let bestI=-1,bestV=0;
   for(let i=0;i<G.queue.length;i++){
-    const c=G.queue[i]; if(!c.order)continue;
+    const c=G.queue[i]; if(!c.order||c.whatever)continue;
     if(c.wait<c.max*.35)continue;
     if(stale&&c.wantsFresh)continue;
     const inter=c.order.fills.filter(f=>s.fills.includes(f)).length;
@@ -439,6 +469,8 @@ function findTaker(s){
   }
   if(bestI>=0)return bestI;
   for(let i=0;i<G.queue.length;i++){ if(!G.queue[i].order)return i; }
+  // 最后才轮到“随便”的客人（任何明确口味优先）
+  for(let i=0;i<G.queue.length;i++){ if(G.queue[i].whatever)return i; }
   return -1;
 }
 function canTake(s){
@@ -539,7 +571,7 @@ function serveCustomer(c,cake){
   const d=GAME.doneness.find(x=>x.id===(c.order?c.order.done:'std'));
   const dist=Math.abs(cake.foldHeat-d.target);
   const heatScore=clamp(1-dist/(skillTol(d.tol*diffOf().tol)*2.4),0,1);
-  const want=c.order?c.order.fills:[];
+  const want=c.whatever?[]:(c.order?c.order.fills:[]);
   let fillScore=1;
   if(want.length){
     const inter=want.filter(f=>cake.fills.includes(f)).length;
@@ -574,6 +606,8 @@ function serveCustomer(c,cake){
   const priceScore=clamp(1-(price-psych)/psych*1.4*(1.1-(S.buzz==null?60:S.buzz)/300),0,1);
   const sat0=clamp(q*.45+speed*.3+priceScore*.25+(GAME.premises[S.premises].sat+5)/100,0,1);
   let sat=sat0;
+  // “随便”顾客：满意度波动更大——吃美了更开心，翻车了更记仇（增益/减益均放大）
+  if(c.whatever)sat=clamp(0.5+(sat-0.5)*1.3,0,1.15);
   // —— 顾客好感度 + 社会工程学 ——
   const _aid=c.type.id, _inf=affInfluence(c.type);
   // 老主顾“给面子”：好感够高时兜底满意度，偶发失误也网开一面
@@ -745,7 +779,7 @@ function triggerEvent(){
   const pool=GAME.events.filter(e=>{
     if(e.id==='chengguan')return cgWeight()>0;
     if(e.id==='inspect')return S.day>BAL.newbieDays;
-    if(e.id==='gasout')return S.gas>0;
+    if(e.id==='gasout')return !G.gasOut && (S.gas*BAL.gasCanCap - G.gasUsed) < BAL.gasCanCap;
     if(e.id==='blogger')return !G.queue.some(x=>x.type.special==='blogger');
     if(e.id==='bulk')return !G.bulk&&S.day>BAL.newbieDays&&!diffOf().noBulk;
     return true;
@@ -943,7 +977,7 @@ function serviceLoop(now){
   if(G.eventCd<=0)triggerEvent();
   // 日终
   if(G.dayT>=(S.day<=2?200:BAL.dayLen)*(diffOf().dayLen||1)){ endService(); return; }
-  drawPan(); updateQueueDom(); updateServeDom(); hudUpdate();
+  drawPan(); updateQueueDom(); updateServeDom(); renderStoveStatus(); hudUpdate();
   G.raf=requestAnimationFrame(serviceLoop);
 }
 

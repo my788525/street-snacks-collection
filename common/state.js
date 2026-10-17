@@ -8,7 +8,7 @@ const BAL={
   comfortAfter:2, comfortFlow:1.2,
   crisisMoney:10, crisisDays:3, legacyMoney:30, bailDef:80,
   batterPerFlour:4, cakeBase:.5, repTarget:.62, repK:6, repDamp:.3,
-  dayLen:150, gasRate:[0,.5,1,2], gasCanCap:200, spoilAt:24, staleAt:12, discountFrom:4, discountRate:.025, discountFloor:.5,
+  dayLen:150, gasRate:[0,.5,1,1.5], gasCanCap:200, spoilAt:24, staleAt:12, discountFrom:4, discountRate:.025, discountFloor:.5,
 };
 const LV_XP=[0,80,220,450,800,1300,2000,3000,4300,6000,8200,11000,15000];
 
@@ -30,7 +30,7 @@ function newGame(name,shop,legacy,diff){
     ver:1, shopName:shop, playerName:name, diff:diff||'std',
     day:1, money:(DIFFS[diff||'std']||DIFFS.std).money+(legacy?BAL.legacyMoney:0), rep:60, xp:0, lv:1,
     premises:0, license:false,
-    inv:{}, flour:6, egg:10, gas:2, batter:0, batterQ:1, ferm:'std',
+    inv:{}, flour:6, egg:10, gas:3, batter:0, batterQ:1, ferm:'std',
     known:{}, signatures:[], darks:[], banned:[], legacyHint: legacy&&legacy.hint?legacy.hint:null,
     buffs:[], adTier:0, budget:0, base:2.5,
     mile:[], ach:[], seenFill:[], seenCust:{}, limits:{}, tasting:false, codexTab:'馅料',
