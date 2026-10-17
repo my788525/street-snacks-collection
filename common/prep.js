@@ -31,9 +31,9 @@ function renderPrep(){
   GAME.ferms.forEach(f=>{
     h+=`<div class="opt ${S.ferm===f.id?'sel':''}" data-f="${f.id}">
       <div class="t">${f.n}</div><div class="d">${f.d}</div>
-      <div class="tiny" style="margin-top:4px;color:var(--caramel)">${V('batter')} +${f.batter} 份 · 质量 ×${f.q}${f.cost?' · '+V('yeast')+' ¥'+f.cost:''}</div></div>`;
+      <div class="tiny" style="margin-top:4px;color:var(--caramel)">${V('batter')} +${f.batter} 份 · 质量 ×${f.q} · 🌾需 ${fermFlourNeed(f)}${f.cost?' · '+V('yeast')+' ¥'+f.cost:''}</div></div>`;
   });
-  h+=`</div><div class="tiny mut" style="margin-top:6px">当前${V('batter')}库存：<b>${S.batter}</b> 份${S.batterBatches&&S.batterBatches.length?`（${S.batterBatches.length} 批）`:''}（1 份 = 1 ${V('unit')}）。可重复选${V('fermWay')}方式<b>分批和面</b>，但出摊后约 <b>${BAL.batterSpoil}</b> 秒没卖完的批次会<b>发酸倒掉</b>——带多了浪费，带少了不够卖，自己拿捏。</div>`;
+  h+=`</div><div class="tiny mut" style="margin-top:6px">当前${V('batter')}库存：<b>${S.batter}</b> 份${S.batterBatches&&S.batterBatches.length?`（${S.batterBatches.length} 批）`:''}（1 份 = 1 ${V('unit')}）。可重复选${V('fermWay')}方式<b>分批和面</b>，但出摊后约 <b>${Math.round(batterSpoilSec())}</b> 秒没卖完的批次会<b>发酸倒掉</b>——带多了浪费，带少了不够卖，自己拿捏。</div>`;
   // 市场
   h+=`<div class="h2" style="margin:14px 0 4px">🧺 菜市场进货</div><div class="card">`;
   const rows=[...GAME.baseItems.map(b=>({...b,qty:S[b.id]===undefined?0:S[b.id],isBase:true})),
@@ -47,7 +47,7 @@ function renderPrep(){
       <div class="p">${fmt(p)}/份 <s>${fmt(old)}</s> <span class="${dir}">${dir==='priceUp'?'↑':dir==='priceDown'?'↓':''}</span> · 库存 <b id="qty_${it.id}">${it.qty}</b></div></div>
       <div class="stepper">${S.rotten&&S.rotten.includes(it.id)?`<button data-rot="${it.id}">🗑</button>`:''}<button data-buy="${it.id}">+</button></div></div>`;
   });
-  h+=`</div><div class="tiny mut" style="margin-top:4px">今日进货已花：<b id="prepSpent">${fmt(G.day?G.day.prep:0)}</b>（${V('flour')} 1 份 = ${BAL.batterPerFlour} 份${V('batter')}）</div>`;
+  h+=`</div><div class="tiny mut" style="margin-top:4px">今日进货已花：<b id="prepSpent">${fmt(G.day?G.day.prep:0)}</b>（买${V('flour')}只进货，去「和面」才变成${V('batter')}：1 ${V('flour')}→${BAL.batterPerFlour} ${V('batter')}）</div>`;
   // 定价
   const ex1=cakePrice([pick(unlockedFillings()).id]);
   h+=`<div class="h2" style="margin:14px 0 8px">🏷️ 定价</div><div class="card">
@@ -105,24 +105,29 @@ function renderPrep(){
   if(typeof staggerIn==='function')staggerIn($('#prepBody'));
   bindPrep();
 }
+function fermMake(f){
+  const need=fermFlourNeed(f);
+  if(S.flour<need){toast('面粉不够，先去菜市场买🌾','bad');SFX.fail();return false}
+  if(f.cost&&S.money<f.cost){toast('连'+V('yeast')+'都买不起了…','bad');return false}
+  S.flour-=need; S.ferm=f.id;
+  const prev=(S.batter||0);
+  addBatter(f.batter,f.q);
+  if(f.cost){S.money-=f.cost;G.day.prep+=f.cost}
+  SFX.pop(); toast(V('batter')+'又和了 +'+(S.batter-prev)+' 份（耗🌾'+need+'·共 '+S.batter+' 份·可继续分批）','good');
+  return true;
+}
 function bindPrep(){
   $$('#prepBody [data-f]').forEach(el=>el.onclick=()=>{
     SFX.click();
     const f=GAME.ferms.find(x=>x.id===el.dataset.f);
-    if(f.cost&&S.money<f.cost){toast('连'+V('yeast')+'都买不起了…','bad');return}
-    S.ferm=f.id;
-    const prev=(S.batter||0);
-    addBatter(f.batter,f.q);
-    if(f.cost){S.money-=f.cost;G.day.prep+=f.cost}
-    SFX.pop(); toast(V('batter')+'又和了 +'+(S.batter-prev)+' 份（共 '+S.batter+' 份·可继续分批）','good');
-    renderPrep(); hudUpdate(); save();
+    if(fermMake(f)){ renderPrep(); hudUpdate(); save(); }
   });
   $$('#prepBody [data-buy]').forEach(b=>b.onclick=()=>{
     const id=b.dataset.buy, it=[...GAME.baseItems,...GAME.fillings].find(x=>x.id===id);
     const p=priceOf(it);
     if(S.money<p){SFX.fail();toast('钱不够，先去挣','bad');return}
     S.money-=p; G.day.prep+=p;
-    if(it.base){ if(id==='flour'){S.flour++;S.batter+=BAL.batterPerFlour;} else S[id]++; }
+    if(it.base){ S[id]++; }
     else S.inv[id]=(S.inv[id]||0)+1;
     if(it.cold)S.spoil[id]=2;
     SFX.coin();

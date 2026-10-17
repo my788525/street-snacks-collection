@@ -170,6 +170,7 @@ run('startDay(false)', () => sandbox.startDay(false));
 run('save/load', () => { sandbox.save(); const s = sandbox.load(); if (!s || s.shopName !== '测试小摊') throw new Error('save/load broken'); });
 run('gracefulExit', () => { sandbox.S.money = 5; G().crisisDays = 3; sandbox.checkCrisis(); });
 run('危机兜底按难度缩放（破产边界适配）', () => {
+  const d0 = sandbox.S.diff;
   const bail = { chill: 100, std: 80, hard: 50, crazy: 30 };
   const cd = { chill: 4, std: 3, hard: 3, crazy: 2 };
   Object.keys(bail).forEach(d => {
@@ -188,6 +189,7 @@ run('危机兜底按难度缩放（破产边界适配）', () => {
   if (!fundBtn.onclick) throw new Error('crazy 危机未被触发（窗口=2 应触发）');
   fundBtn.onclick();
   if (sandbox.S.money !== 35) throw new Error('crazy 兜底后应为 35，实为 ' + sandbox.S.money);
+  sandbox.S.diff = d0;
 });
 run('continueDay', () => sandbox.continueDay());
 run('回归：读档后营业不炸', () => {
@@ -258,40 +260,69 @@ run('操作按钮替换火力按钮：一键倒糊 / 清糊锅', () => {
   if (G().day.waste !== waste0 + 2) throw new Error('清糊锅应计损耗 +2');
 });
 run('面糊可分批和面（多批叠加，不再限 12 份）', () => {
-  G().batterBatches = []; sandbox.S.batter = 0; sandbox.S.batterQ = 1;
+  X.S.batterBatches = []; sandbox.S.batter = 0; sandbox.S.batterQ = 1;
   sandbox.addBatter(12, 1);
   if (sandbox.S.batter !== 12) throw new Error('第一批应为 12，实为 ' + sandbox.S.batter);
-  if (G().batterBatches.length !== 1) throw new Error('应有 1 批');
+  if (X.S.batterBatches.length !== 1) throw new Error('应有 1 批');
   sandbox.addBatter(12, 1.1);  // 第二批，更高质量
   if (sandbox.S.batter !== 24) throw new Error('两批叠加应为 24，实为 ' + sandbox.S.batter);
-  if (G().batterBatches.length !== 2) throw new Error('应有 2 批');
+  if (X.S.batterBatches.length !== 2) throw new Error('应有 2 批');
   // 倒糊按批次 FIFO 消耗，先消耗第一批（质量 1）
   G().wells.forEach(w => { w.st = 'empty'; });
   sandbox.pourWell(0);
   if (G().wells[0].batterQ !== 1) throw new Error('应先消耗第一批质量 1，实为 ' + G().wells[0].batterQ);
   if (sandbox.S.batter !== 23) throw new Error('倒 1 锅后应剩 23，实为 ' + sandbox.S.batter);
-  if (G().batterBatches[0].n !== 11) throw new Error('第一批应剩 11，实为 ' + (G().batterBatches[0] && G().batterBatches[0].n));
+  if (X.S.batterBatches[0].n !== 11) throw new Error('第一批应剩 11，实为 ' + (X.S.batterBatches[0] && X.S.batterBatches[0].n));
 });
 run('面糊过期发酸（带多了没卖完就倒掉）', () => {
-  G().batterBatches = [];
+  X.S.batterBatches = [];
   sandbox.S.batter = 0; G().day.waste = 0; G().day.cost = 0; G().dayT = 100;
   // 一批 95s 前和的面（madeAt=0）→ 已超时；一批刚和（madeAt=100）→ 新鲜
-  G().batterBatches.push({ madeAt: 0, n: 10, q: 1 });
-  G().batterBatches.push({ madeAt: 100, n: 5, q: 1 });
+  X.S.batterBatches.push({ madeAt: 0, n: 10, q: 1 });
+  X.S.batterBatches.push({ madeAt: 100, n: 5, q: 1 });
   sandbox.S.batter = 15;
   sandbox.spoilBatterTick();
   if (sandbox.S.batter !== 5) throw new Error('过期 10 份应被倒掉，应剩 5，实为 ' + sandbox.S.batter);
   if (G().day.waste !== 10) throw new Error('过期应计损耗 +10，实为 ' + G().day.waste);
-  if (G().batterBatches.length !== 1) throw new Error('应只剩 1 批');
-  if (G().batterBatches[0].n !== 5) throw new Error('剩的应为 5，实为 ' + (G().batterBatches[0] && G().batterBatches[0].n));
+  if (X.S.batterBatches.length !== 1) throw new Error('应只剩 1 批');
+  if (X.S.batterBatches[0].n !== 5) throw new Error('剩的应为 5，实为 ' + (X.S.batterBatches[0] && X.S.batterBatches[0].n));
 });
 run('状态条含面糊保鲜倒计时', () => {
-  G().batterBatches = [{ madeAt: 0, n: 5, q: 1 }];
+  sandbox.S.diff = 'std';
+  X.S.batterBatches = [{ madeAt: 0, n: 5, q: 1 }];
   sandbox.S.batter = 5; G().dayT = 0; G().gasOut = false; G().gasUsed = 0; sandbox.S.day = 5;
   sandbox.renderStoveStatus();
   const ss = getEl('#stoveStatus').innerHTML;
   if (!ss.includes('面糊')) throw new Error('状态条应含面糊行');
   if (!ss.includes('95s')) throw new Error('面糊倒计时应为 95s，实为 ' + ss);
+});
+run('面糊保鲜期随难度缩放（难度越高保鲜越短）', () => {
+  const prev = X.S.diff;
+  X.S.diff = 'chill'; const c = sandbox.batterSpoilSec();
+  X.S.diff = 'std';   const s = sandbox.batterSpoilSec();
+  X.S.diff = 'hard';  const h = sandbox.batterSpoilSec();
+  X.S.diff = 'crazy'; const z = sandbox.batterSpoilSec();
+  X.S.diff = prev;
+  if (s !== 95) throw new Error('标准应=95，实为 ' + s);
+  if (c !== 152) throw new Error('佛系应=152，实为 ' + c);
+  if (h !== 76)  throw new Error('硬核应=76，实为 ' + h);
+  if (z !== 57)  throw new Error('疯狂应=57，实为 ' + z);
+  if (!(c > s && s > h && h > z)) throw new Error('难度越高保鲜应越短');
+});
+run('和面消耗面粉且面粉不足时失败', () => {
+  const std = X.GAME.ferms.find(f => f.id === 'std');
+  if (sandbox.fermFlourNeed(std) !== 3) throw new Error('std 应需 3 面粉，实为 ' + sandbox.fermFlourNeed(std));
+  X.S.flour = 0; X.S.batter = 0; X.S.money = 60; X.S.batterBatches = [];
+  let ok = sandbox.fermMake(std);
+  if (ok !== false) throw new Error('面粉 0 时和面应失败');
+  if (X.S.batter !== 0) throw new Error('面粉不足不应产出面糊');
+  if (X.S.flour !== 0) throw new Error('面粉不足不应扣面粉');
+  X.S.flour = 5;
+  ok = sandbox.fermMake(std);
+  if (ok !== true) throw new Error('面粉充足应和面成功');
+  if (X.S.flour !== 2) throw new Error('应扣 3 面粉剩 2，实为 ' + X.S.flour);
+  if (X.S.batter !== 12) throw new Error('应加 12 面糊，实为 ' + X.S.batter);
+  if (!X.S.batterBatches.length || X.S.batterBatches[0].n !== 12) throw new Error('应记 1 批 12 份');
 });
 run('火力循环切档（PC 点击兼容）', () => {
   const S = sandbox.S;

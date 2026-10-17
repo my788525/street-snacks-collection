@@ -94,11 +94,11 @@ function renderStoveStatus(){
     if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate(G.gasOut?[200,80,200]:120);
   }
   if(!G.gasOut&&!low)p.dataset.warned='';
-  // 面糊批次状态：剩余份数 + 最老批次保鲜倒计时（出摊后约 BAL.batterSpoil 秒发酸）
+  // 面糊批次状态：剩余份数 + 最老批次保鲜倒计时（按难度缩放，出摊后约 batterSpoilSec() 秒发酸）
   const bf=batterOldestFresh();
   const hasB=S.batter>0;
   const bcol=!hasB?'var(--mut)':(bf<20?'var(--rouge-d)':'var(--yolk-d)');
-  const bpct=!hasB?0:clamp(bf/BAL.batterSpoil*100,0,100);
+  const bpct=!hasB?0:clamp(bf/batterSpoilSec()*100,0,100);
   const btxt=!hasB?'0 份·去备货':(S.batter+' 份·'+Math.max(0,Math.ceil(bf))+'s 后发酸');
   p.innerHTML=
     '<div style="display:flex;align-items:center;gap:6px"><span style="font-weight:700;flex:none">⏱ 今日</span>'+
@@ -427,29 +427,31 @@ function wellTap(i,hit){
   }
 }
 /* 面糊批次：支持分批和面，每批带时间戳，超过保鲜期发酸过期 */
+function batterSpoilSec(){ return BAL.batterSpoil*(diffOf().batterSpoilMul||1); }
+function fermFlourNeed(f){ return Math.ceil((f&&f.batter||0)/BAL.batterPerFlour); }
 function addBatter(n,q){
   if(n<=0)return;
-  G.batterBatches=G.batterBatches||[];
-  G.batterBatches.push({madeAt:G.dayT||0,n:n,q:q||1});
+  S.batterBatches=S.batterBatches||[];
+  S.batterBatches.push({madeAt:G.dayT||0,n:n,q:q||1});
   S.batter=(S.batter||0)+n;
   S.batterQ=q||1;
 }
 function consumeBatter(){
-  G.batterBatches=G.batterBatches||[];
-  for(let i=0;i<G.batterBatches.length;i++){
-    const b=G.batterBatches[i];
-    if(b.n>0){ b.n--; S.batter=Math.max(0,(S.batter||0)-1); const q=b.q; if(b.n<=0)G.batterBatches.splice(i,1); return q; }
+  S.batterBatches=S.batterBatches||[];
+  for(let i=0;i<S.batterBatches.length;i++){
+    const b=S.batterBatches[i];
+    if(b.n>0){ b.n--; S.batter=Math.max(0,(S.batter||0)-1); const q=b.q; if(b.n<=0)S.batterBatches.splice(i,1); return q; }
   }
   // 兜底：无批次记录但有存量（兼容旧存档/测试直接写 S.batter 的路径）
   if((S.batter||0)>0){ S.batter=Math.max(0,(S.batter||0)-1); return S.batterQ||1; }
   return null;
 }
 function spoilBatterTick(){
-  G.batterBatches=G.batterBatches||[];
-  if(!G.batterBatches.length)return;
+  S.batterBatches=S.batterBatches||[];
+  if(!S.batterBatches.length)return;
   let spoiled=0;
-  G.batterBatches=G.batterBatches.filter(b=>{
-    if((G.dayT||0)-(b.madeAt) > BAL.batterSpoil){ spoiled+=b.n; return false; }
+  S.batterBatches=S.batterBatches.filter(b=>{
+    if((G.dayT||0)-(b.madeAt) > batterSpoilSec()){ spoiled+=b.n; return false; }
     return true;
   });
   if(spoiled>0){
@@ -459,11 +461,11 @@ function spoilBatterTick(){
   }
 }
 function batterOldestFresh(){
-  G.batterBatches=G.batterBatches||[];
+  S.batterBatches=S.batterBatches||[];
   let oldest=null;
-  G.batterBatches.forEach(b=>{ if(b.n>0&&(oldest===null||b.madeAt<oldest))oldest=b.madeAt; });
+  S.batterBatches.forEach(b=>{ if(b.n>0&&(oldest===null||b.madeAt<oldest))oldest=b.madeAt; });
   if(oldest===null)return null;
-  return BAL.batterSpoil-((G.dayT||0)-oldest);
+  return batterSpoilSec()-((G.dayT||0)-oldest);
 }
 function pourWell(i){
   const bq=consumeBatter();
