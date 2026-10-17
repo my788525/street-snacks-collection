@@ -1021,6 +1021,7 @@ function eventAdScandal(){
 /* ---------- 主循环 ---------- */
 function serviceLoop(now){
   if(!G.running)return;
+  try{
   const dt=Math.min(.05,(now-G.last)/1000); G.last=now;
   G.dayT+=dt;
   // 燃气
@@ -1081,10 +1082,14 @@ function serviceLoop(now){
   // 事件
   G.eventCd-=dt;
   if(G.eventCd<=0)triggerEvent();
-  // 日终
+  // 日终（退出主循环，停帧；G.running 由 endService 置 false）
   if(G.dayT>=(S.day<=2?200:BAL.dayLen)*(diffOf().dayLen||1)){ endService(); return; }
   drawPan(); updateQueueDom(); updateServeDom(); renderStoveStatus(); hudUpdate();
-  G.raf=requestAnimationFrame(serviceLoop);
+  }catch(e){ /* 任一步异常都不可冻结循环：吃掉错误、下一帧继续跑 */ }
+  finally{
+    // 只有「还没日终」时才续帧；日终 endService 已 cancelAnimationFrame 并置 G.running=false
+    if(G.running)G.raf=requestAnimationFrame(serviceLoop);
+  }
 }
 
 /* ---------- 画锅 ---------- */
