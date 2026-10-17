@@ -236,6 +236,42 @@ run('低气状态条脉动 + 断气强红抖', () => {
   G().gasOut = false; sandbox.S.gas = 3; G().gasUsed = 0; sandbox.renderStoveStatus();
   if (ss.classList.contains('low') || ss.classList.contains('out')) throw new Error('正常状态不应有 low/out 类');
 });
+run('操作按钮替换火力按钮：一键倒糊 / 清糊锅', () => {
+  // 一键倒糊：所有空锅倒糊，糊不够按剩余量算
+  sandbox.S.batter = 99;
+  G().wells.forEach(w => { w.st = 'empty'; w.heat = 0; w.fills = []; });
+  sandbox.pourAll();
+  if (!G().wells.every(w => w.st === 'batter')) throw new Error('一键倒糊后应全部变 batter');
+  if (sandbox.S.batter !== 99 - 7) throw new Error('7 锅应消耗 7 份糊');
+  // 糊不够：只倒得出剩余份数
+  G().wells.forEach(w => { w.st = 'empty'; });
+  sandbox.S.batter = 2;
+  sandbox.pourAll();
+  const poured = G().wells.filter(w => w.st === 'batter').length;
+  if (poured !== 2) throw new Error('糊 2 份应只倒 2 锅，实为 ' + poured);
+  // 清糊锅
+  G().wells.forEach(w => { w.st = 'empty'; });
+  G().wells[0].st = 'burn'; G().wells[3].st = 'burn';
+  const waste0 = G().day.waste;
+  sandbox.trashBurnt();
+  if (G().wells.some(w => w.st === 'burn')) throw new Error('清糊锅后不应剩 burn');
+  if (G().day.waste !== waste0 + 2) throw new Error('清糊锅应计损耗 +2');
+});
+run('锅位排列对齐且不溢出窗口', () => {
+  // 直接复算布局公式：顶行 4 锅、底行 3 锅，全部圆心+半径须落在画布内
+  const W = 500, H = 190, R = Math.min(W / 9.2, H * .25);
+  const pos = [];
+  for (let c = 0; c < 4; c++) pos.push({ x: (c + .5) * W / 4, y: H * .31 });
+  for (let c = 0; c < 3; c++) pos.push({ x: (c + .5) * W / 3, y: H * .74 });
+  if (pos.length !== 7) throw new Error('应 7 口锅');
+  pos.forEach((p, i) => {
+    if (p.x - R < 0 || p.x + R > W) throw new Error('锅 ' + i + ' 水平溢出画布 (x=' + p.x.toFixed(1) + ', R=' + R.toFixed(1) + ')');
+  });
+  // 顶行等间距、底行等间距（对齐）
+  const topX = pos.slice(0, 4).map(p => p.x), botX = pos.slice(4).map(p => p.x);
+  for (let i = 1; i < 4; i++) if (Math.abs((topX[i] - topX[i - 1]) - W / 4) > 1e-6) throw new Error('顶行不等距');
+  for (let i = 1; i < 3; i++) if (Math.abs((botX[i] - botX[i - 1]) - W / 3) > 1e-6) throw new Error('底行不等距');
+});
 run('“随便”概率按客群细分（大爷>游客）', () => {
   vm.runInContext('GAME.__orig = GAME.customers', sandbox);
   try {

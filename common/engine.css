@@ -143,11 +143,9 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
 #knobVal{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;font-weight:700;pointer-events:none;line-height:1.2}
 #knobVal small{font-size:10px;font-weight:400;color:var(--ink2)}
 #fireCtrls{flex:1;min-width:0}
-.fireGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.fireBtn{min-height:40px;border:2px solid var(--ink);border-radius:12px;background:var(--card);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
-.fireBtn small{font-size:10px;font-weight:400;color:var(--ink2)}
-.fireBtn.on{background:var(--caramel);color:#fff}
-.fireBtn.on small{color:#FFE9C9}
+.opGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.opBtn{min-height:36px;border:2px solid var(--ink);border-radius:12px;background:var(--card);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:2px;white-space:nowrap}
+.opBtn:active{background:var(--warn)}
 #fireHint{font-size:11px;color:var(--ink2);margin-top:5px;text-align:center}
 .meter{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:2px}
 .meter i{display:block;height:100%;background:var(--leaf);transition:width .25s linear}
@@ -268,7 +266,7 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
   #panCanvas{height:152px}
   #queueZone{min-height:70px}
   #fireRow{padding:6px 10px 2px}
-  .fireBtn{min-height:40px;font-size:13px}
+  .opBtn{min-height:34px;font-size:11.5px}
   #hud{padding:6px 10px}
   .cust{width:92px;padding:4px}
   .custFace{width:32px;height:32px}
@@ -281,7 +279,7 @@ mark{background:linear-gradient(transparent 55%, #F8DE9C 55%);color:inherit;padd
 @media (max-height:640px){
   #panCanvas{height:126px}
   #queueZone{min-height:58px}
-  .fireBtn{min-height:36px}
+  .opBtn{min-height:32px}
   .serveSlot{width:58px;font-size:18px}
   .hudItem{font-size:13px;padding:2px 8px}
 }

@@ -22,14 +22,17 @@ function initService(){
   if(!G.day)G.day=freshDayRec();
   G.godUsed=false; G.godT=0; G.hypeT=0; G.onlineT=18; G.online=null; G.preheatT=6; G.preheatV=S.preheat||(S.day<=BAL.newbieDays?50:0); G.helperT=8; G.frames=0; G.fpsT=0;
   renderFire(); renderQueue(); renderServe(); renderFillTray(); renderDayChip();
-  if(!$('#btnYell')){
-    const y=document.createElement('button'); y.id='btnYell'; y.className='btn ghost tiny'; y.textContent='📣 吆喝';
-    y.style.cssText='position:absolute;top:6px;right:62px;z-index:5;min-height:32px;padding:2px 10px';
-    y.onclick=yell; $('#panWrap').appendChild(y);
-    const g=document.createElement('button'); g.id='btnGod'; g.className='btn ghost tiny'; g.textContent='🙏 拜锅神';
-    g.style.cssText='position:absolute;top:6px;right:122px;z-index:5;min-height:32px;padding:2px 10px';
-    g.onclick=prayGod; $('#panWrap').appendChild(g);
-  }
+  // 操作按钮（替代原 4 个火力按钮；吆喝/拜锅神从锅区浮动按钮挪来这里，避免被状态条挡住）
+  $$('#fireRow .opBtn').forEach(b=>{
+    b.onclick=()=>{
+      SFX.click();
+      const op=b.dataset.op;
+      if(op==='yell')yell();
+      else if(op==='god')prayGod();
+      else if(op==='batter')pourAll();
+      else if(op==='trash')trashBurnt();
+    };
+  });
   wakeLockOn();
   setTimeout(chainTick,3000);
   if(S.day<=1)setTimeout(()=>toast('🚔 城管队今日团建，街道一片祥和','good'),2600);
@@ -63,14 +66,15 @@ function renderDayChip(){
   chip.textContent=t;
 }
 function dayLenTotal(){ return (S.day<=2?200:BAL.dayLen)*(diffOf().dayLen||1); }
-/* 营业页常驻状态条：今日倒计时 + 燃气瓶数与当前瓶消耗%（解决“不知道燃气消耗情况”） */
+/* 营业状态条（放在火力/操作区内，不再悬浮遮挡锅区）：今日倒计时 + 燃气瓶数与当前瓶消耗% */
 function renderStoveStatus(){
   let p=$('#stoveStatus');
   if(!p){
     p=document.createElement('div'); p.id='stoveStatus';
-    p.style.cssText='position:absolute;top:8px;right:10px;z-index:5;font-size:11px;background:rgba(255,253,247,.92);border:1.5px solid var(--ink);border-radius:12px;padding:5px 8px;min-width:124px;box-shadow:0 2px 0 rgba(61,44,30,.18)';
-    $('#panWrap').appendChild(p);
+    const fc=$('#fireCtrls'); if(!fc)return;
+    fc.insertBefore(p,$('#fireHint')||null);
   }
+  p.style.cssText='font-size:11px;background:rgba(255,253,247,.9);border:1.5px solid var(--ink);border-radius:12px;padding:4px 8px;margin-top:5px;display:flex;flex-direction:column;gap:3px';
   const total=dayLenTotal(), remain=Math.max(0,total-G.dayT);
   const mm=Math.floor(remain/60), ss=Math.floor(remain%60);
   const tstr=(mm>0?mm+'分':'')+ss+'秒';
@@ -91,11 +95,12 @@ function renderStoveStatus(){
   }
   if(!G.gasOut&&!low)p.dataset.warned='';
   p.innerHTML=
-    '<div style="display:flex;justify-content:space-between;font-weight:700;line-height:1.2"><span>⏱ 今日</span><span>'+tstr+'</span></div>'+
-    '<div class="meter"><i style="width:'+tpct+'%;background:'+tcol+'"></i></div>'+
-    '<div style="display:flex;justify-content:space-between;font-weight:700;margin-top:4px;line-height:1.2"><span>🛢 燃气 ×'+cansLeft+'</span>'+
-      '<span style="'+(G.gasOut?'color:var(--rouge-d)':'')+'">'+(G.gasOut?'断气':('已用'+Math.round(curUsed)+'%'))+'</span></div>'+
-    '<div class="meter"><i style="width:'+(100-curUsed)+'%;background:'+gcol+'"></i></div>';
+    '<div style="display:flex;align-items:center;gap:6px"><span style="font-weight:700;flex:none">⏱ 今日</span>'+
+      '<div class="meter" style="flex:1"><i style="width:'+tpct+'%;background:'+tcol+'"></i></div>'+
+      '<span style="font-weight:700;flex:none;'+(remain<total*.2?'color:var(--rouge-d)':'')+'">'+tstr+'</span></div>'+
+    '<div style="display:flex;align-items:center;gap:6px"><span style="font-weight:700;flex:none">🛢 燃气 ×'+cansLeft+'</span>'+
+      '<div class="meter" style="flex:1"><i style="width:'+(100-curUsed)+'%;background:'+gcol+'"></i></div>'+
+      '<span style="flex:none;font-weight:700;'+(G.gasOut?'color:var(--rouge-d)':'')+'">'+(G.gasOut?'断气':('已用'+Math.round(curUsed)+'%'))+'</span></div>';
 }
 const FIRE_NAMES=['关火','文火','中火','武火'];
 function setFire(f){
@@ -108,12 +113,6 @@ function renderKnob(){
   const rot=[-90,0,90,180][G.fire]||0;
   const face=$('#knobFace'); if(face)face.style.setProperty('--rot',rot+'deg');
   const val=$('#knobVal'); if(val)val.innerHTML=FIRE_NAMES[G.fire]+'<small>'+['−4','+3','+8','+15'][G.fire]+'/s</small>';
-  $$('#fireRow .fireBtn').forEach(b=>{
-    const f=+b.dataset.f;
-    b.classList.toggle('on',f===G.fire);
-    b.style.opacity=(G.gasOut&&f>1)?.35:'';
-    b.onclick=()=>setFire(f);
-  });
 }
 function renderFire(){ renderKnob(); }
 
@@ -400,11 +399,7 @@ function wellTap(i,hit){
   SFX.click();
   if(w.st==='empty'){
     if(S.batter<=0){ toast(V('batter')+'没了！收摊吧','bad'); SFX.fail(); return; }
-    S.batter--; w.st='batter'; w.heat=0; w.fills=[]; w.bub=0; w.foldOff=0; w.lateFill=false;
-    w.pourT=0; w.drops=[]; w.bubbles=[]; w.steam=[];
-    const R2=wellR();
-    for(let k=0;k<6;k++)w.drops.push({a:rnd()*7,d:R2*.55,sp:50+rnd()*50,life:1});
-    SFX.pop();
+    pourWell(i);
   }else if(w.st==='batter'){
     if(w.fills.length>0&&w.heat>=SERVE_LO){
       foldAt(i,hit);
@@ -421,6 +416,36 @@ function wellTap(i,hit){
     toast('倒掉…又浪费一个','bad'); G.day.waste++;
     SFX.pop();
   }
+}
+function pourWell(i){
+  const w=G.wells[i];
+  S.batter--; w.st='batter'; w.heat=0; w.fills=[]; w.bub=0; w.foldOff=0; w.lateFill=false;
+  w.pourT=0; w.drops=[]; w.bubbles=[]; w.steam=[];
+  const R2=wellR();
+  for(let k=0;k<6;k++)w.drops.push({a:rnd()*7,d:R2*.55,sp:50+rnd()*50,life:1});
+  SFX.pop();
+}
+/* 操作：一键给所有空锅倒糊（糊不够倒几锅算几锅） */
+function pourAll(){
+  let n=0;
+  G.wells.forEach((w,i)=>{
+    if(w.st!=='empty'||S.batter<=0)return;
+    pourWell(i); n++;
+  });
+  drawPan();
+  if(n>0)toast('倒了 '+n+' 锅糊，开火等蜂窝眼','good');
+  else if(S.batter<=0){ toast(V('batter')+'没了！收摊吧','bad'); SFX.fail(); }
+  else toast('没有空锅','good');
+}
+/* 操作：清掉所有糊锅 */
+function trashBurnt(){
+  let n=0;
+  G.wells.forEach(w=>{
+    if(w.st==='burn'){ w.st='empty'; w.heat=0; w.fills=[]; w.smoke=[]; w.foldOff=0; n++; }
+  });
+  drawPan();
+  if(n>0){ G.day.waste+=n; SFX.pop(); toast('清掉 '+n+' 个糊锅…又浪费','bad'); }
+  else toast('没有糊锅，火候稳','good');
 }
 function foldPenalty(off){
   if(off==null||off<.35)return 1;
@@ -1022,7 +1047,7 @@ function drawPan(){
   const R=Math.min(W/9.2,H*.25);
   const pos=[];
   for(let c=0;c<4;c++)pos.push({x:(c+.5)*W/4,y:H*.31});
-  for(let c=0;c<3;c++)pos.push({x:(c+.5)*W/3+W/6,y:H*.74});
+  for(let c=0;c<3;c++)pos.push({x:(c+.5)*W/3,y:H*.74});
   G.wells.forEach((w,i)=>{
     const p=pos[i]; if(!p)return;
     // 容器造型（按小吃切换）
@@ -1199,7 +1224,7 @@ function drawPan(){
       const W=r.width,H=r.height,R=Math.min(W/9.2,H*.25);
       const pos=[];
       for(let c=0;c<4;c++)pos.push({x:(c+.5)*W/4,y:H*.31});
-      for(let c=0;c<3;c++)pos.push({x:(c+.5)*W/3+W/6,y:H*.74});
+      for(let c=0;c<3;c++)pos.push({x:(c+.5)*W/3,y:H*.74});
       for(let i=0;i<pos.length;i++){
         const dx=x-pos[i].x,dy=y-pos[i].y;
         if(dx*dx+dy*dy<(R*1.15)*(R*1.15)){ wellTap(i,{dx,dy,dist:Math.sqrt(dx*dx+dy*dy)}); return; }
