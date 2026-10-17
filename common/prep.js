@@ -33,7 +33,7 @@ function renderPrep(){
       <div class="t">${f.n}</div><div class="d">${f.d}</div>
       <div class="tiny" style="margin-top:4px;color:var(--caramel)">${V('batter')} +${f.batter} 份 · 质量 ×${f.q}${f.cost?' · '+V('yeast')+' ¥'+f.cost:''}</div></div>`;
   });
-  h+=`</div><div class="tiny mut" style="margin-top:6px">当前${V('batter')}库存：<b>${S.batter}</b> 份（1 份 = 1 ${V('unit')}）· 选一种${V('fermWay')}方式开始备料</div>`;
+  h+=`</div><div class="tiny mut" style="margin-top:6px">当前${V('batter')}库存：<b>${S.batter}</b> 份${S.batterBatches&&S.batterBatches.length?`（${S.batterBatches.length} 批）`:''}（1 份 = 1 ${V('unit')}）。可重复选${V('fermWay')}方式<b>分批和面</b>，但出摊后约 <b>${BAL.batterSpoil}</b> 秒没卖完的批次会<b>发酸倒掉</b>——带多了浪费，带少了不够卖，自己拿捏。</div>`;
   // 市场
   h+=`<div class="h2" style="margin:14px 0 4px">🧺 菜市场进货</div><div class="card">`;
   const rows=[...GAME.baseItems.map(b=>({...b,qty:S[b.id]===undefined?0:S[b.id],isBase:true})),
@@ -111,10 +111,10 @@ function bindPrep(){
     const f=GAME.ferms.find(x=>x.id===el.dataset.f);
     if(f.cost&&S.money<f.cost){toast('连'+V('yeast')+'都买不起了…','bad');return}
     S.ferm=f.id;
-    if(S.batter>0){toast('已经'+V('fermDone')+'了，今天将就点');return}
-    S.batter=f.batter; S.batterQ=f.q;
+    const prev=(S.batter||0);
+    addBatter(f.batter,f.q);
     if(f.cost){S.money-=f.cost;G.day.prep+=f.cost}
-    SFX.pop(); toast(V('batter')+'备好了 +'+f.batter+' 份','good');
+    SFX.pop(); toast(V('batter')+'又和了 +'+(S.batter-prev)+' 份（共 '+S.batter+' 份·可继续分批）','good');
     renderPrep(); hudUpdate(); save();
   });
   $$('#prepBody [data-buy]').forEach(b=>b.onclick=()=>{

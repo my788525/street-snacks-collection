@@ -94,13 +94,22 @@ function renderStoveStatus(){
     if(typeof navigator!=='undefined'&&navigator.vibrate)navigator.vibrate(G.gasOut?[200,80,200]:120);
   }
   if(!G.gasOut&&!low)p.dataset.warned='';
+  // 面糊批次状态：剩余份数 + 最老批次保鲜倒计时（出摊后约 BAL.batterSpoil 秒发酸）
+  const bf=batterOldestFresh();
+  const hasB=S.batter>0;
+  const bcol=!hasB?'var(--mut)':(bf<20?'var(--rouge-d)':'var(--yolk-d)');
+  const bpct=!hasB?0:clamp(bf/BAL.batterSpoil*100,0,100);
+  const btxt=!hasB?'0 份·去备货':(S.batter+' 份·'+Math.max(0,Math.ceil(bf))+'s 后发酸');
   p.innerHTML=
     '<div style="display:flex;align-items:center;gap:6px"><span style="font-weight:700;flex:none">⏱ 今日</span>'+
       '<div class="meter" style="flex:1"><i style="width:'+tpct+'%;background:'+tcol+'"></i></div>'+
       '<span style="font-weight:700;flex:none;'+(remain<total*.2?'color:var(--rouge-d)':'')+'">'+tstr+'</span></div>'+
     '<div style="display:flex;align-items:center;gap:6px"><span style="font-weight:700;flex:none">🛢 燃气 ×'+cansLeft+'</span>'+
       '<div class="meter" style="flex:1"><i style="width:'+(100-curUsed)+'%;background:'+gcol+'"></i></div>'+
-      '<span style="flex:none;font-weight:700;'+(G.gasOut?'color:var(--rouge-d)':'')+'">'+(G.gasOut?'断气':('已用'+Math.round(curUsed)+'%'))+'</span></div>';
+      '<span style="flex:none;font-weight:700;'+(G.gasOut?'color:var(--rouge-d)':'')+'">'+(G.gasOut?'断气':('已用'+Math.round(curUsed)+'%'))+'</span></div>'+
+    '<div style="display:flex;align-items:center;gap:6px"><span style="font-weight:700;flex:none">🥣 面糊</span>'+
+      '<div class="meter" style="flex:1"><i style="width:'+bpct+'%;background:'+bcol+'"></i></div>'+
+      '<span style="flex:none;font-weight:700;'+(!hasB?'color:var(--mut)':'')+'">'+btxt+'</span></div>';
 }
 const FIRE_NAMES=['关火','文火','中火','武火'];
 function setFire(f){
@@ -417,9 +426,50 @@ function wellTap(i,hit){
     SFX.pop();
   }
 }
+/* 面糊批次：支持分批和面，每批带时间戳，超过保鲜期发酸过期 */
+function addBatter(n,q){
+  if(n<=0)return;
+  G.batterBatches=G.batterBatches||[];
+  G.batterBatches.push({madeAt:G.dayT||0,n:n,q:q||1});
+  S.batter=(S.batter||0)+n;
+  S.batterQ=q||1;
+}
+function consumeBatter(){
+  G.batterBatches=G.batterBatches||[];
+  for(let i=0;i<G.batterBatches.length;i++){
+    const b=G.batterBatches[i];
+    if(b.n>0){ b.n--; S.batter=Math.max(0,(S.batter||0)-1); const q=b.q; if(b.n<=0)G.batterBatches.splice(i,1); return q; }
+  }
+  // 兜底：无批次记录但有存量（兼容旧存档/测试直接写 S.batter 的路径）
+  if((S.batter||0)>0){ S.batter=Math.max(0,(S.batter||0)-1); return S.batterQ||1; }
+  return null;
+}
+function spoilBatterTick(){
+  G.batterBatches=G.batterBatches||[];
+  if(!G.batterBatches.length)return;
+  let spoiled=0;
+  G.batterBatches=G.batterBatches.filter(b=>{
+    if((G.dayT||0)-(b.madeAt) > BAL.batterSpoil){ spoiled+=b.n; return false; }
+    return true;
+  });
+  if(spoiled>0){
+    S.batter=Math.max(0,(S.batter||0)-spoiled);
+    G.day.waste+=spoiled; G.day.cost+=spoiled*BAL.cakeBase;
+    toast('🥣 '+spoiled+' 份面糊放太久了，发酸倒掉','bad'); SFX.fail();
+  }
+}
+function batterOldestFresh(){
+  G.batterBatches=G.batterBatches||[];
+  let oldest=null;
+  G.batterBatches.forEach(b=>{ if(b.n>0&&(oldest===null||b.madeAt<oldest))oldest=b.madeAt; });
+  if(oldest===null)return null;
+  return BAL.batterSpoil-((G.dayT||0)-oldest);
+}
 function pourWell(i){
+  const bq=consumeBatter();
+  if(bq==null){ toast('没'+V('batter')+'了，先去'+V('fermDone')+'！','bad'); SFX.fail(); return; }
   const w=G.wells[i];
-  S.batter--; w.st='batter'; w.heat=0; w.fills=[]; w.bub=0; w.foldOff=0; w.lateFill=false;
+  w.st='batter'; w.heat=0; w.fills=[]; w.bub=0; w.foldOff=0; w.lateFill=false; w.batterQ=bq;
   w.pourT=0; w.drops=[]; w.bubbles=[]; w.steam=[];
   const R2=wellR();
   for(let k=0;k<6;k++)w.drops.push({a:rnd()*7,d:R2*.55,sp:50+rnd()*50,life:1});
@@ -989,7 +1039,7 @@ function serviceLoop(now){
   // 到店
   G.arrivalAcc+=dt;
   if(G.arrivalAcc>=arrivalInterval()){ G.arrivalAcc=0; tryArrive(); }
-  helperTick(dt); onlineTick(dt); fpsTick(dt); autoDeliver();
+  helperTick(dt); onlineTick(dt); fpsTick(dt); autoDeliver(); spoilBatterTick();
   if(G.hypeT>0)G.hypeT-=dt;
   if(G.godT>0)G.godT-=dt;
   if(G.preheatT>0)G.preheatT-=dt;

@@ -257,6 +257,42 @@ run('操作按钮替换火力按钮：一键倒糊 / 清糊锅', () => {
   if (G().wells.some(w => w.st === 'burn')) throw new Error('清糊锅后不应剩 burn');
   if (G().day.waste !== waste0 + 2) throw new Error('清糊锅应计损耗 +2');
 });
+run('面糊可分批和面（多批叠加，不再限 12 份）', () => {
+  G().batterBatches = []; sandbox.S.batter = 0; sandbox.S.batterQ = 1;
+  sandbox.addBatter(12, 1);
+  if (sandbox.S.batter !== 12) throw new Error('第一批应为 12，实为 ' + sandbox.S.batter);
+  if (G().batterBatches.length !== 1) throw new Error('应有 1 批');
+  sandbox.addBatter(12, 1.1);  // 第二批，更高质量
+  if (sandbox.S.batter !== 24) throw new Error('两批叠加应为 24，实为 ' + sandbox.S.batter);
+  if (G().batterBatches.length !== 2) throw new Error('应有 2 批');
+  // 倒糊按批次 FIFO 消耗，先消耗第一批（质量 1）
+  G().wells.forEach(w => { w.st = 'empty'; });
+  sandbox.pourWell(0);
+  if (G().wells[0].batterQ !== 1) throw new Error('应先消耗第一批质量 1，实为 ' + G().wells[0].batterQ);
+  if (sandbox.S.batter !== 23) throw new Error('倒 1 锅后应剩 23，实为 ' + sandbox.S.batter);
+  if (G().batterBatches[0].n !== 11) throw new Error('第一批应剩 11，实为 ' + (G().batterBatches[0] && G().batterBatches[0].n));
+});
+run('面糊过期发酸（带多了没卖完就倒掉）', () => {
+  G().batterBatches = [];
+  sandbox.S.batter = 0; G().day.waste = 0; G().day.cost = 0; G().dayT = 100;
+  // 一批 95s 前和的面（madeAt=0）→ 已超时；一批刚和（madeAt=100）→ 新鲜
+  G().batterBatches.push({ madeAt: 0, n: 10, q: 1 });
+  G().batterBatches.push({ madeAt: 100, n: 5, q: 1 });
+  sandbox.S.batter = 15;
+  sandbox.spoilBatterTick();
+  if (sandbox.S.batter !== 5) throw new Error('过期 10 份应被倒掉，应剩 5，实为 ' + sandbox.S.batter);
+  if (G().day.waste !== 10) throw new Error('过期应计损耗 +10，实为 ' + G().day.waste);
+  if (G().batterBatches.length !== 1) throw new Error('应只剩 1 批');
+  if (G().batterBatches[0].n !== 5) throw new Error('剩的应为 5，实为 ' + (G().batterBatches[0] && G().batterBatches[0].n));
+});
+run('状态条含面糊保鲜倒计时', () => {
+  G().batterBatches = [{ madeAt: 0, n: 5, q: 1 }];
+  sandbox.S.batter = 5; G().dayT = 0; G().gasOut = false; G().gasUsed = 0; sandbox.S.day = 5;
+  sandbox.renderStoveStatus();
+  const ss = getEl('#stoveStatus').innerHTML;
+  if (!ss.includes('面糊')) throw new Error('状态条应含面糊行');
+  if (!ss.includes('95s')) throw new Error('面糊倒计时应为 95s，实为 ' + ss);
+});
 run('火力循环切档（PC 点击兼容）', () => {
   const S = sandbox.S;
   S.gas = 5; G().gasOut = false; G().fire = 0;
