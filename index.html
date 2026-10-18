@@ -47,6 +47,22 @@ body{
   position:absolute;top:8px;right:8px;font-size:10px;background:var(--yolk);border:1.5px solid var(--ink);
   border-radius:99px;padding:1px 8px;font-weight:700;
 }
+.seriesHead{display:flex;align-items:center;gap:10px;margin:24px 0 12px}
+.seriesTitle{font-family:var(--font-display);font-size:18px;font-weight:900;letter-spacing:1px}
+.seriesTitle em{font-style:normal;color:var(--rouge)}
+.seriesDot{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--ink) 0 6px,transparent 6px 12px);opacity:.3}
+.tycoonGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(min-width:560px){.tycoonGrid{grid-template-columns:1fr 1fr}}
+.tycoonCard{
+  display:block;background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:14px 12px;
+  text-decoration:none;color:var(--ink);box-shadow:4px 4px 0 rgba(61,44,30,.14);
+  transition:transform .1s, box-shadow .1s;position:relative;overflow:hidden;
+}
+.tycoonCard:active{transform:translate(3px,3px);box-shadow:1px 1px 0 rgba(61,44,30,.14)}
+.tycoonEmoji{font-size:30px;line-height:1}
+.tycoonName{font-family:var(--font-display);font-size:17px;font-weight:900;margin-top:6px}
+.tycoonDesc{font-size:12px;color:var(--ink2);margin-top:4px;min-height:32px;line-height:1.5}
+.tycoonTag{position:absolute;top:8px;right:8px;font-size:10px;background:var(--leaf);color:#fff;border:1.5px solid var(--ink);border-radius:99px;padding:1px 8px;font-weight:700}
 .foot{margin-top:20px;text-align:center;font-size:12px;color:var(--ink2)}
 .foot .deskNote{display:inline-block;background:#FFF9E6;border:1.5px dashed var(--caramel);border-radius:12px;padding:8px 14px;text-align:left}
 </style>
@@ -60,6 +76,11 @@ body{
   </div>
   <div class="banner">📰 蓉城快讯：本合集所有小摊均已加入「临期经济联盟」，做好放台上，客人自己拿</div>
   <div class="grid" id="grid"></div>
+  <div class="seriesHead">
+    <div class="seriesTitle">🏢 <em>发展国</em>系列 · 4 款独立小游戏</div>
+    <div class="seriesDot"></div>
+  </div>
+  <div class="tycoonGrid" id="tycoonGrid"></div>
   <div class="foot">
     <div class="deskNote">🎮 每个游戏独立存档、独立难度门禁（佛系→标准→硬核→疯狂）。<br>💡 建议从「巷口蛋烘糕」开始：教程最全，机制最典型。</div>
   </div>
@@ -89,6 +110,23 @@ GAMES.forEach(function(g){
     '<div class="gameCity">'+g.city+'街头</div>'+
     '<div class="gameSlogan">'+g.slogan+'</div>';
   grid.appendChild(a);
+});
+/* 发展国系列：4 款独立小游戏（共用一套 tycoon 引擎，独立立项/开发/发行） */
+var TYCOON_GAMES=[
+ {id:'tycoon_game',name:'游戏发展国',emoji:'🎮',desc:'开游戏工作室，立项发游戏，冲爆款，上市敲钟',tag:'原版复刻'},
+ {id:'tycoon_app',name:'程序发展国',emoji:'💻',desc:'程序员开软件公司，做 App/小程序/SaaS，拿融资',tag:'换皮复刻'},
+ {id:'tycoon_ai',name:'AI 发展国',emoji:'🤖',desc:'AI 实验室训大模型、搭 Agent，算力烧钱冲 SOTA',tag:'换皮复刻'},
+ {id:'tycoon_design',name:'设计发展国',emoji:'🎨',desc:'设计工作室做 UI/品牌/国潮 IP，拿国际奖联名',tag:'换皮复刻'}
+];
+var tgrid=document.getElementById('tycoonGrid');
+TYCOON_GAMES.forEach(function(g){
+  var a=document.createElement('a');
+  a.className='tycoonCard'; a.href='games/'+g.id+'/index.html';
+  a.innerHTML='<span class="tycoonTag">'+g.tag+'</span>'+
+    '<div class="tycoonEmoji">'+g.emoji+'</div>'+
+    '<div class="tycoonName">'+g.name+'</div>'+
+    '<div class="tycoonDesc">'+g.desc+'</div>';
+  tgrid.appendChild(a);
 });
 </script>
 </body>
