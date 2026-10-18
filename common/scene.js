@@ -17,12 +17,12 @@
 const scene = (function(){
   'use strict';
 
-  /* ---------- 场景元数据（按办公室档位 1-4） ---------- */
+  /* ---------- 场景元数据（按办公室档位 1-4，越豪华越亮） ---------- */
   const OFFICE = [
-    { name:'车库',     sky:'#E8F1F5', wall:'#D8C8B0', floor:'#C9B89A', desk:1, char:1 },
-    { name:'小办',     sky:'#EAF4F8', wall:'#DCE8E0', floor:'#C8D8C8', desk:2, char:2 },
-    { name:'大办',     sky:'#DCE8F5', wall:'#C8D8E8', floor:'#B8C8D8', desk:3, char:4 },
-    { name:'旗舰总部', sky:'#F0E0C0', wall:'#E8D0A0', floor:'#D8C080', desk:4, char:5 },
+    { name:'车库',     sky:'#2a3550', skyHi:'#3d4d6e', wall:'#5a4a3a', floor:'#4a3a2a', floorHi:'#5a4838', desk:1, char:1, lamp:1, plant:0, art:0, sign:'车库' },
+    { name:'小办',     sky:'#3a4a66', skyHi:'#4d6288', wall:'#6a5a48', floor:'#584838', floorHi:'#6a5845', desk:2, char:2, lamp:1, plant:1, art:0, sign:'小办' },
+    { name:'大办',     sky:'#4a5e80', skyHi:'#6480a8', wall:'#7a6a55', floor:'#685845', floorHi:'#7a6850', desk:3, char:4, lamp:2, plant:2, art:1, sign:'大办' },
+    { name:'旗舰总部', sky:'#5a6e98', skyHi:'#7d98c8', wall:'#9a8a6a', floor:'#8a7858', floorHi:'#9a8a68', desk:4, char:5, lamp:3, plant:3, art:2, sign:'总部' },
   ];
   const PHASE_NAME = { greenlight:'立项', develop:'开发', ship:'发行', perform:'结算', bankrupt:'破产' };
   const PHASE_FILL = { greenlight:.3, develop:.55, ship:.8, perform:.6, bankrupt:0 };
@@ -38,8 +38,8 @@ const scene = (function(){
   let PHASER_OK = (typeof window!=='undefined' && !!window.Phaser);
   let game=null, sceneRef=null, started=false;
 
-  // 尺寸：Phaser 逻辑宽 640，按容器实际宽等比缩放（保持 4:1）
-  const LOGIC_W = 640, LOGIC_H = 160;
+  // 尺寸：Phaser 逻辑宽 640，高 300（放大+丰富像素办公室，让画面成视觉主体）
+  const LOGIC_W = 640, LOGIC_H = 300;
   const S = {};   // 场景对象引用（角色、背景、进度、时间轴、粒子、震屏组）
 
   /* ---------- 初始化 Phaser ---------- */
@@ -67,29 +67,27 @@ const scene = (function(){
           const g=cv.getContext('2d'); g.fillStyle='#ffffff'; g.fillRect(0,0,1,1);
           return cv;
         });
-        const OFFICE_TINT=[0xE8F1F5,0xEAF4F8,0xDCE8F5,0xF0E0C0];
+        // 彩色纹理（供 rect/tint 用）
+        this._mkColoredTex('tile_cyan',0x3a80a8);
+        this._mkColoredTex('tile_gold',0xF5B942);
+        this._mkColoredTex('tile_red',0xD95D5D);
+        this._mkColoredTex('tile_green',0x6B9E5A);
+        this._mkColoredTex('tile_gray',0x555566);
 
-        // 背景（4 档办公室 PNG，撑满 640x160 逻辑画布）
-        this.bg=[];
-        for(let t=1;t<=4;t++){
-          const key='office_'+t;
-          const has=this.textures.exists(key);
-          const img=this.add.image(0,0, has?key:'solid').setOrigin(0,0).setAlpha(0);
-          if(!has) img.tint=OFFICE_TINT[t-1];
-          img.setDisplaySize(LOGIC_W, LOGIC_H);
-          this.bg.push(img);
-        }
+        const meta=()=>OFFICE[this.tier-1]||OFFICE[0];
 
-        // 角色（最多 5 个，按档位 1/2/4/5 显示）
+        // ============ 背景：像素办公室横截面（4 档叠放淡入淡出） ============
+        this.bgGroup=[];
+        for(let t=1;t<=4;t++) this.bgGroup.push(this._drawOfficeBg(t));
+
+        // 角色（最多 5 个，按档位 1/2/4/5 显示，坐在桌前）
         this.chars=[];
-        const gap=(LOGIC_W-80)/4;
         for(let i=0;i<5;i++){
           const key=`char_stand_${i}`;
           const c={
             sprite:this.add.image(0,0, this.textures.exists(key)?key:'solid').setOrigin(0.5,1).setAlpha(0),
-            x:40+i*gap, yOff:0, vy:0, walkFrame:0, colorIdx:i,
+            x:40, yOff:0, vy:0, walkFrame:0, colorIdx:i, typewake:0,
           };
-          c.sprite.setPosition(c.x,0);
           this.chars.push(c);
         }
 
@@ -102,16 +100,16 @@ const scene = (function(){
           tint:[0xF5B942,0xD95D5D,0x6B9E5A,0x7FB0D6,0xC97B2D,0xF5A0A0],
         });
 
-        // 顶部时间轴
-        this.barBg=this.add.rectangle(0,12,LOGIC_W,12,0x1e160e,.55).setOrigin(0,0);
-        this.barFill=this.add.rectangle(2,14,(LOGIC_W-4)*.3,8,0xF5B942).setOrigin(0,0);
-        this.barText=this.add.text(6,5,'📋 立项',{fontFamily:'monospace',fontSize:'11px',color:'#ffffff'}).setOrigin(0,0);
+        // 顶部阶段徽章条（像素风）
+        this.barBg=this.add.rectangle(0,0,LOGIC_W,18,0x101018,.9).setOrigin(0,0);
+        this.barFill=this.add.rectangle(0,0,LOGIC_W*.3,18,0xF5B942,.25).setOrigin(0,0);
+        this.barText=this.add.text(8,4,'📋 立项',{fontFamily:'monospace',fontSize:'11px',color:'#ffd98a',fontStyle:'bold'}).setOrigin(0,0);
 
-        // 底部开发进度条
-        this.progBarBg=this.add.rectangle(LOGIC_W/2,LOGIC_H-14,LOGIC_W-24,10,0x1e160e,.5).setOrigin(.5);
-        this.progBarFill=this.add.rectangle(2,LOGIC_H-14,0,10,0xF5B942).setOrigin(0,.5);
-        this.progLabel=this.add.text(6,LOGIC_H-22,'开发进度',{fontFamily:'monospace',fontSize:'9px',color:'rgba(255,255,255,.9)'});
-        this.progPct=this.add.text(LOGIC_W-6,LOGIC_H-16,'0%',{fontFamily:'monospace',fontSize:'10px',color:'#fff',fontStyle:'bold'}).setOrigin(1,.5);
+        // 底部开发进度条（像素风）
+        this.progBarBg=this.add.rectangle(LOGIC_W/2,LOGIC_H-16,LOGIC_W-40,12,0x101018,.85).setOrigin(.5);
+        this.progBarFill=this.add.rectangle(2,LOGIC_H-16,0,12,0x6B9E5A).setOrigin(0,.5);
+        this.progLabel=this.add.text(14,LOGIC_H-26,'开发进度',{fontFamily:'monospace',fontSize:'10px',color:'#b8e8a0'});
+        this.progPct=this.add.text(LOGIC_W-14,LOGIC_H-16,'0%',{fontFamily:'monospace',fontSize:'10px',color:'#fff',fontStyle:'bold'}).setOrigin(1,.5);
         this.progGroup=this.add.group();
         this.progGroup.add([this.progBarBg,this.progBarFill,this.progLabel,this.progPct]);
         this.progGroup.setVisible(false);
@@ -123,6 +121,104 @@ const scene = (function(){
         if(S.pending){ this.applyUpdate(S.pending); S.pending=null; }
       }
 
+      // 生成彩色 1x1 纹理
+      _mkColoredTex(name,color){
+        if(this.textures.exists(name)) return;
+        const hex=color.toString(16).padStart(6,'0');
+        const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+        this.textures.addCanvas(name, ()=>{
+          const cv=document.createElement('canvas'); cv.width=1; cv.height=1;
+          const ctx=cv.getContext('2d'); ctx.fillStyle=`rgb(${r},${g},${b})`; ctx.fillRect(0,0,1,1);
+          return cv;
+        });
+      }
+
+      // 画一档办公室背景（返回 image 组，叠放淡入淡出）
+      _drawOfficeBg(tier){
+        const m=OFFICE[tier-1];
+        const W=LOGIC_W, H=LOGIC_H;
+        const floorY=Math.floor(H*0.62);        // 地板线
+        const deskY=floorY-8;                     // 桌子顶
+        // 用一张透明画布，手绘
+        const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+        const g=cv.getContext('2d');
+
+        // 天空（窗外）
+        const sky=g.createLinearGradient(0,0,0,floorY);
+        sky.addColorStop(0,m.skyHi); sky.addColorStop(1,m.sky);
+        g.fillStyle=sky; g.fillRect(0,0,W,floorY);
+        // 星星/月亮点缀
+        g.fillStyle='rgba(255,255,255,.5)';
+        for(let i=0;i<12;i++){ g.fillRect((i*53+7)%W, (i*31+13)%Math.floor(floorY*0.5), 1,1); }
+        // 月亮
+        g.fillStyle='rgba(255,230,180,.85)';
+        g.beginPath(); g.arc(W-70,34,16,0,Math.PI*2); g.fill();
+        g.fillStyle=m.skyHi; g.beginPath(); g.arc(W-64,30,15,0,Math.PI*2); g.fill();
+
+        // 墙面（下半到地板线）
+        g.fillStyle=m.wall;
+        g.fillRect(0,Math.floor(floorY*0.45),W,floorY-Math.floor(floorY*0.45));
+
+        // 地板（条纹）
+        for(let y=floorY;y<H;y+=2){ g.fillStyle=(y%4<2)?m.floor:m.floorHi; g.fillRect(0,y,W,2); }
+
+        // 窗户（3 扇，随档位变多）
+        const wins=2+Math.floor(tier/2);
+        const ww=70, wh=Math.floor(floorY*0.42), wy=Math.floor(floorY*0.08);
+        for(let i=0;i<wins;i++){
+          const x=40+i*( (W-80)/(wins) );
+          g.fillStyle='#1a1a24'; g.fillRect(x-3,wy-3,ww+6,wh+6);
+          g.fillStyle='#0f1822'; g.fillRect(x,wy,ww,wh);
+          g.strokeStyle='#4a6070'; g.lineWidth=1; g.strokeRect(x,wy,ww,wh);
+          g.beginPath(); g.moveTo(x+ww/2,wy); g.lineTo(x+ww/2,wy+wh); g.moveTo(x,wy+wh/2); g.lineTo(x+ww,wy+wh/2); g.stroke();
+        }
+
+        // 吊灯（档位越高越多）
+        for(let i=0;i<m.lamp;i++){
+          const lx=W*0.2+i*(W*0.6/Math.max(1,m.lamp-1||1));
+          g.fillStyle='#333'; g.fillRect(lx-1,0,2,floorY*0.42);
+          g.fillStyle='#ffd98a'; g.beginPath(); g.arc(lx,floorY*0.42,7,0,Math.PI*2); g.fill();
+          g.fillStyle='rgba(255,217,138,.15)'; g.beginPath(); g.arc(lx,floorY*0.42+26,30,0,Math.PI*2); g.fill();
+        }
+
+        // 挂画（档位越高越多）
+        for(let i=0;i<m.art;i++){
+          const ax=W*0.35+i*(W*0.14);
+          g.fillStyle='#2a2a3a'; g.fillRect(ax,Math.floor(floorY*0.12),34,24);
+          g.fillStyle=i%2? '#7fb0d6':'#f5a0a0'; g.fillRect(ax+4,Math.floor(floorY*0.12)+4,26,16);
+        }
+
+        // 公司招牌（左侧）
+        g.fillStyle='#101018'; g.fillRect(6,Math.floor(H*0.14),64,26);
+        g.fillStyle='#F5B942'; g.font='bold 15px monospace'; g.textAlign='center';
+        g.fillText(m.sign,38,Math.floor(H*0.14)+18);
+
+        // 长桌 + 电脑（档位越高桌子越多）
+        for(let i=0;i<m.desk;i++){
+          const dx=80+i*(W-160)/Math.max(1,m.desk-1||1);
+          const dw=90, dh=10;
+          g.fillStyle='#3a2a1a'; g.fillRect(dx,deskY,dw,4);          // 桌面
+          g.fillStyle='#2a1e10'; g.fillRect(dx+6,deskY+4,6,dh); g.fillRect(dx+dw-12,deskY+4,6,dh); // 桌腿
+          // 电脑（屏幕+支架）
+          g.fillStyle='#1a1a2a'; g.fillRect(dx+dw/2-12,deskY-22,24,20);
+          g.fillStyle='#3a80a8'; g.fillRect(dx+dw/2-9,deskY-19,18,14);
+          g.fillStyle='#5a5a6a'; g.fillRect(dx+dw/2-4,deskY-4,8,4);  // 键盘
+        }
+
+        // 盆栽（档位越高越多）
+        for(let i=0;i<m.plant;i++){
+          const px=W-40-i*40;
+          g.fillStyle='#8a4a2a'; g.fillRect(px-6,floorY-14,12,10);
+          g.fillStyle='#4a8a3a'; g.beginPath(); g.arc(px,floorY-18,9,0,Math.PI*2); g.fill();
+          g.fillStyle='#6aaa5a'; g.beginPath(); g.arc(px-3,floorY-20,4,0,Math.PI*2); g.fill();
+        }
+
+        // 转成 Phaser 纹理
+        const key='office_' + tier;
+        this.textures.addCanvas(key, ()=>cv);
+        return this.add.image(0,0,key).setOrigin(0,0).setAlpha(0);
+      }
+
       applyUpdate(o){
         this.tier=o.tier||1; this.phase=o.phase||'greenlight';
         if(o.progress!==undefined) this.progress=o.progress;
@@ -132,22 +228,23 @@ const scene = (function(){
       }
 
       layoutScene(){
-        this.bg.forEach((b,i)=>{ const on=(i+1)===this.tier;
+        this.bgGroup.forEach((b,i)=>{ const on=(i+1)===this.tier;
           this.tweens.add({targets:b,alpha:on?1:0,duration:250,ease:'Linear'}); });
         const meta=OFFICE[this.tier-1]||OFFICE[0];
+        const floorY=Math.floor(LOGIC_H*0.62);
+        // 角色站在地板线上（桌前，略低一点显得在桌后）
+        const charY=floorY+6;
         this.chars.forEach((c,i)=>{
           const show=i<meta.char; c.sprite.setVisible(show);
-          if(show){ c.x=40+i*(LOGIC_W-80)/Math.max(1,meta.char-1);
-            c.sprite.setPosition(c.x,0); c.yOff=0; c.vy=0; this.setCharTexture(c,'stand'); }
+          if(show){ c.x=80+i*(LOGIC_W-160)/Math.max(1,meta.char-1||1);
+            c.sprite.setPosition(c.x, charY); c.yOff=0; c.vy=0; this.setCharTexture(c,'stand'); }
         });
         const fillPct=PHASE_FILL[this.phase]||.3;
-        this.barFill.width=(LOGIC_W-4)*fillPct;
+        this.barFill.width=(LOGIC_W)*fillPct;
         const icon={greenlight:'📋',develop:'💻',ship:'🚀',perform:'📈',bankrupt:'💸'}[this.phase]||'📋';
-        this.barText.setText(icon+' '+(PHASE_NAME[this.phase]||this.phase));
+        this.barText.setText(icon+' '+(PHASE_NAME[this.phase]||this.phase)+' · '+meta.name);
         this.progGroup.setVisible(this.showBar);
         if(this.showBar) this.refreshProgress();
-        const groundY=LOGIC_H-36;
-        this.chars.forEach(c=>{ c.sprite.y=groundY; c.sprite.setOrigin(.5,1); });
       }
 
       setCharTexture(c,mode,frame){
@@ -157,11 +254,11 @@ const scene = (function(){
 
       refreshProgress(){
         const p=Phaser.Math.Clamp(this.progress,0,1);
-        const fullW=LOGIC_W-24;
+        const fullW=LOGIC_W-40;
         this.progBarFill.width=fullW*p;
-        this.progBarFill.setPosition(LOGIC_W/2-fullW/2, LOGIC_H-14);
+        this.progBarFill.setPosition(20, LOGIC_H-16);
         this.progPct.setText(Math.round(p*100)+'%');
-        this.progPct.setPosition(LOGIC_W-6, LOGIC_H-14);
+        this.progPct.setPosition(LOGIC_W-14, LOGIC_H-16);
       }
 
       animateProgressTo(target,ms){
@@ -173,11 +270,14 @@ const scene = (function(){
       }
 
       jumpAll(){
-        const groundY=LOGIC_H-36;
+        const meta=OFFICE[this.tier-1]||OFFICE[0];
+        const floorY=Math.floor(LOGIC_H*0.62);
+        const charY=floorY+6;
         this.chars.forEach((c,i)=>{
+          if(i>=meta.char)return;
           setTimeout(()=>{
-            c.vy=-7-Math.random()*2.5; c.yOff=0;
-            this.confetti.setPosition(c.x, groundY-4);
+            c.vy=-8-Math.random()*2.5; c.yOff=0;
+            this.confetti.setPosition(c.x, charY-4);
             this.confetti.explode(14);
           }, i*60);
         });
@@ -187,12 +287,16 @@ const scene = (function(){
 
       update(time,dt){
         if(!this.chars) return;
-        this.chars.forEach(c=>{
+        const meta=OFFICE[this.tier-1]||OFFICE[0];
+        const floorY=Math.floor(LOGIC_H*0.62);
+        const charY=floorY+6;
+        this.chars.forEach((c,i)=>{
+          if(i>=meta.char)return;
           if(c.vy!==0||c.yOff!==0){
             c.yOff+=c.vy; c.vy+=.65;
             if(c.yOff>0){ c.yOff=0; c.vy=0; }
-            c.sprite.y=(LOGIC_H-36)-c.yOff;
-          }
+            c.sprite.y=charY-c.yOff;
+          } else if(c.sprite.y!==charY){ c.sprite.y=charY; }
           if((this.phase==='develop'||this.phase==='perform')&&Math.random()<.5){
             c.walkFrame=(c.walkFrame+1)%4;
             this.setCharTexture(c,'walk',c.walkFrame);
@@ -208,15 +312,14 @@ const scene = (function(){
   function bind(parent){
     if(!PHASER_OK){ // 加载不到 Phaser：静默降级为占位色块，不阻塞其余玩法
       const el=document.getElementById(parent||'scene');
-      if(el){ el.style.background='linear-gradient(180deg,#E8F1F5,#C9B89A)'; }
+      if(el){ el.style.background='linear-gradient(180deg,#2a3550,#4a3a2a)'; }
       console.warn('[tycoon] Phaser 未加载，场景降级为占位');
       return false;
     }
     const parentEl=document.getElementById(parent||'scene');
     if(!parentEl) return false;
     _build();   // 惰性构建场景类（此时 Phaser 已确认可用）
-    // 容器已由 CSS 锁定 4:1（#scene {height:160px}），
-    // Phaser Scale.FIT 会据此把 640x160 逻辑画布等比缩放进容器
+    // 容器已由 CSS 锁定 640x300 比例，Phaser Scale.FIT 会据此把 640x300 逻辑画布等比缩放进容器
     const config = {
       type: Phaser.AUTO,
       parent: parent,
