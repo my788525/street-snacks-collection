@@ -1,169 +1,172 @@
 /* ============================================================================
- * 发展国 · 2.5D 手账像素风
+ * 发展国 · 经典像素游戏客户端风（深色游戏壳 + 大像素场景主体 + 像素面板）
  * ==========================================================================*/
 :root{
-  --bg:#FBF6EC; --bg2:#F3E9D8; --card:#FFFDF7;
-  --ink:#3D2C1E; --ink2:#6B5A48; --mut:#B4A48E;
+  --shell:#15121f; --shell2:#1e1a2e; --panel:#221d35; --panel2:#2b2545;
+  --neon:#F5B942; --neonBlue:#5ec8f0; --neonGreen:#7be58b; --neonRed:#ff6b6b; --neonPink:#ff8fb3;
+  --ink:#f3ecff; --ink2:#b8acd6; --mut:#8a7fa8;
   --gold:#F5B942; --blue:#7FB0D6; --green:#6B9E5A; --red:#D95D5D; --pink:#F5A0A0;
-  --shadow:0 4px 0 #E8D9C0,0 8px 20px rgba(60,40,20,.1);
-  --shadow-sm:0 2px 0 #E8D9C0;
-  --radius:10px;
+  --edge:#0d0b14;
   font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{background:var(--bg);color:var(--ink);overflow-x:hidden}
+body{background:var(--shell);color:var(--ink);overflow-x:hidden}
 
-/* ---- 纸纹理背景 ---- */
+/* ---- 像素网格游戏壳背景 ---- */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(60,40,20,.03) 30px),
-    repeating-linear-gradient(90deg,transparent,transparent 29px,rgba(60,40,20,.02) 30px);
+    radial-gradient(circle at 50% 0%,#241f3a 0,transparent 55%),
+    repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(255,255,255,.025) 24px),
+    repeating-linear-gradient(90deg,transparent,transparent 23px,rgba(255,255,255,.02) 24px);
 }
 
 /* ---- 顶层布局 ---- */
 #tycoon{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:14px 12px 48px}
 
-/* ---- 标题区 ---- */
-.title{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.title .logo{width:44px;height:44px;background:var(--gold);border:3px solid var(--ink);border-radius:10px;
-  display:grid;place-items:center;font-size:22px;box-shadow:var(--shadow-sm);transform:rotate(-4deg)}
-.title h1{font-size:22px;letter-spacing:.05em}
+/* ---- 标题区（像素徽章风） ---- */
+.title{display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  background:var(--panel);border:2px solid var(--edge);border-radius:8px;padding:10px 14px;
+  box-shadow:0 0 0 2px rgba(94,200,240,.25),0 4px 0 var(--edge)}
+.title .logo{width:44px;height:44px;background:var(--neon);border:2px solid var(--edge);border-radius:8px;
+  display:grid;place-items:center;font-size:22px;box-shadow:0 0 12px rgba(245,185,66,.5)}
+.title h1{font-size:20px;letter-spacing:.04em;color:var(--ink)}
 .title .sub{font-size:11px;color:var(--mut)}
 
-/* ---- HUD ---- */
-.hud{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.hud .item{flex:1;min-width:80px;background:var(--card);border:3px solid var(--ink);border-radius:8px;
-  padding:8px 10px;box-shadow:var(--shadow-sm);text-align:center}
-.hud .item .label{font-size:10px;color:var(--mut);letter-spacing:.1em}
-.hud .item .val{font-size:16px;font-weight:700;color:var(--ink)}
-.hud .item.money .val{color:#C97B2D}
-.hud .item.rep .val{color:var(--green)}
-.hud .item.fans .val{color:var(--blue)}
+/* ---- HUD（像素徽章条） ---- */
+.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.hud .item{background:var(--panel);border:2px solid var(--edge);border-radius:6px;
+  padding:8px 10px;text-align:center;box-shadow:inset 0 0 0 1px rgba(94,200,240,.18)}
+.hud .item .label{font-size:9px;color:var(--mut);letter-spacing:.1em}
+.hud .item .val{font-size:18px;font-weight:800;color:var(--ink);font-family:"Courier New",monospace;text-shadow:0 0 8px rgba(255,255,255,.15)}
+.hud .item.money .val{color:var(--neon);text-shadow:0 0 10px rgba(245,185,66,.6)}
+.hud .item.rep .val{color:var(--neonGreen);text-shadow:0 0 10px rgba(123,229,139,.5)}
+.hud .item.fans .val{color:var(--neonBlue);text-shadow:0 0 10px rgba(94,200,240,.5)}
 
-/* ---- 主卡片 ---- */
-.card{background:var(--card);border:3px solid var(--ink);border-radius:var(--radius);
-  box-shadow:var(--shadow);padding:16px;margin-bottom:14px;position:relative}
-.card::before{content:'';position:absolute;top:-3px;left:16px;width:40px;height:6px;
-  background:var(--ink);border-radius:3px;opacity:.3}
+/* ---- 主面板（像素面板风，替代手账卡片） ---- */
+.card{background:var(--panel);border:2px solid var(--edge);border-radius:8px;
+  box-shadow:0 0 0 2px rgba(94,200,240,.15),0 5px 0 var(--edge);padding:14px;margin-bottom:14px;position:relative}
 .card.mini{padding:10px 14px}
-.card.danger{border-color:var(--red)}
-.card.danger::before{background:var(--red)}
-.card.good{border-color:var(--green)}
+.card.danger{border-color:var(--neonRed);box-shadow:0 0 0 2px rgba(255,107,107,.3),0 5px 0 var(--edge)}
+.card.good{border-color:var(--neonGreen);box-shadow:0 0 0 2px rgba(123,229,139,.3),0 5px 0 var(--edge)}
 
-/* ---- 阶段标签 ---- */
-.stageTag{display:inline-block;background:var(--gold);color:var(--ink);font-weight:700;
-  padding:4px 14px;border:2px solid var(--ink);border-radius:20px;
-  font-size:13px;margin-bottom:12px;box-shadow:var(--shadow-sm);transform:skew(-4deg)}
-.card .stageTag{transform:skew(-4deg)}
+/* ---- 阶段标签（像素徽章风） ---- */
+.stageTag{display:inline-block;background:var(--neon);color:#1a1428;font-weight:800;
+  padding:4px 14px;border:2px solid var(--edge);border-radius:4px;
+  font-size:13px;margin-bottom:12px;box-shadow:0 0 10px rgba(245,185,66,.4);letter-spacing:.05em}
+.card .stageTag{}
 
-/* ---- 选择行 ---- */
+/* ---- 选择行（像素 chip） ---- */
 .pickRow{margin-bottom:12px}
 .pickRow label{display:block;font-size:11px;font-weight:700;color:var(--ink2);
   margin-bottom:6px;letter-spacing:.08em}
 .pickGrid{display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:var(--bg2);border:2px solid var(--ink);border-radius:6px;
-  padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;
-  transition:all .12s;box-shadow:var(--shadow-sm)}
-.chip:hover{transform:translateY(-2px)}
-.chip.on{background:var(--gold);color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+.chip{background:var(--panel2);border:2px solid var(--edge);border-radius:4px;
+  padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);
+  transition:all .12s;box-shadow:inset 0 0 0 1px rgba(94,200,240,.12)}
+.chip:hover{transform:translateY(-2px);border-color:var(--neonBlue)}
+.chip.on{background:var(--neon);color:#1a1428;box-shadow:0 0 10px rgba(245,185,66,.5)}
 .chip:active{transform:translateY(0)}
 
-/* ---- 属性滑杆 ---- */
+/* ---- 属性滑杆（像素风） ---- */
 .attrLine{display:flex;align-items:center;gap:8px;margin:6px 0}
 .attrLine span{width:40px;font-size:12px;font-weight:600}
-.attrLine .attr{flex:1;accent-color:var(--gold);height:18px}
-.attrLine b{width:30px;text-align:center;font-size:13px}
+.attrLine .attr{flex:1;accent-color:var(--neon);height:18px}
+.attrLine b{width:30px;text-align:center;font-size:13px;font-family:"Courier New",monospace;color:var(--neon)}
 input[type="range"].attr{-webkit-appearance:none;height:18px;background:transparent}
-input[type="range"].attr::-webkit-slider-runnable-track{height:6px;background:var(--bg2);border-radius:3px;border:2px solid var(--ink)}
+input[type="range"].attr::-webkit-slider-runnable-track{height:6px;background:var(--panel2);border-radius:3px;border:2px solid var(--edge)}
 input[type="range"].attr::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;
-  background:var(--gold);border:3px solid var(--ink);border-radius:4px;cursor:pointer;margin-top:-8px;
-  box-shadow:0 2px 0 var(--ink)}
-input[type="range"].attr::-moz-range-track{height:6px;background:var(--bg2);border-radius:3px;border:2px solid var(--ink)}
-input[type="range"].attr::-moz-range-thumb{width:18px;height:18px;background:var(--gold);
-  border:3px solid var(--ink);border-radius:4px;cursor:pointer}
+  background:var(--neon);border:3px solid var(--edge);border-radius:4px;cursor:pointer;margin-top:-8px;
+  box-shadow:0 0 8px rgba(245,185,66,.5)}
+input[type="range"].attr::-moz-range-track{height:6px;background:var(--panel2);border-radius:3px;border:2px solid var(--edge)}
+input[type="range"].attr::-moz-range-thumb{width:18px;height:18px;background:var(--neon);
+  border:3px solid var(--edge);border-radius:4px;cursor:pointer}
 
 /* ---- 人员滑杆 ---- */
 .staffGrid{margin:8px 0}
 .staffRow{display:flex;align-items:center;gap:8px;margin:6px 0}
 .staffRow span{width:40px;font-size:12px;font-weight:600}
 .staffRow .attr{flex:1}
-.staffRow b{width:30px;text-align:center;font-size:13px}
+.staffRow b{width:30px;text-align:center;font-size:13px;font-family:"Courier New",monospace;color:var(--neon)}
 
-/* ---- 发行结果 ---- */
-.billRow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(60,40,20,.12);font-size:13px}
+/* ---- 发行结果（像素账本行） ---- */
+.billRow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(94,200,240,.18);font-size:13px;color:var(--ink)}
 .billRow b{font-weight:700}
-.billRow .up{color:var(--green)}
-.billRow .down{color:var(--red)}
+.billRow .up{color:var(--neonGreen)}
+.billRow .down{color:var(--neonRed)}
 
 /* ---- 升级区 ---- */
 .upgSection{margin-top:14px}
 .upgSection h3{font-size:11px;color:var(--mut);letter-spacing:.1em;margin-bottom:8px}
-/* 卡片手绘图标（Kairosoft 手账风，icon_*.png） */
+/* 像素面板标题（图标 + 霓虹边） */
 .card h3.cardTitle{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);
-  letter-spacing:0;margin-bottom:10px;border-bottom:2px dashed rgba(60,40,20,.18);padding-bottom:8px}
-.card h3.cardTitle img{width:30px;height:30px;image-rendering:pixelated;border:2px solid var(--ink);
-  border-radius:6px;background:var(--bg2);box-shadow:var(--shadow-sm)}
-/* 续作徽章（市场表现区） */
-.seqBadge{display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:700;
-  padding:3px 10px;border:2px solid var(--ink);border-radius:20px;margin:6px 0;box-shadow:var(--shadow-sm)}
+  letter-spacing:0;margin-bottom:10px;border-bottom:2px solid rgba(94,200,240,.2);padding-bottom:8px;
+  text-shadow:0 0 8px rgba(94,200,240,.3)}
+.card h3.cardTitle img{width:30px;height:30px;image-rendering:pixelated;border:2px solid var(--edge);
+  border-radius:6px;background:var(--panel2);box-shadow:0 0 8px rgba(94,200,240,.25)}
+/* 续作徽章（像素徽章） */
+.seqBadge{display:inline-block;background:var(--neonGreen);color:#1a1428;font-size:11px;font-weight:700;
+  padding:3px 10px;border:2px solid var(--edge);border-radius:4px;margin:6px 0;box-shadow:0 0 10px rgba(123,229,139,.5)}
 .upgRow{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;
-  background:var(--bg2);border:2px solid var(--ink);border-radius:6px;margin-bottom:6px;
-  cursor:pointer;box-shadow:var(--shadow-sm);transition:all .1s;font-size:12px}
-.upgRow:hover{transform:translateX(2px)}
-.upgRow b{font-weight:700}
-.upgRow b.poor{color:var(--red)}
-.upgRow b.ok{color:var(--green)}
+  background:var(--panel2);border:2px solid var(--edge);border-radius:4px;margin-bottom:6px;
+  cursor:pointer;box-shadow:inset 0 0 0 1px rgba(94,200,240,.12);transition:all .1s;font-size:12px}
+.upgRow:hover{transform:translateX(2px);border-color:var(--neonBlue)}
+.upgRow b{font-weight:700;font-family:"Courier New",monospace}
+.upgRow b.poor{color:var(--neonRed)}
+.upgRow b.ok{color:var(--neonGreen)}
 
-/* ---- 按钮区 ---- */
+/* ---- 按钮区（像素立体按压） ---- */
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.btn{flex:1;min-width:100px;background:var(--gold);border:3px solid var(--ink);border-radius:8px;
-  padding:10px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow-sm);
-  transition:all .1s;color:var(--ink)}
-.btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--ink)}
-.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
-.btn.ghost{background:transparent}
+.btn{flex:1;min-width:100px;background:var(--neon);border:2px solid var(--edge);border-radius:4px;
+  padding:10px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 var(--edge);
+  transition:all .1s;color:#1a1428}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--edge),0 0 14px rgba(245,185,66,.5)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--edge)}
+.btn.ghost{background:var(--panel2);color:var(--ink)}
 .btn.big{min-width:200px;font-size:16px;padding:12px}
-.btn.danger{background:var(--red);color:#fff}
+.btn.danger{background:var(--neonRed);color:#fff}
 
-/* ---- 日志 ---- */
+/* ---- 日志（像素终端风） ---- */
 .logSection h3{font-size:11px;color:var(--mut);letter-spacing:.1em;margin-bottom:8px}
 #logBody{max-height:200px;overflow-y:auto}
-.logLine{font-size:12px;padding:4px 0;border-bottom:1px dashed rgba(60,40,20,.08);color:var(--ink2)}
-.logLine:nth-child(1){color:var(--ink);font-weight:600}
+.logLine{font-size:12px;padding:4px 0;border-bottom:1px dashed rgba(94,200,240,.1);color:var(--ink2);font-family:"Courier New",monospace}
+.logLine:nth-child(1){color:var(--neonGreen);font-weight:600}
 
-/* ---- 结局横幅 ---- */
-.endingBanner{position:fixed;inset:0;z-index:99;background:rgba(60,40,20,.7);display:none;
+/* ---- 结局横幅（像素弹窗） ---- */
+.endingBanner{position:fixed;inset:0;z-index:99;background:rgba(13,11,20,.85);display:none;
   place-items:center;backdrop-filter:blur(4px)}
 .endingBanner.show{display:grid}
-.endingBanner .inner{background:var(--card);border:4px solid var(--ink);border-radius:14px;
-  padding:28px;max-width:420px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.endingBanner .inner{background:var(--panel);border:3px solid var(--edge);border-radius:8px;
+  padding:28px;max-width:420px;width:90%;text-align:center;box-shadow:0 0 0 2px rgba(245,185,66,.3),0 0 40px rgba(245,185,66,.25)}
 .endingBanner .icon{font-size:48px;margin-bottom:12px}
-.endingBanner h2{font-size:20px;margin-bottom:8px}
+.endingBanner h2{font-size:20px;margin-bottom:8px;color:var(--neon)}
 .endingBanner p{font-size:13px;color:var(--ink2);margin-bottom:16px}
 
-/* ---- 分享卡弹窗 ---- */
-.shareModal{position:fixed;inset:0;z-index:100;background:rgba(60,40,20,.7);
+/* ---- 分享卡弹窗（像素弹窗） ---- */
+.shareModal{position:fixed;inset:0;z-index:100;background:rgba(13,11,20,.85);
   display:none;place-items:center;backdrop-filter:blur(4px)}
 .shareModal.show{display:grid}
-.shareModal .inner{background:var(--card);border:4px solid var(--ink);border-radius:14px;
-  padding:20px;max-width:440px;width:92%}
-.shareModal img{width:100%;border:3px solid var(--ink);border-radius:8px}
+.shareModal .inner{background:var(--panel);border:3px solid var(--edge);border-radius:8px;
+  padding:20px;max-width:440px;width:92%;box-shadow:0 0 0 2px rgba(94,200,240,.25)}
+.shareModal img{width:100%;border:2px solid var(--edge);border-radius:6px}
 .shareModal .shareBtns{display:flex;gap:8px;margin-top:12px}
-.shareModal .shareBtns button{flex:1;padding:8px;border:2px solid var(--ink);border-radius:6px;
-  background:var(--bg2);cursor:pointer;font-size:13px;font-weight:600}
+.shareModal .shareBtns button{flex:1;padding:8px;border:2px solid var(--edge);border-radius:4px;
+  background:var(--panel2);color:var(--ink);cursor:pointer;font-size:13px;font-weight:600}
 
-/* ---- 场景画板（Kairosoft 像素风 · Phaser 版） ---- */
-.sceneWrap{padding:0;overflow:hidden;position:relative}
-#scene{width:100%;height:160px;position:relative}
+/* ---- 场景画板（大像素主体，无卡片包裹） ---- */
+.sceneWrap{padding:0;overflow:hidden;position:relative;background:#0d0b14;
+  border:2px solid var(--edge);border-radius:8px;margin-bottom:14px;
+  box-shadow:0 0 0 2px rgba(94,200,240,.25),0 8px 0 var(--edge)}
+#scene{width:100%;height:300px;position:relative;background:#0d0b14}
 #scene canvas{display:block;image-rendering:pixelated}
 .sceneWrap::after{content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,.15),transparent 40%)}
+  background:linear-gradient(180deg,rgba(94,200,240,.06),transparent 35%)}
 
 /* ---- 金币飞动画 ---- */
-.coin-fly{position:fixed;width:28px;height:28px;background:var(--gold);
-  border:2px solid var(--ink);border-radius:50%;font-size:16px;
+.coin-fly{position:fixed;width:28px;height:28px;background:var(--neon);
+  border:2px solid var(--edge);border-radius:50%;font-size:16px;
   display:grid;place-items:center;z-index:200;pointer-events:none;
+  box-shadow:0 0 12px rgba(245,185,66,.6);
   animation:coinFly .8s ease-out forwards}
 @keyframes coinFly{
   0%{opacity:1;transform:translateY(0) scale(1)}
@@ -182,74 +185,77 @@ input[type="range"].attr::-moz-range-thumb{width:18px;height:18px;background:var
 .shake{animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
-/* ---- 首页网格 ---- */
+/* ---- 首页网格（像素卡片） ---- */
 .homeGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
-.homeCard{background:var(--card);border:3px solid var(--ink);border-radius:12px;
-  padding:16px;cursor:pointer;box-shadow:var(--shadow);transition:all .15s;
-  display:flex;flex-direction:column;gap:8px}
-.homeCard:hover{transform:translateY(-3px);box-shadow:0 6px 0 var(--ink)}
+.homeCard{background:var(--panel);border:2px solid var(--edge);border-radius:8px;
+  padding:16px;cursor:pointer;box-shadow:0 0 0 2px rgba(94,200,240,.15),0 5px 0 var(--edge);
+  transition:all .15s;display:flex;flex-direction:column;gap:8px}
+.homeCard:hover{transform:translateY(-3px);box-shadow:0 0 0 2px rgba(245,185,66,.4),0 6px 0 var(--edge)}
 .homeCard .icon{font-size:36px}
-.homeCard h2{font-size:16px}
+.homeCard h2{font-size:16px;color:var(--ink)}
 .homeCard p{font-size:11px;color:var(--mut);flex:1}
-.homeCard .tag{font-size:10px;background:var(--gold);padding:2px 8px;border-radius:4px;
-  border:2px solid var(--ink);width:fit-content}
+.homeCard .tag{font-size:10px;background:var(--neon);color:#1a1428;padding:2px 8px;border-radius:4px;
+  border:2px solid var(--edge);width:fit-content}
 
 /* ---- 事件闪烁 ---- */
 .eventFlash{animation:eventFlash .6s}
-@keyframes eventFlash{0%{background:var(--gold)}100%{background:var(--card)}}
+@keyframes eventFlash{0%{background:var(--neon)}100%{background:var(--panel)}}
 
-/* ---- 办公室面板 ---- */
+/* ---- 办公室面板（像素行） ---- */
 .officeRow{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;
-  background:var(--bg2);border:2px solid var(--ink);border-radius:8px;margin-bottom:8px;
-  cursor:pointer;box-shadow:var(--shadow-sm);transition:all .1s;font-size:12px}
-.officeRow:hover{transform:translateX(2px)}
-.officeRow.on{background:var(--gold);box-shadow:0 3px 0 var(--ink)}
-.officeRow .oname{font-weight:700}
+  background:var(--panel2);border:2px solid var(--edge);border-radius:6px;margin-bottom:8px;
+  cursor:pointer;box-shadow:inset 0 0 0 1px rgba(94,200,240,.12);transition:all .1s;font-size:12px}
+.officeRow:hover{transform:translateX(2px);border-color:var(--neonBlue)}
+.officeRow.on{background:var(--neon);color:#1a1428;box-shadow:0 0 12px rgba(245,185,66,.4)}
+.officeRow.on .oname,.officeRow.on .odetail{color:#1a1428}
+.officeRow .oname{font-weight:700;color:var(--ink)}
 .officeRow .odetail{font-size:10px;color:var(--ink2)}
-.officeRow .orent{font-weight:700}
+.officeRow .orent{font-weight:700;font-family:"Courier New",monospace}
 
-/* ---- 员工卡片 ---- */
+/* ---- 员工卡片（像素卡） ---- */
 .empCard{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;
-  background:var(--card);border:2px solid var(--ink);border-radius:8px;margin-bottom:8px;
-  box-shadow:var(--shadow-sm)}
-.empCard .ename{font-size:12px;font-weight:700}
+  background:var(--panel2);border:2px solid var(--edge);border-radius:6px;margin-bottom:8px;
+  box-shadow:inset 0 0 0 1px rgba(94,200,240,.12)}
+.empCard .ename{font-size:12px;font-weight:700;color:var(--ink)}
 .empCard .edetail{font-size:10px;color:var(--mut)}
 .empCard .emeta{display:flex;gap:12px;align-items:center}
-.empCard .lvl{background:var(--blue);color:#fff;font-size:10px;font-weight:700;
-  padding:2px 6px;border-radius:4px;border:1px solid var(--ink)}
+.empCard .lvl{background:var(--neonBlue);color:#1a1428;font-size:10px;font-weight:700;
+  padding:2px 6px;border-radius:4px;border:1px solid var(--edge)}
 .empCard .mbtns{display:flex;gap:4px}
-.empCard .mbtn{font-size:10px;padding:4px 8px;border:1px solid var(--ink);border-radius:4px;
-  background:var(--bg2);cursor:pointer}
-.empCard .mbtn:hover{background:var(--gold)}
-.empCard .mbtn.del{background:var(--red);color:#fff}
+.empCard .mbtn{font-size:10px;padding:4px 8px;border:1px solid var(--edge);border-radius:4px;
+  background:var(--panel);color:var(--ink);cursor:pointer}
+.empCard .mbtn:hover{background:var(--neon);color:#1a1428}
+.empCard .mbtn.del{background:var(--neonRed);color:#fff}
 
-/* ---- 招聘按钮组 ---- */
+/* ---- 招聘按钮组（像素） ---- */
 .hireGrid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.hireBtn{flex:1;min-width:70px;text-align:center;padding:8px 6px;background:var(--bg2);
-  border:2px solid var(--ink);border-radius:6px;font-size:11px;cursor:pointer;box-shadow:var(--shadow-sm)}
-.hireBtn:hover{background:var(--gold)}
+.hireBtn{flex:1;min-width:70px;text-align:center;padding:8px 6px;background:var(--panel2);color:var(--ink);
+  border:2px solid var(--edge);border-radius:4px;font-size:11px;cursor:pointer;
+  box-shadow:inset 0 0 0 1px rgba(94,200,240,.12)}
+.hireBtn:hover{background:var(--neon);color:#1a1428}
 
-/* ---- 士气条 ---- */
-.moraleBar{height:14px;background:var(--bg2);border:2px solid var(--ink);border-radius:7px;
+/* ---- 士气条（像素霓虹条） ---- */
+.moraleBar{height:14px;background:var(--panel2);border:2px solid var(--edge);border-radius:4px;
   overflow:hidden;margin:8px 0}
-.moraleBar .fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .3s}
+.moraleBar .fill{height:100%;background:linear-gradient(90deg,var(--neonGreen),var(--neon));transition:width .3s;
+  box-shadow:0 0 10px rgba(123,229,139,.4)}
 
-/* ---- 事件弹窗（临时浮层） ---- */
+/* ---- 事件弹窗（像素浮层） ---- */
 .eventToast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:150;
-  background:var(--card);border:3px solid var(--ink);border-radius:10px;padding:12px 18px;
-  box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:90%;font-size:13px;font-weight:600;
+  background:var(--panel);border:3px solid var(--edge);border-radius:6px;padding:12px 18px;
+  box-shadow:0 0 0 2px rgba(94,200,240,.25),0 6px 24px rgba(0,0,0,.5);max-width:90%;font-size:13px;font-weight:600;color:var(--ink);
   opacity:0;transition:opacity .3s}
 .eventToast.show{opacity:1}
-.eventToast.good{border-color:var(--green)}
-.eventToast.bad{border-color:var(--red)}
+.eventToast.good{border-color:var(--neonGreen);box-shadow:0 0 0 2px rgba(123,229,139,.4),0 6px 24px rgba(0,0,0,.5)}
+.eventToast.bad{border-color:var(--neonRed);box-shadow:0 0 0 2px rgba(255,107,107,.4),0 6px 24px rgba(0,0,0,.5)}
 
 /* ---- 贷款提示 ---- */
-.loanTag{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:700;
-  padding:2px 8px;border-radius:4px;margin-left:8px}
+.loanTag{display:inline-block;background:var(--neonRed);color:#fff;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:4px;margin-left:8px;border:1px solid var(--edge)}
 
 /* ---- 趋势提示 ---- */
-.trendTag{display:inline-block;background:var(--blue);color:#fff;font-size:10px;font-weight:700;
-  padding:2px 8px;border-radius:4px}
+.trendTag{display:inline-block;background:var(--neonBlue);color:#1a1428;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:4px;border:1px solid var(--edge)}
 
 /* ---- 发行统计大卡 ---- */
 .statsCard .billRow{font-size:14px}
@@ -257,6 +263,7 @@ input[type="range"].attr::-moz-range-thumb{width:18px;height:18px;background:var
 
 /* ---- 响应式 ---- */
 @media(max-width:480px){
+  .hud{grid-template-columns:repeat(2,1fr)}
   .homeGrid{grid-template-columns:1fr}
   .btn.big{min-width:100%}
 }
