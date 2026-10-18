@@ -319,7 +319,8 @@ const scene = (function(){
     const parentEl=document.getElementById(parent||'scene');
     if(!parentEl) return false;
     _build();   // 惰性构建场景类（此时 Phaser 已确认可用）
-    // 容器已由 CSS 锁定 640x300 比例，Phaser Scale.FIT 会据此把 640x300 逻辑画布等比缩放进容器
+    // 容器 CSS 用 aspect-ratio:640/300 自适应，Phaser Scale.FIT 会据此把 640x300 逻辑画布
+    // 等比缩放进父容器（手机 390px 宽 → 390x184 canvas，CENTER_BOTH 居中，不拉伸不变形）
     const config = {
       type: Phaser.AUTO,
       parent: parent,
